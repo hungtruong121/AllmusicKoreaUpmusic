@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_video(fragmentId, videoList, paginationUrl)" th:id="${fragmentId}" class="musiclist_table musiclist_table_hover2">
+		
+		<div class="producing_list musicvideo_list clear">
+			<ul class="producing_contnet">
+				<li th:each="video, iter : ${videoList}" th:id="${video.id}">
+					<div class="producing_profile musicvideo_profile videoplay_on2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;)'}}" th:style="@{${'background-image: url(' + video.getThumbnailUrl() + ');'}}">
+						<div class="play_iconwrap play_iconwrap2">
+							<ul>
+								<li><a th:href="${video.getUrl()}"><img th:src="@{/img/play_icon.png}" alt="" /></a></li>
+								<li th:text="${video.formattedDuration()}"></li>
+							</ul>
+						</div>
+					</div>
+					<div class="producing_info musicvideo_info video_description">
+						<div class="checkbox">
+							<input th:id="@{${'checkbox_video_' + video.id}}" class="checkbox-checked" type="checkbox" th:value="${video.id}"/>
+							<label th:for="@{${'checkbox_video_' + video.id}}"><span class="checkbox-custom"></span></label>
+						</div>
+						<div class="producing_infowrap">
+							<ul class="hits_wrap fln mb10">
+								<li th:text="${video.formattedTime()}"></li>
+								<li><span th:text="#{common.hits_cnt}" th:remove="tag"></span> <span th:text="${video.hitCnt}" th:remove="tag"></span></li>
+							</ul>
+							<h3 class="producing_title musicvideo_title"><a th:href="${video.getUrl()}"><span th:text="${video.subject}" th:remove="tag"></span></a></h3>
+							<h4 class="artist-title2"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></h4>
+							<p class="producing_introduce mt10" th:text="${video.description}"></p>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		
+		<div th:if="${paginationUrl != null and videoList != null and videoList.totalPages gt 0}" class="panel-body text-center clear">
+		    <ul class="pagination">
+		        <li th:class="${videoList.number eq 0} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-left" th:if="${not videoList.first}" th:onclick="@{${'UPMListVideoAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (videoList.number-1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-left" th:if="${videoList.first}" href="javascript:void(0);"></a>
+		        </li>
+		
+		        <li th:each="pageNo : ${#numbers.sequence(0, videoList.totalPages - 1)}" th:class="${videoList.number eq pageNo}? 'active' : ''">
+		            <a th:if="${videoList.number  eq pageNo}" href="javascript:void(0);">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		            <a th:if="${not (videoList.number  eq pageNo)}" th:onclick="@{${'UPMListVideoAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + pageNo + ');'}}">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		        </li>
+		        
+		        <li th:class="${videoList.number + 1 ge videoList.totalPages} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-right" th:if="${not videoList.last}" th:onclick="@{${'UPMListVideoAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (videoList.number+1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-right" th:if="${videoList.last}" href="javascript:void(0);"></a>
+		        </li>
+		    </ul>
+		</div>
+		
+	</div>
+	
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_share_upmusic">
+		<div class="modal fade" id="modal-upmusic-share" tabindex="-1" role="dialog" aria-labelledby="UPM Share" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered upmusic_share_wrap" role="document">
+				<div class="modal-content">
+					<div class="modal-header upmusic_share_header">
+						<i><img th:src="@{/img/upmusic.png}" alt=""></i><span> UPMUSIC 피드에 공유하기</span>
+					</div>
+					<div class="modal-body">
+						<form action="#" id="feedShareInsertForm" th:action="@{/feed/share/insert}" method="post">
+						<input type="hidden" name="shareUrl" id="shareUrl">
+						<div class="upmusic_share_content">
+							<div class="share_section1">
+								<textarea name="content" class="" placeholder="하고 싶은 말을 남겨주세요."></textarea>
+								<!-- <div class="share_content">
+									<div class="share_item">
+										<div class="share_item_profile"></div>
+										<div class="share_item_content">
+											<div class="producing_info musicvideo_info">
+												<div class="producing_infowrap">
+													<h3 class="producing_title musicvideo_title">What is Love?</h3>
+													<h4 class="artist-title2"><a href="">트와이스</a></h4>
+													<p class="producing_introduce mt10">신인 걸 그룹 빙글빙글의 프로젝트 앨범에 들어갈 곡을 찾고 있습니다.  많은 지원 부탁드립니다. 20대 초반 여성분 환영 합니다. 신인 걸 그룹 빙글빙글의 프로젝트 앨범에 들어갈 곡을 찾고 있습니다.  많은 지원 부탁드립니다. 20대 초반 여성분 환영 합니다. </p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div> -->
+							</div>
+						</div>
+						<div class="upmusic_share_footer">
+							<ul>
+								<li>
+									<div class="selectbox_design">
+										<input type="hidden" name="publicRangeFormValue" id="publicRangeFormValue" value="ALL">
+										<span id="selectbox_seleted_text">전체 공개</span><i><img src="/img/select_ar.png" alt=""></i>
+										<ul class="selectbox_option selectbox_off">
+											<li class="ALL">전체 공개</li>
+											<li class="LIKE">좋아요 공개</li>
+											<li class="PRIVATE">나만 보기</li>
+										</ul>
+									</div>
+								</li>
+								<li><button class="btn btn-dark btn-custom p60 w100p h40" type="button" data-dismiss="modal">취소</button></li>
+								<li><button class="btn btn-custom3 fl w100p p60 h40" id="btn_feed_share_insert" type="submit">UPMUSIC에 공유</button></li>
+							</ul>
+						</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var shareUrl = /*[[ ${shareUrl} ]]*/;
+			var origSelectionStart, origSelectionEnd;
+			var url = "";
+			var UPMShareUpmusicModal = {
+				showShareModal : function(urlToShareFeed) {
+					url = urlToShareFeed;
+					$('#modal-upmusic-share').modal('show');
+				}
+			};
+			
+		/*]]>*/
+		
+			$('#modal-upmusic-share').on('shown.bs.modal', function(){
+				feedSelectboxOption();
+			});
+		
+			$('#btn_feed_share_insert').on('click', function(){
+				$('#shareUrl').val(url);
+			});
+		
+			// 공개여부 선택
+			function feedSelectboxOption(){
+		    	// 공개여부 선택
+				$('.selectbox_option').on('click', function(e){
+					var selectboxText = $(e.target).html();
+					var selectValue = $(e.target).attr('class');
+					
+					$(e.target).closest('.selectbox_design').find('#selectbox_seleted_text').html(selectboxText);
+					$(e.target).closest('.selectbox_design').find('#publicRangeFormValue').val(selectValue);
+
+				});
+		    }
+		
+		
+	    </script>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="content">
+			<div class="subpage_wrap section">
+				<h2 class="page-title">나의 리워드</h2>
+				<div class="tabcontent_wrap">
+					<div class="tabcontent_0">
+						<p class="content_title2">포인트 <span>* 업뮤직 포인트 중 10%는 크라우드 펀딩에만 사용할 수 있습니다.</span></p>
+						
+						<div class="inputbox_wrap inputbox_wrap2 t01">
+							<ul>
+								<li>
+									<div class="items bg01">
+										<p class="t01"><span th:text="${member.getUpmPointString()}" th:remove="tag"></span> P</p>
+										<p class="t02">업뮤직 포인트</p>
+									</div>
+								</li>
+								<li>
+									<div class="items bg02">
+										<p class="t01"><span th:text="${member.getUsablePointString()}" th:remove="tag"></span> P</p>
+										<p class="t02">사용가능 포인트</p>
+									</div>
+								</li>
+								<li>
+									<div class="items bg03">
+										<p class="t01"><span th:text="${member.getFundingPointString()}" th:remove="tag"></span> P</p>
+										<p class="t02">펀딩 포인트</p>
+									</div>
+								</li>
+							</ul>
+						</div>
+	
+						<div class="collaboration_wrap">
+							<div class="collaboration_head">
+								<p class="content_title2 fl mt0">정산내역</p>
+							</div>
+							<div class="collaboration_info">
+								<div class="rew_date">
+									<div class="input-group date">
+										<input id="reward-datetimepicker" th:type="text" class="form-control" th:onchange="@{${'UPMReward.changeDate(this.value);'}}" readonly />
+										<div class="input-group-addon" onclick="$('#reward-datetimepicker').datepicker('show');">
+											<span class="glyphicon glyphicon-th"></span>
+										</div>
+									</div>
+								</div>
+								<div class="inputbox_wrap">
+									<ul class="rew_tableBox">
+										<!-- 2018-08-14 순서 변경 및 이벤트 리워드 추가 -->
+										<li>
+											<p class="content_title2">스트리밍 리워드 <span>*음원 스트리밍 청취시간에 대한 리워드 정산정보 (1초당 <span th:text="${rewardCondition.getBigDecimal()}" th:remove="tag"></span>~<span th:text="${rewardCondition.listenFirstStepPoint}" th:remove="tag"></span>P 적립)</span></p>
+											<table>
+												<tr>
+													<th>청취시간</th>
+													<th>업뮤직 포인트</th>
+												</tr>
+												<tr>
+													<td id="transaction-listenTime"></td>
+													<td><span id="transaction-listenPoint"></span>P</td>
+												</tr>
+											</table>
+										</li>
+										<li>
+											<p class="content_title2">내 스트리밍에 대한 정산 <span>*내가 등록한 음원 스트리밍에 대한 정산정보 (1초당 <span th:text="${rewardCondition.listenArtistPoint}" th:remove="tag"></span>P 적립)</span></p>
+											<table>
+												<tr>
+													<th>청취시간</th>
+													<th>업뮤직 포인트</th>
+												</tr>
+												<tr>
+													<td id="transaction-copyrightTime"></td>
+													<td><span id="transaction-copyrightPoint"></span>P</td>
+												</tr>
+											</table>
+										</li>
+										<li>
+											<p class="content_title2">업로드 리워드 <span>*음원 업로드 건수에 대한 리워드 정산정보 (1건당 <span th:text="${rewardCondition.getUploadPointString()}" th:remove="tag"></span>P 적립)</span></p>
+											<table>
+												<tr>
+													<th>업로드건수</th>
+													<th>업뮤직 포인트</th>
+												</tr>
+												<tr>
+													<td><span id="transaction-uploadCount"></span>건</td>
+													<td><span id="transaction-uploadPoint"></span>P</td>
+												</tr>
+											</table>
+										</li>
+										<li>
+											<p class="content_title2">공유에 대한 정산 <span>*음원 공유에 대한 리워드 정산정보 (1건당 <span th:text="${rewardCondition.getSharePointString()}" th:remove="tag"></span>P 적립)</span></p>
+											<table>
+												<tr>
+													<th>공유건수</th>
+													<th>업뮤직 포인트</th>
+												</tr>
+												<tr>
+													<td><span id="transaction-shareCount"></span>건</td>
+													<td><span id="transaction-sharePoint"></span>P</td>
+												</tr>
+											</table>
+										</li>
+										<li>
+											<p class="content_title2">이벤트 리워드에 대한 정산 <span>*이벤트에 당첨된 리워드 정산정보</span></p>
+											<table>
+												<tr>
+													<th>당첨건수</th>
+													<th>업뮤직 포인트</th>
+												</tr>
+												<tr>
+													<td><span id="transaction-eventCount"></span>건</td>
+													<td><span id="transaction-eventPoint"></span>P</td>
+												</tr>
+											</table>
+										</li>
+									</ul>
+								</div>
+	
+							</div>
+						</div>
+						<!-- 2018-08-13 리스트 세부 설명 추가 -->
+						<div class="collaboration_wrap">
+							<div class="collaboration_head">
+								<p class="content_title2 fl mt0">리스트 세부 설명</p>
+							</div>
+							<div class="FAQ_tab_content_wrap">
+								<div class="FAQ_content ico_content">
+									<div class="FAQ_Question">
+										<ul>
+											<li class="Question_icon">Q.</li>
+											<li>스트리밍 리워드란?</li>
+											<li><img th:src="@{/img/down_btn.png}" class="Question_ar" alt=""></li>
+										</ul>
+										<div class="FAQ_Answer mt10">
+											<div class="answer_icon">
+												<h3>A.</h3>
+											</div>
+											<div class="answer_content_wrap">
+												<div class="answer_content">
+													<p class="answer">
+														1. 스트리밍 리워드란? 음원을 청취한 시간에 따라 제작자와 청취자 모두에게 보상을 제공하는 시스템입니다.<br/>
+														2. 사용자는 뮤직 플레이어 내 재생시간을 기준으로 업뮤직 포인트를 획득할 수 있습니다.<br/>
+														3. 제작자는 자신이 업로드한 음원의 누적 재생시간을 기준으로 업뮤직 포인트를 획득할 수 있습니다.<br/>
+														4. 스트리밍 리워드 획득은 ID당 하루 1회만 가능합니다. (사용자 1단계, 2단계만 해당)<br/>
+														<!-- 2018-08-20 5.추가 -->
+														5. 본인의 음원을 청취할 경우 사용자 > 3단계 업뮤직 포인트 획득
+														<br/>
+														6. 접속기록 및 재생시간은 1일 기준으로 표기되며 매일 00시 초기화 합니다.<br/>
+														7. 재생시간이 변경되지 않을 경우 잠시 뒤 다시 확인해주시기 바랍니다.
+													</p>
+												</div>
+												<div class="answer_content mt30">
+													<p class="answer">
+														<table class="reward_info">
+															<colgroup>
+																<col width="10%" />
+																<col width="10%" />
+																<col width="80%" />
+															</colgroup>
+															<tr>
+																<th colspan="2">구분</th>
+																<th>내용</th>
+															</tr>
+															<tr>
+																<th rowspan="3">사용자</th>
+																<th>1단계</th>
+																<td>재생시간 1초에 <span th:text="${rewardCondition.listenFirstStepPoint}" th:remove="tag"></span> 업뮤직 포인트 획득 (최대 <span th:text="${rewardCondition.listenFirstStepLimit}" th:remove="tag"></span>분까지 획득 가능)</td>
+															</tr>
+															<tr>
+																<th>2단계</th>
+																<td>재생시간 1초에 <span th:text="${rewardCondition.listenSecondStepPoint}" th:remove="tag"></span> 업뮤직 포인트 획득 (최대 <span th:text="${rewardCondition.listenSecondStepLimit}" th:remove="tag"></span>분까지 획득 가능)</td>
+															</tr>
+															<tr>
+																<th>3단계</th>
+																<td>재생시간 1초에 <span th:text="${rewardCondition.getBigDecimal()}" th:remove="tag"></span> 업뮤직 포인트 획득 (별도 제한 없음)</td>
+															</tr>
+															<tr>
+																<th colspan="2">제작자(아티스트 등급)</th>
+																<td>재생시간 1초에 <span th:text="${rewardCondition.listenArtistPoint}" th:remove="tag"></span> 업뮤직 포인트 획득 (별도 제한 없음)</td>
+															</tr>
+														</table>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="FAQ_Question">
+										<ul>
+											<li class="Question_icon">Q.</li>
+											<li>업로드 리워드란?</li>
+											<li><img th:src="@{/img/down_btn.png}" class="Question_ar" alt=""></li>
+										</ul>
+										<div class="FAQ_Answer mt10">
+											<div class="answer_icon">
+												<h3>A.</h3>
+											</div>
+											<div class="answer_content_wrap">
+												<div class="answer_content">
+													<p class="answer">
+														1. 업로드 리워드란? 음원을 등록하고, 심사과정을 통과한 회원님에게 보상을 제공하는 시스템 입니다.<br/>
+														2. 업로드한 음원 1곡당 <span th:text="${rewardCondition.getUploadPointString()}" th:remove="tag"></span> 업뮤직 포인트를 획득할 수 있습니다. (단, 심사통과 완료된 음원에 한해서 업뮤직 포인트 지급)<br/>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="FAQ_Question">
+										<ul>
+											<li class="Question_icon">Q.</li>
+											<li>공유 리워드란?</li>
+											<li><img th:src="@{/img/down_btn.png}" class="Question_ar" alt=""></li>
+										</ul>
+										<div class="FAQ_Answer mt10">
+											<div class="answer_icon">
+												<h3>A.</h3>
+											</div>
+											<div class="answer_content_wrap">
+												<div class="answer_content">
+													<p class="answer">
+														1. 공유 리워드란? 업뮤직에 등록된 음원을 SNS 공유를 통해 홍보한 회원님에게 보상을 제공하는 시스템 입니다.<br/>
+														2. 공유한 음원 1곡당 <span th:text="${rewardCondition.getSharePointString()}" th:remove="tag"></span> 업뮤직 포인트를 획득할 수 있습니다. (단, 페이스북과 업뮤직 공유만 해당되고 하루 10건까지 획득 가능)<br/>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="FAQ_Question">
+										<ul>
+											<li class="Question_icon">Q.</li>
+											<li>이벤트 리워드란?</li>
+											<li><img th:src="@{/img/down_btn.png}" class="Question_ar" alt=""></li>
+										</ul>
+										<div class="FAQ_Answer mt10">
+											<div class="answer_icon">
+												<h3>A.</h3>
+											</div>
+											<div class="answer_content_wrap">
+												<div class="answer_content">
+													<p class="answer">
+														1. 이벤트 리워드란 업뮤직 사이트에 방문 중인 회원님들에게 업뮤직 포인트를 보상으로 제공하는 시스템입니다.<br/>
+														2. 당첨된 회원님께는 이벤트 당첨 팝업이 노출됩니다. 자세한 정보는 이벤트 기간 중에 공지사항을 확인해주세요.<br/>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!-- subpage_wrap	 -->
+			</div><!-- section wrap	 -->
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		var UPMReward = {
+			changeDate: function(date) {
+				UPMReward.loadTransaction(date);
+			},
+			loadTransaction : function(date) {
+				// UPMusic.log("UPMReward.loadTransaction : date is " + date);
+				$.get(UPMusic._config._api_transaction + '/daily/' + date, function(data) {
+					var jsonArr = JSON.parse(data.object);
+					for (var key in jsonArr) {
+						// UPMusic.log("UPMReward.loadTransaction : key is " + key + " and value is " + jsonArr[key]);
+						if (jsonArr.hasOwnProperty(key)) {
+							$('#transaction-' + key).html(jsonArr[key]);
+						}
+					}
+				});
+			}
+		};
+		$(function() {
+			$('#reward-datetimepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                /* beforeShowDay: function(date) {
+                	var dmy = date.getFullYear() + "-" + ((date.getMonth()) > 8 ? (date.getMonth()+1) : ('0' + (date.getMonth()+1))) + "-" + (date.getDate() > 9 ? date.getDate() : ('0' + date.getDate()));
+				    if ($.inArray(dmy, leagueDays) != -1) {
+				    	return true;
+				    } else {
+				    	return { enabled : false };
+				    }
+                } */
+            }).on('changeDate', function(e){
+            	$(this).keyup();
+                $(this).datepicker('hide');
+            });
+			$('#reward-datetimepicker').datepicker('update', new Date());
+		});
+		</script>
+		
+	</div>
+
+</body>
+</html>

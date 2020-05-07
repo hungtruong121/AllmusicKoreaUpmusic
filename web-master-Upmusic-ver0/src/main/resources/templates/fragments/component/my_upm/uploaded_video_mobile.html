@@ -1,0 +1,11 @@
+<dd th:each="video, iter : ${videos}" th:id="${video.id}">
+	<div class="video" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}"><img th:src="${video.getThumbnailUrl()}" alt="" /><span class="time" th:text="${video.formattedDuration()}"></span></div>
+	<div class="info">
+		<p class="subject clamp1"><a th:href="@{${video.getUrl()}}"><span th:text="${video.getSubject()}" th:remove="tag"></span></a></p>
+		<p class="atist clamp1"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></p>
+		<p class="date"><span th:text="${video.formattedTime()}" th:remove="tag"></span></p>
+	</div>
+</dd>
+<dd th:if="${videos != null and videos.totalPages gt videos.number + 1}" id="list-more-video-button" class="showmore_wrap"  th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;list-more-video-button&quot;, &quot;' + paginationVideoUrl + '&quot;, ' + (videos.number+1) + ');'}}">
+	<p>SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></p>
+</dd>

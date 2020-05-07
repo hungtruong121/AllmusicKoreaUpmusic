@@ -1,0 +1,110 @@
+{
+  "project_info": {
+    "project_number": "190704323943",
+    "firebase_url": "https://upmusic-6f06c.firebaseio.com",
+    "project_id": "upmusic-6f06c",
+    "storage_bucket": "upmusic-6f06c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190704323943:android:4b93f5c9019aca0f",
+        "android_client_info": {
+          "package_name": "com.strawberryswing.upmusic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190704323943-sar6ibs250man9goultm3ffe9kfn4fb6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.strawberryswing.upmusic",
+            "certificate_hash": "4cfd4aab4a07018a4007da1054edd7d4aed03910"
+          }
+        },
+        {
+          "client_id": "190704323943-79mf5cmhrf1fgfhaa69ot7muv3h69vm8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.strawberryswing.upmusic",
+            "certificate_hash": "619e547237e6e92decd962ed6215a1a424c27406"
+          }
+        },
+        {
+          "client_id": "190704323943-4i4lj8hs67jaladbqsfaac14r46quqnq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.strawberryswing.upmusic",
+            "certificate_hash": "d6504484e6e46947626f7cfadfdde940cd7b65cc"
+          }
+        },
+        {
+          "client_id": "190704323943-307aaj7mcbkq0ajkleh5277n6enpb7p0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.strawberryswing.upmusic",
+            "certificate_hash": "f1758e3ce24e648d2d248564e1118ace7b2fe5eb"
+          }
+        },
+        {
+          "client_id": "190704323943-7aj2mal2mt1tc678alnhet4o0k1c98ih.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.strawberryswing.upmusic",
+            "certificate_hash": "efd7e4f8e9896631c282ab7828afe8f06b55c68b"
+          }
+        },
+        {
+          "client_id": "190704323943-u81kgkq2e87mtss1d09vsc1vfqm9qbe8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.strawberryswing.upmusic",
+            "certificate_hash": "4ead81fe054057f46faf847e9e935a50b6d509ce"
+          }
+        },
+        {
+          "client_id": "190704323943-gqf74rscig1u69l4lib6i1aj59dbhs08.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.strawberryswing.upmusic",
+            "certificate_hash": "8f08eb2bcfb86a152b376dc2cdeab2a940137187"
+          }
+        },
+        {
+          "client_id": "190704323943-rlgmtmtge9ukotrjf8hg3lcs54amgtsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoRfQlYiCDwrGC1ATmu9OdoeheDwMq-Po"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190704323943-rlgmtmtge9ukotrjf8hg3lcs54amgtsm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "190704323943-4dir8k8hjc5qa9p2rce205hvd01jc9ab.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.glosfer.upmusic.test"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

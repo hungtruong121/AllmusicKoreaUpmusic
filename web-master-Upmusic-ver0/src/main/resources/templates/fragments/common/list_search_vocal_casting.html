@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_casting(fragmentTitle, fragmentId, castingList)" th:id="${fragmentId}" class="musiclist_table">
+		<h3 th:if="${fragmentId == 'search-detail-castings-fragment' or fragmentId == 'search-castings-fragment'}" class="content_title mt30"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${castingList.size()}" th:remove="tag"></span></span></h3>
+		<h3 th:unless="${fragmentId == 'search-detail-castings-fragment' or fragmentId == 'search-castings-fragment'}" class="content_title mt30"><a onclick="$('.tab_design ul li#result-casting').click();"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${castingList.getTotalElements()}" th:remove="tag"></span></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a></h3>
+		<div class="listcontrols"></div>
+		<div class="clearfix"></div>
+		<div class="casting_list_wrap">
+			<ul>
+				<li th:each="casting, iter : ${castingList}" th:id="${casting.id}">
+					<div class="casting_contentwrap">
+						<div class="castingcont_left fl">
+							<h3 class="list-title"><a th:href="@{${'/music/vocal_casting/' + casting.id}}"><span th:text="${casting.subject}" th:remove="tag"></span> <i th:if="${casting.newItem}"><img th:src="@{/img/new.png}" alt="" /></i></a></h3>
+							<ul class="hits_wrap fl">
+								<li th:text="${casting.getMember().getNick()}"></li>
+								<li th:text="${casting.formattedTime()}"></li>
+								<li><span th:text="#{common.hits_cnt}" th:remove="tag"></span> <span th:text="${casting.hitCnt}" th:remove="tag"></span></li>
+							</ul>
+						</div>
+						<div class="castingcont_right fr">
+							<div class="comment_info fr"><i class="newicon"><img th:src="@{/img/comment_icon.png}" alt="" /></i><span th:text="#{model.comment}" th:remove="tag"></span> <span><span th:text="${casting.commentCnt}" th:remove="tag"></span><span th:text="#{common.count.collectedTrack}" th:remove="tag"></span></span></div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+
+</html>

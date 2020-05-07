@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- reward music content -->
+			<div class="reward_wrap">
+				<div class="nl_panel pdb0 pdt0">
+					<ul class="nav nav-tabs tabType01">
+						<li class="active"><a><span th:text="#{enum.albumtype.SA}" th:remove="tag"></span></a></li>
+						<li class="making"><a><span th:text="#{enum.albumtype.GA}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane active" id="album-kr-1">
+						<!-- 싱글 -->
+						<div class="nl_panel">
+							<p class="pd5 col_gray">*장르를 선택해주세요.</p>
+							<div class="swiper-container mainSwiper">
+								<ul class="swiper-wrapper genre_menu of-h">
+									<li th:each="genreOption, iter : ${genreMap}" th:text="${genreOption['value']}" th:id="${genreOption['key']}" class="swiper-slide rewordlist_tab" th:classappend="${iter.index} eq 0 ? 'active genre_0' + ${iter.index%5 + 1} : 'genre_0' + ${iter.index%5 + 1}" th:onclick="@{${'UPMListAlbumAnonymous.selectedSAGenre(&quot;album-list-sa&quot;, &quot;' + sPaginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"></li>
+								</ul>
+							</div>
+						</div>
+						<div th:replace="fragments/common/list_album_mobile :: list_album('album-list-sa', ${sAlbums}, ${sPaginationUrl})"></div>
+						<!-- //end 싱글 -->
+					</div>
+					<!-- 앨범 -->
+					<div class="tab-pane" id="album-kr-2">
+						<div class="nl_panel">
+							<p class="pd5 col_gray">*장르를 선택해주세요.</p>
+							<div class="swiper-container mainSwiper">
+								<ul class="swiper-wrapper genre_menu of-h">
+									<li th:each="genreOption, iter : ${genreMap}" th:text="${genreOption['value']}" th:id="${genreOption['key']}" class="swiper-slide rewordlist_tab" th:classappend="${iter.index} eq 0 ? 'active genre_0' + ${iter.index%5 + 1} : 'genre_0' + ${iter.index%5 + 1}" th:onclick="@{${'UPMListAlbumAnonymous.selectedGAGenre(&quot;album-list-ga&quot;, &quot;' + gPaginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"></li>
+								</ul>
+							</div>
+						</div>
+						<div th:replace="fragments/common/list_album_mobile :: list_album('album-list-ga', ${gAlbums}, ${gPaginationUrl})"></div>
+					</div>
+					<!-- //end 앨범 -->
+				</div><!-- //end tab-content -->
+				
+			</div>
+			<!-- //end reward music content -->
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentSAGenre = /*[[ ${defaultGenre} ]]*/;
+			var currentGAGenre = /*[[ ${defaultGenre} ]]*/;
+			var UPMListAlbumAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					if (elementId == 'album-list-sa') url += '&genre=' + currentSAGenre;
+					else url += '&genre=' + currentGAGenre;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				},
+				appendPage: function(elementId, paginationUrl, page, totalPages) {
+					var url = paginationUrl + '?page=' + page;
+					if (elementId == 'album-list-sa') url += '&genre=' + currentSAGenre;
+					else url += '&genre=' + currentGAGenre;
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.album-list').append(data);
+					});
+					if (page + 1 >= totalPages) {
+						$('#' + elementId + ' #list-more-button').remove();
+					} else {
+						var moreButton = '<p><a onclick="UPMListAlbumAnonymous.appendPage(\'' + elementId + '\', \'' + paginationUrl + '\', ' + (page + 1) + ', ' + totalPages + ');">SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i></a></p>';
+						$('#' + elementId + ' #list-more-button').html(moreButton);
+					}
+				},
+				selectedSAGenre: function(elementId, url, genre) {
+					currentSAGenre = genre;
+					$('.single-btn-group button').each(function() {
+						if (this.id == genre) {
+							if (!$(this).hasClass("active")) $(this).addClass('active');
+						} else {
+							if ($(this).hasClass("active")) $(this).removeClass('active');
+						}
+					});
+					UPMListAlbumAnonymous.loadPage(elementId, url, 0);
+				},
+				selectedGAGenre: function(elementId, url, genre) {
+					currentGAGenre = genre;
+					$('.album-btn-group button').each(function() {
+						if (this.id == genre) {
+							if (!$(this).hasClass("active")) $(this).addClass('active');
+						} else {
+							if ($(this).hasClass("active")) $(this).removeClass('active');
+						}
+					});
+					UPMListAlbumAnonymous.loadPage(elementId, url, 0);
+				}
+			};
+			
+		/*]]>*/
+		</script>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript">
+			var UPMListAlbum = {
+				likeAlbum: function(albumId) {
+					UPMusic.alert(msgUserAfterLogin);
+				}
+			};
+	    </script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMListAlbum = {
+				likeAlbum: function(albumId) {
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_album + '/' + albumId + '/like_from_list', headers, params, UPMListAlbum.likeAlbumCallback);
+				},
+				likeAlbumCallback: function(msg, object) {
+					if (msg == 'true') {
+						$('[id="' + object + '"]').each(function(value) {
+							$(this).find("#album-like").toggleClass('glyphicon-heart-empty glyphicon-heart');
+						});
+					} else {
+						$('[id="' + object + '"]').each(function(value) {
+							$(this).find("#album-like").toggleClass('glyphicon-heart glyphicon-heart-empty');
+						});
+					}
+				}
+			};
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

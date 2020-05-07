@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" >
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_terms">	
+			<div class="modal fade" id="modal-terms-use" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true" >
+		        <div class="modal-dialog">
+		            <div class="modal-terms">
+		                <div class="modal-header login_header">
+		                    <h4 class="modal_title">이용약관</h4>
+		                    <img src="/img/close.png" class="close" alt="" data-dismiss="modal" />
+		                </div>
+		                <div class="modal-body login_body">
+		                    <div class="login_body1" id ="terms-content-use">
+		                    </div>
+		                </div>
+		            </div>
+		     	</div>
+    		</div>
+    		<div class="modal fade" id="modal-terms-privacy" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true" >
+		        <div class="modal-dialog">
+		            <div class="modal-terms">
+		                <div class="modal-header login_header">
+		                    <h4 class="modal_title">개인정보처리방침</h4>
+		                    <img src="/img/close.png" class="close" alt="" data-dismiss="modal" />
+		                </div>
+		                <div class="modal-body login_body">
+		                    <div class="login_body1" id ="terms-content-privacy">
+		                    </div>
+		                </div>
+		            </div>
+		     	</div>
+    		</div>
+		<script type="text/javascript" th:inline="javascript">
+			var UPMTermsModal = {
+				showModalPrivacy : function() {
+					var url = '/terms/privacy';
+    				$.get(url, function(data) {
+    					$('#modal-terms-privacy').modal();
+    					$('#terms-content-privacy').replaceWith(data);
+    				});
+				},
+				showModalUse: function() {
+					var url = '/terms/use';
+    				$.get(url, function(data) {
+    				     $('#modal-terms-use').modal();
+    				     $('#terms-content-use').replaceWith(data);
+    				});
+				}
+			};
+		</script>
+	</div>
+</body>
+
+</html>

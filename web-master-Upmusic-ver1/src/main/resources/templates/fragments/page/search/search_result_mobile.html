@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+    <head>
+    </head>
+
+    <body>
+        <div layout:fragment="content">
+            <div id="content">
+                <!-- reward music content -->
+                <div class="reward_wrap store_wrap">
+                    <div class="nl_panel pdb0 pdt0 swiper-container searchSwiper">
+                        <ul class="nav nav-tabs tabType04 swiper-wrapper">
+                            <li class="active swiper-slide"><a><span th:text="#{model.search.all}" th:remove="tag"></span></a></li>
+                            <li id="search_music" class="making swiper-slide"><a><span th:text="#{common.source.music}" th:remove="tag"></span></a></li>
+                            <li id="search_album" class="making swiper-slide"><a><span th:text="#{model.search.album}" th:remove="tag"></span></a></li>
+                            <!--<li id="search_store" class="making swiper-slide"><a><span th:text="#{nav.music.store}" th:remove="tag"></span></a></li>-->
+                            <li id="search_artist" class="making swiper-slide"><a><span th:text="#{nav.music.artist}" th:remove="tag"></span></a></li>
+                            <li id="search_vocalCasting" class="making swiper-slide"><a><span th:text="#{nav.music.vocal_casting}" th:remove="tag"></span></a></li>
+                            <li id="search_video" class="making swiper-slide"><a><span th:text="#{nav.video}" th:remove="tag"></span></a></li>
+                            <li id="search_band" class="making swiper-slide"><a><span th:text="#{model.search.band}" th:remove="tag"></span></a></li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="musicStore-1">
+                            <!-- 음원 -->
+                            <div class="search_list_wrap">
+                                <div th:if="${tracks != null and 0 < tracks.getTotalElements()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_track_default_mobile :: list_track('search-all-tracks-mobile-fragment', ${tracks}, null)"></div>
+                                </div>
+
+                                <!-- nothing to show -->
+                                <div th:if="${(tracks == null or 0 == tracks.getTotalElements()) and (albums == null or 0 == albums.getTotalElements()) and (storeTracks == null or 0 == storeTracks.getTotalElements()) and (artists == null or 0 == artists.getTotalElements()) and (castings == null or 0 == castings.getTotalElements()) and (videos == null or 0 == videos.getTotalElements()) and (bands == null or 0 == bands.getTotalElements())}" class="list_none">
+                                    <ul>
+                                        <li><img th:src="@{/img/music_none.png}" alt="" /></li>
+                                        <li th:text="#{common.nothing.search_result}"></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                            <!-- 앨범 -->
+                            <div class="search_list_wrap">
+                                <div class="nl_panel">
+                                    <div class="ct_title more ofh pdt5">
+
+                                        <h2 th:if="${albums != null and 0 < albums.getTotalElements()}" class="content_title more">
+                                            <a onclick="$('#search_album').click();">
+                                                <span th:text="#{model.search.album}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${albums.getTotalElements()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+
+                                    </div>
+                                </div>
+
+                                <div th:if="${albums != null and 0 < albums.getTotalElements()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_album_mobile :: list_album('artist-albums-fragment', ${albums}, null)"></div>
+                                </div>
+                            </div>
+
+                            <!-- 뮤직스토어
+                            <div class="search_list_wrap">
+                                <div th:if="${storeTracks != null and 0 < storeTracks.getTotalElements()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_track_default_mobile :: list_track('artist-all-stores-mobile-fragment', ${storeTracks}, null)"></div>
+                                </div>
+                            </div>
+                            정책 변경으로 뮤직스토어 부분 없애버렸습니다. (2/11 송명준) -->
+
+                            <!-- 아티스트 -->
+                            <div class="search_list_wrap">
+                                <div class="nl_panel">
+                                    <div class="ct_title ofh pdt5">
+                                        <h2 th:if="${artists != null and 0 < artists.getTotalElements()}" class="content_title more">
+                                            <a onclick="$('#search_artist').click();">
+                                                <span th:text="#{nav.music.artist}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${artists.getTotalElements()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+
+                                    </div>
+                                </div>
+
+                                <div th:if="${artists != null and 0 < artists.getTotalElements()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_artist_mobile :: list_artist('search-all-artists-fragment', ${artists}, null)"></div>
+                                </div>
+                            </div>
+
+                            <!-- 보컬 캐스팅 -->
+                            <div class="search_list_wrap">
+                                <div class="nl_panel">
+                                    <div class="ct_title ofh pdt5">
+                                        <h2 th:if="${castings != null and 0 < castings.getTotalElements()}" class="content_title more">
+                                            <a onclick="$('#search_vocalCasting').click();">
+                                                <span th:text="#{nav.music.vocal_casting}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${castings.getTotalElements()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+
+                                    </div>
+                                </div>
+
+                                <div th:if="${castings != null and 0 < castings.getTotalElements()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_vocal_casting_mobile :: list_vocal_casting('search-all-castings-fragment', ${castings}, null)"></div>
+                                </div>
+                            </div>
+
+                            <!-- 비디오 -->
+                            <div class="search_list_wrap">
+                                <div class="nl_panel">
+                                    <div class="ct_title ofh pdt5">
+                                        <h2 th:if="${videos != null and 0 < videos.getTotalElements()}" class="content_title more">
+                                            <a onclick="$('#search_video').click();">
+                                                <span th:text="#{nav.video}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${videos.getTotalElements()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div th:if="${videos != null and 0 < videos.getTotalElements()}" class="search_content_wrap">
+                                    <div class="public_video_wrap">
+                                        <div th:replace="fragments/common/list_video_mobile :: list_video('artist-videos-fragment', ${videos}, null)"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 함께해요 -->
+                            <div class="search_list_wrap">
+                                <div class="nl_panel">
+                                    <div class="ct_title ofh pdt5">
+                                        <h2 th:if="${bands != null and 0 < bands.getTotalElements()}" class="content_title more">
+                                            <a onclick="$('#search_band').click();">
+                                                <span th:text="#{model.search.band}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${bands.getTotalElements()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <dl class="bandList">
+                                    <dd th:each="bandRecruit : ${bands}">
+                                        <a th:href="${bandRecruit.getDetailUrl()}">
+                                            <!-- 2019-01-14 jm수정 -->
+                                            <div class="img" th:if="${bandRecruit.getThumbnailImgUrl() ne ''}" th:style="'background: url('+@{${bandRecruit.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+                                                <div class="userImg" th:style="'background: url('+ @{${bandRecruit.member.getProfileImageUrl()}} +') center center no-repeat; background-size: cover;'">
+                                                </div>
+                                            </div>
+                                            <div class="img" th:if="${bandRecruit.getThumbnailImgUrl() eq ''}" style='background: url("/img/artist_profile.png") center center no-repeat; background-size: cover;'>
+                                                <div class="userImg" th:style="'background: url('+ @{${bandRecruit.member.getProfileImageUrl()}} +') center center no-repeat; background-size: cover;'">
+                                                </div>
+                                            </div>
+
+                                            <div class="info">
+                                                <p class="bandName">
+                                                    <span th:text="${#strings.replace( #strings.escapeXml(bandRecruit.limitSubjectMobile()),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></span>
+                                                    <span class="date" th:text="${bandRecruit.getCreateAtFormat()}"></span></p>
+                                                <p class="txt clamp2"></p>
+                                            </div>
+                                            <div class="comment">
+                                                <span class="ico">댓글</span>
+                                                <span class="unit" th:text="${bandRecruit.bandCommentCnt}"></span>
+                                            </div>
+                                        </a>
+                                    </dd>
+                                </dl>
+                            </div>
+
+                        </div>
+
+                        <!-- 음원탭 -->
+                        <div class="tab-pane" id="musicStore-2">
+                            <div class="search_list_wrap">
+                                <div th:if="${tracksAll != null and 0 < tracksAll.size()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_track_default_mobile :: list_track('search-tracks-mobile-fragment', ${tracksAll}, null)"></div>
+                                </div>
+
+                                <!-- nothing to show -->
+                                <div th:if="${(tracksAll == null or 0 == tracksAll.size())}" class="list_none">
+                                    <ul>
+                                        <li><img th:src="@{/img/music_none.png}" alt="" /></li>
+                                        <li th:text="#{common.nothing.search_result}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 앨범탭 -->
+                        <div class="tab-pane" id="musicStore-3">
+                            <div class="search_list_wrap">
+                                <div th:if="${albumsAll != null and 0 < albumsAll.size()}" class="nl_panel">
+                                    <div class="ct_title ofh pdt5">
+                                        <h2 class="content_title">
+                                            <a onclick="$('#search_album').click();">
+                                                <span th:text="#{model.search.album}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${albumsAll.size()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div th:if="${albumsAll != null and 0 < albumsAll.size()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_album_mobile :: list_album('artist-albums-fragment', ${albumsAll}, null)"></div>
+                                </div>
+
+                                <!-- nothing to show -->
+                                <div th:if="${(albumsAll == null or 0 == albumsAll.size())}" class="list_none">
+                                    <ul>
+                                        <li><img th:src="@{/img/music_none.png}" alt="" /></li>
+                                        <li th:text="#{common.nothing.search_result}"></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- 뮤직스토어 탭 -->
+                        <div class="tab-pane" id="musicStore-4">
+                            <div class="search_list_wrap">
+
+                                <div th:if="${storeTracksAll != null and 0 < storeTracksAll.size()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_track_default_mobile :: list_track('artist-stores-mobile-fragment', ${storeTracksAll}, null)"></div>
+                                </div>
+
+                                <!-- nothing to show -->
+                                <div th:if="${(storeTracksAll == null or 0 == storeTracksAll.size())}" class="list_none">
+                                    <ul>
+                                        <li><img th:src="@{/img/music_none.png}" alt="" /></li>
+                                        <li th:text="#{common.nothing.search_result}"></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- 아티스트 탭 -->
+                        <div class="tab-pane" id="musicStore-5">
+                            <div class="search_list_wrap">
+                                <div th:if="${artistsAll != null and 0 < artistsAll.size()}" class="nl_panel">
+                                    <div class="ct_title ofh pdt5">
+                                        <h2 class="content_title">
+                                            <a onclick="$('#search_artist').click();">
+                                                <span th:text="#{nav.music.artist}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${artistsAll.size()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div th:if="${artistsAll != null and 0 < artistsAll.size()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_artist_mobile :: list_artist('search-all-artists-fragment', ${artistsAll}, null)"></div>
+                                </div>
+
+                                <!-- nothing to show -->
+                                <div th:if="${(artistsAll == null or 0 == artistsAll.size())}" class="list_none">
+                                    <ul>
+                                        <li><img th:src="@{/img/music_none.png}" alt="" /></li>
+                                        <li th:text="#{common.nothing.search_result}"></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- 보컬캐스팅 탭 -->
+                        <div class="tab-pane" id="musicStore-6">
+                            <div class="search_list_wrap">
+                                <div th:if="${castingsAll != null and 0 < castingsAll.size()}" class="nl_panel">
+                                    <div class="ct_title ofh pdt5">
+                                        <h2 class="content_title">
+                                            <a onclick="$('#search_vocalCasting').click();">
+                                                <span th:text="#{nav.music.vocal_casting}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${castingsAll.size()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div th:if="${castingsAll != null and 0 < castingsAll.size()}" class="search_content_wrap">
+                                    <div th:replace="fragments/common/list_vocal_casting_mobile :: list_vocal_casting('search-all-castings-fragment', ${castingsAll}, null)"></div>
+                                </div>
+
+                                <!-- nothing to show -->
+                                <div th:if="${(castingsAll == null or 0 == castingsAll.size())}" class="list_none">
+                                    <ul>
+                                        <li><img th:src="@{/img/music_none.png}" alt="" /></li>
+                                        <li th:text="#{common.nothing.search_result}"></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- 비디오 탭 -->
+                        <div class="tab-pane" id="musicStore-7">
+                            <div class="search_list_wrap">
+                                <div th:if="${videosAll != null and 0 < videosAll.size()}" class="nl_panel">
+                                    <div class="ct_title ofh pdt5">
+                                        <h2 class="content_title">
+                                            <a onclick="$('#search_video').click();">
+                                                <span th:text="#{nav.video}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${videosAll.size()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <div th:if="${videosAll != null and 0 < videosAll.size()}" class="search_content_wrap">
+                                    <div class="public_video_wrap">
+                                        <div th:replace="fragments/common/list_video_mobile :: list_video('artist-videos-fragment', ${videosAll}, null)"></div>
+                                    </div>
+                                </div>
+
+                                <!-- nothing to show -->
+                                <div th:if="${(videosAll == null or 0 == videosAll.size())}" class="list_none">
+                                    <ul>
+                                        <li><img th:src="@{/img/music_none.png}" alt="" /></li>
+                                        <li th:text="#{common.nothing.search_result}"></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- 함께해요 탭 -->
+                        <div class="tab-pane" id="musicStore-8">
+                            <div class="search_list_wrap">
+                                <div th:if="${bandsAll != null and 0 < bandsAll.size()}" class="nl_panel">
+                                    <div class="ct_title ofh pdt5">
+                                        <h2 class="content_title">
+                                            <a onclick="$('#search_band').click();">
+                                                <span th:text="#{model.search.band}" th:remove="tag"></span>
+                                                <span>
+                                                    <span th:text="'('+${bandsAll.size()}+')'" th:remove="tag"></span>
+                                                </span>
+                                            </a>
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                <dl th:if="${bandsAll != null and 0 < bandsAll.size()}" class="bandList">
+                                    <dd th:each="bandRecruit : ${bandsAll}">
+                                        <a th:href="${bandRecruit.getDetailUrl()}">
+                                            <!-- 2019-01-14 jm수정 -->
+                                            <div class="img" th:if="${bandRecruit.getThumbnailImgUrl() ne ''}" th:style="'background: url('+@{${bandRecruit.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+                                                <div class="userImg" th:style="'background: url('+ @{${bandRecruit.member.getProfileImageUrl()}} +') center center no-repeat; background-size: cover;'">
+                                                </div>
+                                            </div>
+                                            <div class="img" th:if="${bandRecruit.getThumbnailImgUrl() eq ''}" style='background: url("/img/artist_profile.png") center center no-repeat; background-size: cover;'>
+                                                <div class="userImg" th:style="'background: url('+ @{${bandRecruit.member.getProfileImageUrl()}} +') center center no-repeat; background-size: cover;'">
+                                                </div>
+                                            </div>
+
+                                            <div class="info">
+                                                <p class="bandName">
+                                                    <span th:text="${#strings.replace( #strings.escapeXml(bandRecruit.limitSubjectMobile()),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></span>
+                                                    <span class="date" th:text="${bandRecruit.getCreateAtFormat()}"></span></p>
+                                                <p class="txt clamp2"></p>
+                                            </div>
+                                            <div class="comment">
+                                                <span class="ico">댓글</span>
+                                                <span class="unit" th:text="${bandRecruit.bandCommentCnt}"></span>
+                                            </div>
+                                        </a>
+                                    </dd>
+                                </dl>
+
+                                <!-- nothing to show -->
+                                <div th:if="${(bandsAll == null or 0 == bandsAll.size())}" class="list_none">
+                                    <ul>
+                                        <li><img th:src="@{/img/music_none.png}" alt="" /></li>
+                                        <li th:text="#{common.nothing.search_result}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- //end tab-content -->
+
+                </div>
+                <!-- //end reward music content -->
+            </div>
+
+            <script type="text/javascript" th:inline="javascript">
+                function MoveFocus() {
+                    document.mobile_search.q.focus();
+                    return;
+                }
+
+                // x눌르면 리스트 삭제 jm
+                $(".search_list ul li .close").click(function(){
+                   $(this).parents('li').fadeOut(300);
+                });
+            </script>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 제작의뢰 등록 -->
+			<div class="nl_panel pdt0">
+				<ul class="rewardSelectTop">
+					<li class="navi01">리워드 선택</li>
+					<li class="navi02 off">포인트 결제</li>
+					<li class="navi03 off">펀딩 완료</li>
+				</ul>
+			</div>
+			<div class="nl_panel">
+				<div class="ct_title ofh">
+					<h2 class="content_title">신규 프로젝트</h2>								
+				</div>
+			</div>
+			<form class="form-inline">
+				<div class="nl_panel pdt0">
+					<input type="hidden" id="crowdFundingId" th:value="${crowdFundingId}">
+					<div class="memberJoin_box rewardSelect">
+						<div class="form-group terms2">
+							<dl class="rewardList">
+								<dd class="off" th:each="reward, iter : ${rewardList}">
+									<div class="checkbox">
+										<input type="checkbox" th:id="checked- + ${iter.index + 1}" class="checkbox-checked" name="cc" th:value="${reward.crowdFundingRewardId}">
+										<label for="checked-01"><span class="checkbox-custom"></span> &nbsp;<span th:text="${reward.rewardSubject}"></span> <span th:text="${reward.point}"></span>P</label>
+										<ul>
+											<li th:each="content : ${reward.getContentStrList()}" th:text="${content}"></li>
+										</ul>
+									</div>	
+								</dd>
+								<dd class="off">
+									<div class="checkbox">
+										<input type="checkbox" id="checked-04" class="checkbox-checked" value="no_reward">
+										<label for="checked-04"><span class="checkbox-custom"></span></label>												
+										<span class="inputPoint"><input id="no_reward_point" type="number" placeholder="0" class="form-control" onkeydown="return onlyNumber(event);" onkeyup="removeChar(event);"><label class="p">p</label></span>
+										<p class="cmt">리워드 없이 통 크게 고액을 후원할 수 있습니다.(본 후원은 리워드를 제공하지 않음)</p>
+									</div>											
+								</dd>
+							</dl>									
+						</div>
+					</div>
+				</div>
+				<div class="btn_box">
+					<button class="btn btn-block btn-lg btn-inline btn-gray1" id="btn_back" type="button">이전</button>
+					<button class="btn btn-block btn-lg btn-dark btn-inline" id="btn_fund_next" type="button">다음</button>
+				</div>
+			</form>
+			
+			<!-- //end 제작의뢰 등록 -->
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		$('#btn_back').click(function(){
+	    	history.back();
+	    });
+		$(".checkbox").on('click', function(e){					 
+			
+			if(!$(e.target).closest('.checkbox').find(".checkbox-checked").prop("checked")){
+				$(".checkbox-checked").prop("checked", false);
+				$("dd").removeClass("on").addClass("off");
+				$(e.target).closest('.checkbox').children(".checkbox-checked").prop("checked", true);
+				$(e.target).closest("dd").removeClass("off").addClass("on");
+			}else{
+				$(e.target).closest("dd").removeClass("on").addClass("off");
+			}
+		});
+		
+		$('#btn_fund_next').click(function(){
+			var crowdFundingRewardId = "";
+			var temp = "";
+			var point = "";
+			var flag = false;
+			var no_reward_flag = true;
+			$(".rewardList dd").each(function(){
+				if($(this).find('.checkbox-checked').prop('checked')){
+					flag = true;
+
+					temp = $(this).find('input').val();
+					if(temp == "no_reward"){
+						if($('#no_reward_point').val() == ""){
+							UPMusic.alert('후원할 포인트가 입력되지 않았습니다.');
+							no_reward_flag = false;
+							return false;
+						}
+						if($('#no_reward_point').val() == 0){
+							UPMusic.alert('후원할 포인트가 0입니다. 다시 입력해주세요.');
+							no_reward_flag = false;
+							return false;
+						}
+						point = $('#no_reward_point').val();
+						crowdFundingRewardId = -1;
+					}else{
+						flag = true;
+						crowdFundingRewardId = temp;
+					}
+				}
+			});
+
+			if(!flag){
+				UPMusic.alert("원하는 리워드를 선택해 주세요");
+				return false;
+			}
+
+			if(!no_reward_flag){
+				return false;
+			}
+
+			var url ="/crowd_funding/participation/point_payment?crowdFundingId=" + $('#crowdFundingId').val();
+
+			url += "&crowdFundingRewardId=" + crowdFundingRewardId;
+			url += "&point=" + point;
+
+			//UPMusic.goto(url);
+			
+			$(location).attr('href', url);
+
+		});
+		
+		</script>
+	</div>
+
+</body>
+</html>

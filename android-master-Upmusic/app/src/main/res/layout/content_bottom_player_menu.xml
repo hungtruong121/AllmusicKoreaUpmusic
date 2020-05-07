@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_player_bottom_menu"
+    android:layout_width="match_parent"
+    android:layout_height="274dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentStart="true"
+    android:background="@null"
+    android:gravity="bottom"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#eeeeee">
+
+        <RelativeLayout
+            android:id="@+id/player_bottom_menu_row0"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginTop="0.5dp"
+            android:layout_marginBottom="0.5dp">
+
+            <TextView
+                android:id="@+id/player_bottom_menu_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.7dp"
+                android:layout_centerVertical="true"
+                android:textColor="#40529a"
+                android:textSize="13.3sp"
+                android:text="What is Love? - TWICE"/>
+
+            <!--<ImageView-->
+                <!--android:id="@+id/player_bottom_menu_close"-->
+                <!--android:layout_width="10.3dp"-->
+                <!--android:layout_height="10.3dp"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_marginRight="13.3dp"-->
+                <!--android:src="@drawable/popup_x"/>-->
+
+
+            <RelativeLayout
+                android:id="@+id/player_bottom_menu_close_layout"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="0dp">
+
+                <ImageView
+                    android:id="@+id/player_bottom_menu_close"
+                    android:layout_width="10.3dp"
+                    android:layout_height="10.3dp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/popup_x"/>
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/player_bottom_menu_row1"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="0.5dp"
+            android:layout_marginBottom="0.5dp">
+
+            <ImageView
+                android:layout_width="11.7dp"
+                android:layout_height="11.7dp"
+                android:src="@drawable/popup_profile"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.7dp"
+                android:text="아티스트 프로필"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/player_bottom_menu_row2"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="0.5dp"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="12.7dp"
+                android:layout_height="11.7dp"
+                android:src="@drawable/popup_album"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.7dp"
+                android:text="앨범 정보" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/player_bottom_menu_row3"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginBottom="0.5dp">
+
+            <ImageView
+                android:layout_width="12.7dp"
+                android:layout_height="13.3dp"
+                android:src="@drawable/popup_share"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.7dp"
+                android:text="공유하기"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/player_bottom_menu_row4"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginBottom="0.5dp">
+
+            <ImageView
+                android:id="@+id/player_bottom_menu_row4_image"
+                android:layout_width="12.7dp"
+                android:layout_height="11.3dp"
+                android:background="@drawable/btn_like_off"
+
+                />
+
+            <TextView
+                android:id="@+id/player_bottom_menu_row4_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.7dp"
+                android:text="좋아요"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/player_bottom_menu_row5"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginBottom="0.5dp">
+
+            <ImageView
+                android:layout_width="12.7dp"
+                android:layout_height="12.7dp"
+                android:src="@drawable/popup_download"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.7dp"
+                android:text="담기"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>
+

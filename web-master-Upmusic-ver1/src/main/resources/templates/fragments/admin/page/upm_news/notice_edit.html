@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+		<form action="#" th:action="@{/admin/upm_news/notice/edit}" role="form" enctype="utf8" th:object="${paramData}" method="post">
+		<input type="hidden" name="noticeId" id="noticeId" th:value="${result.noticeId}" >
+		<input type="hidden" name="hitCnt" id="hitCnt" th:value="${result.hitCnt}" >
+    	<div class="subpage_wrap section">
+			<h2 class="page-title">공지사항 수정하기</h2>
+			<div class="membership_wrap">
+				<ul>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">제목</label>
+							<input type="text" placeholder="제목을 입력하세요." class="form-control" name="subject" th:value="${result.subject}">
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">분류</label>
+			                <select class="form-control" name="category" id="category" style="height: 50px;">
+			                	<option th:selected="${result.category} == '안내' ? true : false">안내</option>
+			                	<option th:selected="${result.category} == '업데이트' ? true : false">업데이트</option>
+			                	<option th:selected="${result.category} == '시스템 점검' ? true : false">시스템 점검</option>
+			                </select>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="form-group">
+				<label class="input_title">내용</label>
+			    <!-- <div class="summernote" id="content"></div> -->
+			    <textarea rows="" cols="" class="summernote" name="content" th:text="${result.content}"></textarea>
+			</div>
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom btn-dark h50" type="submit">등록</button>
+					<button type="button" class="btn btn-custom2 h50" id="btn_back">취소</button>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</form>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+	    $('#btn_back').click(function(){
+	    	history.back();
+	    });
+
+	    $('.summernote').summernote({
+	    	height: 200
+	    });
+
+	</script>
+  </div>
+
+</body>
+</html>

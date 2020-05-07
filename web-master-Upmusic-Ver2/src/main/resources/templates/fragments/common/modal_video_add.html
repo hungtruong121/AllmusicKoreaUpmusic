@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_video_add">
+		<div class="modal fade" id="modal-video-add" role="dialog" tabindex="-1" aria-labelledby="UPM Add Video" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title" th:text="#{button.video.add}">Add Video</h2>
+	                    <img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<div id="form-group-collection-subject" class="inputbox mt10">
+								<label class="input_title pop_title" th:text="#{model.video.add}"></label>
+								<input id="video-url" type="text" placeholder="https://youtu.be/..." class="form-control login_input" />
+							</div>
+							<div class="login_btn upload_btn mt10">
+								<button class="btn btn-custom3 h50 w50p" th:text="#{button.ok}" onclick="UPMVideoAddModal.loadVideo();"></button>
+								<button class="btn btn-custom2 h50 w50p" data-dismiss="modal" th:text="#{button.cancel}"></button>
+							</div>
+						</div>
+	                </div>
+	
+	            </div>
+	        </div>
+	    </div>
+		
+		<script type="text/javascript">
+			var forPopup = true;
+			var UPMVideoAddModal = {
+				_config : {
+					loading : false
+				},
+				showVideoAddModal : function() {
+					$('#video-url').val('');
+					$('#modal-video-add').modal('show');
+				},
+				loadVideo : function() {
+					var url = $('#video-url').val();
+					if (url == '') {
+						UPMusic.alert("YouTube 또는 Vimeo의 URL을 입력해주세요");
+						return;
+					}
+					if (UPMVideoAddModal._config.loading) return;
+					UPMVideoAddModal._config.loading = true;
+					
+					// Video URL 검증
+					var videoObj = UPMVideoAddModal.parseVideo(url);
+					UPMusic.log(videoObj);
+					if (videoObj.type == '' || (videoObj.type != 'youtube' && videoObj.type != 'vimeo')) {
+						UPMusic.alert("YouTube 또는 Vimeo의 URL만 입력 가능합니다");
+						UPMVideoAddModal._config.loading = false;
+						return;
+					}
+					if (videoObj.id == '') {
+						UPMusic.alert("URL이 유효하지 않습니다. 다시 확인을 해주세요");
+						UPMVideoAddModal._config.loading = false;
+						return;
+					}
+					
+					// Video 데이터 검증
+					UPMVideoAddModal.getVideoData(videoObj, UPMVideoAddModal.inputVideoDataToForm);
+				},
+				getVideoData : function(videoObj, callback) {
+					var videoApiUrl = '';
+					if (videoObj.type == 'youtube') {
+						videoApiUrl = "https://www.googleapis.com/youtube/v3/videos?id=" + videoObj.id 
+				        + "&key=AIzaSyDYwPzLevXauI-kTSVXTLroLyHEONuF9Rw&part=snippet,contentDetails";
+						$.ajax({
+				            async: false,
+				            type: 'GET',
+				            url: videoApiUrl,
+				            success: function(data) {
+				            	UPMusic.log(data);
+				            	callback(videoObj, data.items[0]);
+				            },
+				            error: function (e) {
+				            	UPMusic.alert(e.message, true);
+				            	callback(videoObj, '');
+				            }
+				        });
+					} else {
+						videoApiUrl = "https://vimeo.com/api/v2/video/" + videoObj.id + ".json";
+						$.ajax({
+							async: false,
+					        type:'GET',
+					        url: videoApiUrl,
+					        jsonp: 'callback',
+					        dataType: 'jsonp',
+					        success: function(data){
+					        	UPMusic.log(data);
+					        	callback(videoObj, data[0]);
+					        },
+				            error: function (e) {
+				            	UPMusic.alert(e.message, true);
+				            	callback(videoObj, '');
+				            }
+					    });
+					}
+				},
+				inputVideoDataToForm : function(videoObj, videoData) {
+					if (videoData == '') {
+						UPMusic.alert("URL이 유효하지 않습니다. 다시 확인을 해주세요");
+						UPMVideoAddModal._config.loading = false;
+						return;
+					}
+					var duration = 0;
+					var thumbnail = '';
+					var subject = '';
+					var description = '';
+					if (videoObj.type == 'youtube') {
+						var youtube_time = videoData.contentDetails.duration;
+		            	duration = UPMVideoAddModal.convertYoutubeTime(youtube_time);
+		            	if (0 == duration) {
+		            		UPMusic.alert("영상의 재생시간이 0초입니다. 다시 확인을 해주세요");
+							UPMVideoAddModal._config.loading = false;
+							return;
+		            	}
+		            	thumbnail = videoData.snippet.thumbnails.high ? videoData.snippet.thumbnails.high.url : videoData.snippet.thumbnails.default.url;
+		            	if (videoData.snippet.title) subject = videoData.snippet.title;
+		            	//if (videoData.snippet.description) description = videoData.snippet.description;
+
+		            	if (videoData.snippet.description) {
+		            		var strDes = videoData.snippet.description
+
+		            		console.log(strDes)
+
+		            		var ranges = [
+							  '\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
+							  '\ud83d[\udc00-\ude4f]', // U+1F400 to U+1F64F
+							  '\ud83d[\ude80-\udeff]'  // U+1F680 to U+1F6FF
+							];
+							strDes = strDes.replace(new RegExp(ranges.join('|'), 'g'), '');
+
+							console.log(strDes)
+
+							description = strDes
+		            	}
+
+					} else {
+		            	duration = videoData.duration;
+		            	if (0 == duration) {
+		            		UPMusic.alert("영상의 재생시간이 0초입니다. 다시 확인을 해주세요");
+							UPMVideoAddModal._config.loading = false;
+							return;
+		            	}
+		            	thumbnail = videoData.thumbnail_large ? videoData.thumbnail_large : videoData.thumbnail_medium;
+		            	if (videoData.title) subject = videoData.title;
+
+		            	if (videoData.description) {
+		            		var strDes = videoData.description
+
+		            		console.log(strDes)
+
+		            		var ranges = [
+							  '\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
+							  '\ud83d[\udc00-\ude4f]', // U+1F400 to U+1F64F
+							  '\ud83d[\ude80-\udeff]'  // U+1F680 to U+1F6FF
+							];
+							strDes = strDes.replace(new RegExp(ranges.join('|'), 'g'), '');
+
+							console.log(strDes)
+
+							description = strDes
+		            	}
+					}
+					
+	            	// Video 데이터 폼에 적용
+	            	UPMUploadVideo.setVideoObject(videoObj);
+            		UPMUploadVideo.setVideoDuration(duration);
+					UPMUploadVideo.setThumbnail(thumbnail);
+					if (subject != '') UPMUploadVideo.setSubject(subject);
+					if (description != '') UPMUploadVideo.setDescription(description);
+					UPMVideoAddModal._config.loading = false;
+					$('#modal-video-add').modal('hide');
+				},				
+				parseVideo : function(url) {
+					var type = '';
+					var id = '';
+				    url.match(/(http:|https:|)\/\/(player.|www.)?(vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com))\/(video\/|embed\/|watch\?v=|v\/)?([A-Za-z0-9._%-]*)(\&\S+)?/);
+				    if (RegExp.$3.indexOf('youtu') > -1) {
+				        type = 'youtube';
+				        id = RegExp.$6;
+				        
+				    } else if (RegExp.$3.indexOf('vimeo') > -1) {
+				        type = 'vimeo';
+				        id = RegExp.$6;
+				        var isnum = /^\d+$/.test(id);
+				        if (!isnum) {
+				        	url.match(/^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/);
+				        	id = RegExp.$5;
+				        }
+				    }
+				    return {
+				        type: type,
+				        id: id
+				    };
+				},
+				createVideo : function(url, width, height) {
+				    var videoObj = parseVideo(url);
+				    var $iframe = $('<iframe>', { width: width, height: height });
+				    $iframe.attr('frameborder', 0);
+				    if (videoObj.type == 'youtube') {
+				        $iframe.attr('src', '//www.youtube.com/embed/' + videoObj.id);
+				    } else {
+				        $iframe.attr('src', '//player.vimeo.com/video/' + videoObj.id);
+				    }
+				    return $iframe;
+				},
+				getVideoThumbnail : function(videoObj, callback) {
+					try {
+						if (videoObj.type == 'youtube') {
+					    	callback('//img.youtube.com/vi/' + videoObj.id + '/maxresdefault.jpg');
+					    } else {
+					        $.get('http://vimeo.com/api/v2/video/' + videoObj.id + '.json', function(data) {
+					        	callback(data[0].thumbnail_large);
+					        });
+					    }
+					} catch (e) {
+						UPMusic.alert("URL이 유효하지 않습니다. 다시 확인을 해주세요");
+						UPMVideoAddModal._config.loading = false;
+						return;
+					}
+				    
+				},
+				convertYoutubeTime : function(duration) {
+				    var a = duration.match(/\d+/g);
+
+				    if (duration.indexOf('M') >= 0 && duration.indexOf('H') == -1 && duration.indexOf('S') == -1) {
+				        a = [0, a[0], 0];
+				    }
+
+				    if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1) {
+				        a = [a[0], 0, a[1]];
+				    }
+				    if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1 && duration.indexOf('S') == -1) {
+				        a = [a[0], 0, 0];
+				    }
+
+				    duration = 0;
+
+				    if (a.length == 3) {
+				        duration = duration + parseInt(a[0]) * 3600;
+				        duration = duration + parseInt(a[1]) * 60;
+				        duration = duration + parseInt(a[2]);
+				    }
+
+				    if (a.length == 2) {
+				        duration = duration + parseInt(a[0]) * 60;
+				        duration = duration + parseInt(a[1]);
+				    }
+
+				    if (a.length == 1) {
+				        duration = duration + parseInt(a[0]);
+				    }
+				    return duration
+				}
+			};
+	    </script>
+	</div>
+</body>
+
+</html>

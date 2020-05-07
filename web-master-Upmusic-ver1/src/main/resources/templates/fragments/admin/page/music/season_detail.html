@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title" th:text="${season.subject}"></h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="album_infomation">
+							<div class="album_img producing_price_profile">
+								<img th:src="@{${season.getImageUrl()}}" alt="" />
+							</div>
+							<div class="album_infotext producing_price_infotext">
+								<table>
+									<tr>
+										<td>시즌 시작일</td>
+										<td><span th:text="${season.openDate}" th:remove="tag"></span></td>
+										<td>시즌 종료일</td>
+										<td><span th:text="${season.closeDate}" th:remove="tag"></span></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="commerce_btn like_event fl mt30 w444">
+							<ul>
+								<li><a th:href="@{/admin/music/season}"><i><img th:src="@{/img/list_icon.png}" alt=""></i><span th:text="#{button.list}" th:remove="tag"></span></a></li>
+							</ul>
+						</div>
+						<div class="commerce_btn commerce_btn_ver2 mt30 w300">
+							<ul>
+								<li><a th:href="@{${'/admin/music/season/' + season.id + '/edit'}}"><i>M</i>수정</a></li>
+								<li><a th:onclick="@{${'UPMusicAdmin.deleteSeason(' + season.id + ');'}}"><i>X</i>삭제</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+</body>
+</html>

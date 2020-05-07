@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="currentUser"
+            type="com.google.firebase.auth.FirebaseUser" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#d6d9e1"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/grey_300"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:id="@+id/email_password_fields"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <EditText
+                        android:id="@+id/field_email"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/round_button_white"
+                        android:hint="EMAIL을 입력해주세요."
+                        android:inputType="textEmailAddress"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        android:textColor="#cc181e33"
+                        android:textColorHint="@color/input_login_hint"/>
+
+                    <EditText
+                        android:id="@+id/field_password"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/round_button_white"
+                        android:hint="PASSWORD를 입력해주세요."
+                        android:inputType="textPassword"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        android:textColor="#cc181e33"
+                        android:textColorHint="@color/input_login_hint" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/email_password_buttons"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/email_password_fields"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <Button
+                        android:id="@+id/field_email_sign_in_button"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:text="로그인"
+                        android:textColor="#ffffff"
+                        android:textStyle="bold"
+                        android:background="@drawable/rectangle_button"/>
+                    <Button
+                        android:id="@+id/field_email_create_account_button"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="50dp"
+                        android:text="회원가입"
+                        android:textColor="#ffffff"
+                        android:textStyle="bold"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/rectangle_button" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/signed_in_buttons"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:visibility="gone"
+                    android:weightSum="2.0">
+
+                    <Button
+                        android:id="@+id/field_sign_out_button"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="@string/sign_out"
+                        android:theme="@style/ThemeOverlay.MyDarkButton" />
+
+                    <Button
+                        android:id="@+id/field_verify_email_button"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="@string/verify_email"
+                        android:theme="@style/ThemeOverlay.MyDarkButton" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dip"
+                android:background="#181e33"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                />
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/grey_300"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+
+                <Button
+                    android:id="@+id/button_facebook_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/colorWhite"
+                    android:drawableStart="@drawable/facebook"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="110dp"
+                    android:paddingRight="90dp"
+                    android:paddingTop="8dp"
+                    android:text="계정 로그인"
+                    android:textColor="#00549e"/>
+
+
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/field_button_facebook_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="30dp"
+                    android:visibility="gone"
+                    />
+
+                <Button
+                    android:id="@+id/field_button_facebook_signout"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/sign_out"
+                    android:theme="@style/ThemeOverlay.MyDarkButton"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/grey_300"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+
+                <Button
+                    android:id="@+id/google_sign_in_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/colorWhite"
+                    android:drawableStart="@drawable/google"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="120dp"
+                    android:paddingRight="90dp"
+                    android:paddingTop="8dp"
+                    android:text="계정 로그인"
+                    android:textColor="#e52e10" />
+
+
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/field_google_sign_in_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible"
+                    tools:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/field_google_sign_out_and_disconnect"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <!--<Button-->
+                    <!--android:id="@+id/sign_out_button"-->
+                    <!--style="@style/Widget.AppCompat.Button.Colored"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:text="@string/sign_out"-->
+                    <!--android:theme="@style/ThemeOverlay.MyDarkButton" />-->
+
+                    <Button
+                        android:id="@+id/field_google_disconnect_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:text="@string/disconnect"
+                        android:textColor="#ffffff"
+                        android:textStyle="bold"
+                        android:background="@drawable/rectangle_button" />
+                </LinearLayout>
+
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/lKakao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+
+                <Button
+                    android:id="@+id/kakao_login_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/colorWhite"
+                    android:drawableStart="@drawable/kakao"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="120dp"
+                    android:paddingRight="90dp"
+                    android:paddingTop="8dp"
+                    android:text="계정 로그인"
+                    android:textColor="#ffc20e" />
+
+                <com.kakao.usermgmt.LoginButton
+                    android:id="@+id/field_kakao_login_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/field_kakao_logout_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/logout"
+                    android:visibility="gone"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:elevation="0dp"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
+                    android:background="@drawable/rectangle_button"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/lNaver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+
+                <Button
+                    android:id="@+id/naver_login_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/colorWhite"
+                    android:drawableStart="@drawable/naver"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="110dp"
+                    android:paddingRight="90dp"
+                    android:paddingTop="8dp"
+                    android:text="계정 로그인"
+                    android:textColor="#2db400" />
+
+
+                <com.nhn.android.naverlogin.ui.view.OAuthLoginButton
+                    android:id="@+id/field_naver_login_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/lBottom"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_marginBottom="10dp"
+                >
+
+                <Button
+                    android:id="@+id/button_password_lost"
+                    android:layout_width="102dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@null"
+                    android:gravity="center"
+                    android:text="비밀번호 찾기"
+                    android:textColor="#737888"
+                    android:textSize="11sp" />
+
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="20dp"
+                    android:background="#737888"
+                    android:gravity="center"
+                    />
+
+                <Button
+                    android:id="@+id/button_go_register"
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@null"
+
+                    android:gravity="center"
+                    android:text="회원가입 하기"
+                    android:textColor="#737888"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</layout>

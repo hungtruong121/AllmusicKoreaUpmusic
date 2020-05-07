@@ -1,0 +1,99 @@
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="59dp"
+    android:descendantFocusability="blocksDescendants"
+    >
+
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="17dp"
+        android:orientation="horizontal"
+        android:descendantFocusability="blocksDescendants"
+        >
+
+        <!--android:descendantFocusability="blocksDescendants"-->
+
+        <ImageView
+            android:layout_alignParentLeft="true"
+            android:id="@+id/imageView01"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/album_images"
+            android:layout_centerVertical="true"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:focusable="false"
+            />
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="30dp"
+            android:gravity="left|center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView01"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:letterSpacing="-0.02"
+                android:text="편한 사람이 생겼어"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="#323244"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/textView02"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:letterSpacing="-0.02"
+                android:text="K-Flower"
+                android:textColor="#606a78"
+                android:textSize="10.3sp" />
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnMore"
+            android:layout_width="4.3dp"
+            android:layout_height="17dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="17.3dp"
+            android:background="@drawable/btn_musicmore"
+            android:layout_weight="0"
+            android:text="" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_gravity="bottom"
+        android:background="#eeeeee">
+    </View>
+
+</androidx.cardview.widget.CardView>

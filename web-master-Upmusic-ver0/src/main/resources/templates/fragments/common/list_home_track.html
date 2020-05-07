@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_track(fragmentId, trackList)" th:id="${fragmentId}" class="top50_wrap musiclist_table">
+		<h3 class="content_title">
+			<a href="/music/league#league-top50"><span th:text="#{common.upleague.top50}" th:remove="tag"></span><i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+		</h3>
+		<div class="listcontrols">
+			<ul>
+				<li><a th:onclick="@{${'UPMusicCommon.addTop50ToPlaylist(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.play_all}" th:remove="tag"></span></a></li>
+				<li><a th:onclick="@{${'UPMusicCommon.addTracksToPlaylist(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.play_selected}" th:remove="tag"></span></a></li>
+				<li><a th:onclick="@{${'UPMusicCommon.showCollectionModal(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.add.collection}" th:remove="tag"></span></a></li>
+			</ul>
+		</div>
+		<table>
+			<tr>
+				<th><span th:text="#{model.track.rank}" th:remove="tag"></span></th>
+				<th><span th:text="#{model.track.information}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.duration}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.play}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.put_in}" th:remove="tag"></span></th>
+				<th><span th:text="#{button.share}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.like}" th:remove="tag"></span></th>
+			</tr>
+			<tr th:each="leagueTrack, iter : ${trackList}" th:id="${leagueTrack.getMusicTrack().id}" onclick="UPMusic.selectItem(this);">
+				<td scope="row"><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+				<th>
+					<a th:href="@{${leagueTrack.getMusicTrack().getUrl()}}"><i><img class="track-list-cover" th:src="@{${leagueTrack.getMusicTrack().getCoverImageUrl()}}" alt="" /></i></a>
+					<p>
+						<a th:href="@{${leagueTrack.getMusicTrack().getUrl()}}"><span th:text="${leagueTrack.getMusicTrack().subject}" th:remove="tag"></span></a><br />
+						<b><a th:href="@{${leagueTrack.getMusicTrack().getArtistUrl()}}"><span th:text="${leagueTrack.getMusicTrack().getArtistNick()}" th:remove="tag"></span></a></b>
+					</p>
+				</th>
+				<td><span th:text="${leagueTrack.getMusicTrack().formattedDuration()}" th:remove="tag"></span></td>
+				<td>
+					<a th:onclick="@{${'UPMusicCommon.addTrackToPlaylist(' + leagueTrack.getMusicTrack().id + ', event);'}}"><img th:src="@{/img/listcontrols_icon1.png}" alt="" /></a>
+				</td>
+				<td>
+					<a th:onclick="@{${'UPMusicCommon.showCollectionModalFromList(&quot;#' + fragmentId + '&quot;, ' + leagueTrack.getMusicTrack().id + ', event);'}}"><img th:src="@{/img/listcontrols_icon2.png}" alt="" /></a>
+				</td>
+				<td>
+					<a th:onclick="@{${'UPMShareModal.showShareModalFromList(' + leagueTrack.getMusicTrack().getMusicAlbumId() + ', ' + leagueTrack.getMusicTrack().id + ', event);'}}"><img th:src="@{/img/listcontrols_icon3.png}" alt="" /></a>
+				</td>
+				<td>
+					<a th:onclick="@{${'UPMusicCommon.likeTrack(' + leagueTrack.getMusicTrack().id + ', event);'}}"><span id="track-like" class="heart_icon2" th:classappend="${leagueTrack.getMusicTrack().liked} ? 'heart_icon_on' : 'heart_icon_off'">&nbsp;</span></a>
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+
+</html>

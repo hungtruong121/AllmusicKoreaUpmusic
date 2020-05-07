@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl">프로젝트 소식 관리</h2>
+				<a th:href="@{/admin/crowd_funding/projectNews_insertForm}"><button class="btn btn-custom2 fr"><i><img src="img/add-event.png" alt="" /></i> 프로젝트 소식 등록</button></a>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="accordion_btn"></div>
+						<div class="genre_listcontent">
+							<div id="uploaded-track-list" class="musiclist_table musiclist_table_hover2">
+								<table>
+									<tr>
+										<th>No.</th>
+										<th>제목</th>
+										<th>작성자</th>
+										<th>등록 일자</th>
+									</tr>
+									<tr th:each="crowdNews, iter : ${crowdNewsList.content}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + crowdNews.getAdminDetailUrl() + '&quot;);'}}">
+										<td><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+										<td th:text="${crowdNews.subject}"></td>
+										<td th:text="${crowdNews.member.nick}"></td>
+										<td th:text="${crowdNews.getFormatterDate()}"></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div th:if="${crowdNewsList != null and crowdNewsList.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${crowdNewsList.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not crowdNewsList.first}" th:href="@{${'/admin/crowd_funding/projectNews'}(page=${crowdNewsList.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${crowdNewsList.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, crowdNewsList.totalPages - 1)}" th:class="${crowdNewsList.number eq pageNo}? 'active' : ''">
+						            <a th:if="${crowdNewsList.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (crowdNewsList.number eq pageNo)}" th:href="@{${'/admin/crowd_funding/projectNews'}(page=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${crowdNewsList.number + 1 ge crowdNewsList.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not crowdNewsList.last}" th:href="@{${'/admin/crowd_funding/projectNews'}(page=${crowdNewsList.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${crowdNewsList.last}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+	    	
+		</script>
+		
+		
+	</div>
+
+</body>
+</html>

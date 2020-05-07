@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="albuminfo_wrap section">
+				<div class="albuminfo_head">
+					<h2 class="page-title" th:text="#{nav.video}"></h2>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="producing_list  musicvideo_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl"><span th:text="#{common.video.mv}" th:remove="tag"></span> <span>* 총 <span th:text="${videos.getTotalElements()}" th:remove="tag"></span>개</span></p>
+							</div>
+							<div th:replace="fragments/common/list_video :: list_video('video-mv-list', ${videos})"></div>
+						</div>
+						<div th:if="${videos != null and videos.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${videos.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not videos.first}" th:href="@{${'/video/mv'}(page=${videos.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${videos.first}" href="javascript:void(0);"></a>
+						        </li>
+						
+						        <li th:each="pageNo : ${#numbers.sequence(0, totalPages - 1)}" th:class="${videos.number eq pageNo}? 'active' : ''">
+						            <a th:if="${videos.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (videos.number eq pageNo)}" th:href="@{${'/video/mv'}(page=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						
+						        </li>
+						        <li th:class="${videos.number + 1 ge videos.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not videos.last or videos.number > 9}" th:href="@{${'/video/mv'}(page=${videos.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${videos.last or videos.number > 9}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+</body>
+</html>

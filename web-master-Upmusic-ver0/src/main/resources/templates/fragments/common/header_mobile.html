@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<title th:text="#{common.app.title}"></title>
+</head>
+
+<body>
+	<header th:fragment="header_mobile">
+		<div class="topNavibar" th:classappend="${topNavibar != null ? topNavibar : ''}">
+			<!-- left menu button -->
+
+			<div th:unless="${selectedSubMenu == '/music/artist'}" class="ios_btn_back" onclick="UPMusic.goBack(); return false;"></div>
+			<div th:if="${selectedSubMenu == '/music/artist'}" class="ios_btn_back" onclick="UPMusic.goBack(); return false;"></div>
+			<div th:unless="${selectedSubMenu == '/search'}" id="open-sb" class="ico-leftmenu"></div>
+			<div id="txt_btn_back" class="btn_back hide" onclick="UPMusic.goBack(); return false;"></div>
+
+			<!-- top logo -->
+			<div class="top_logo">				
+				<a th:if="${selectedSubMenu == '/'}" href="#top"><img th:src="@{/img/mobile/mobile_logo.png}" title="" /></a>
+				<h1 th:if="${selectedSubMenu == '/auth/login'}" class="title">로그인</h1>
+				<h1 th:if="${selectedSubMenu == '/auth/registration'}" class="title">회원가입</h1>
+				<h1 th:if="${selectedSubMenu == '/auth/forgot_password'}" class="title">비밀번호 찾기</h1>
+				<h1 th:if="${selectedSubMenu == '/auth/new_password'}" class="title">비밀번호 재설정</h1>
+				<h1 th:if="${selectedSubMenu == '/music/reward'}" class="title">최신곡</h1>
+				<h1 th:if="${selectedSubMenu == '/music/league'}" class="title">업리그차트</h1>
+				<h1 th:if="${selectedSubMenu == '/music/store' and request == null}" class="title">뮤직스토어</h1>
+				<h1 th:if="${selectedSubMenu == '/music/store' and request != null}" class="title">제작의뢰 상세</h1>
+				<h1 th:if="${selectedSubMenu == '/music/store/edit'}" class="title">제작의뢰 수정</h1>
+				<h1 th:if="${selectedSubMenu == '/music/album' and album == null}" class="title">싱글/앨범</h1>
+				<h1 th:if="${selectedSubMenu == '/music/artist' and artist == null}" class="title">아티스트</h1>
+				<h1 th:if="${selectedSubMenu == '/music/guide_vocal/new' and guideform != null}" class="title">가이드 보컬 신청</h1>
+				<h1 th:if="${selectedSubMenu == '/music/guide_vocal' and guideform == null}" class="title">가이드 보컬 신청 내역</h1>
+				<h1 th:if="${selectedSubMenu == '/music/guide_vocal/edit'}" class="title">가이드 보컬 수정</h1>
+				<h1 th:if="${selectedSubMenu == '/music/vocal_casting' and casting == null and castingform == null}" class="title">보컬 캐스팅</h1>
+				<h1 th:if="${selectedSubMenu == '/music/vocal_casting' and castingform != null}" class="title">보컬 캐스팅 등록</h1>
+				<h1 th:if="${selectedSubMenu == '/music/vocal_casting/detail' and casting != null}" class="title">보컬 캐스팅 상세</h1>
+				<h1 th:if="${selectedSubMenu == '/music/vocal_casting/edit'}" class="title">보컬 캐스팅 수정</h1>
+				<h1 th:if="${selectedSubMenu == '/video' and video == null}" class="title">비디오 홈</h1>
+				<h1 th:if="${selectedSubMenu == '/video' and video != null}" class="title">영상정보</h1>
+				<h1 th:if="${selectedSubMenu == '/video/hot'}" class="title">인기영상</h1>
+				<h1 th:if="${selectedSubMenu == '/video/mv'}" class="title">뮤직비디오</h1>
+				<h1 th:if="${selectedSubMenu == '/video/gv'}" class="title">일반 영상</h1>
+				<h1 th:if="${selectedSubMenu == '/my_playlist/recent'}" class="title">최근 플레이 리스트</h1>
+				<h1 th:if="${selectedSubMenu == '/my_playlist/collection'}" class="title">내 리스트</h1>
+				<h1 th:if="${selectedSubMenu == '/my_playlist/like'}" class="title">좋아요 리스트</h1>
+				<h1 th:if="${selectedSubMenu == '/my_upm/upload'}" class="title">업로드 내역</h1>
+				<h1 th:if="${selectedSubMenu == '/my_upm/reward'}" class="title">나의 리워드</h1>
+				<h1 th:if="${selectedSubMenu == '/my_upm/point'}" class="title">포인트 사용 리스트</h1>
+				<h1 th:if="${selectedSubMenu == '/comment'}" class="title">댓글쓰기</h1>
+				<h1 th:if="${selectedSubMenu == '/feed'}" class="title">피드</h1>
+				<h1 th:if="${selectedSubMenu == '/crowd_funding'}" class="title">크라우드 펀딩</h1>
+				<h1 th:if="${selectedSubMenu == '/upm_news/notice'}" class="title">공지사항</h1>
+				<h1 th:if="${selectedSubMenu == '/upm_news/event'}" class="title">이벤트</h1>
+				<h1 th:if="${selectedSubMenu == '/upm_news/upm_band'}" class="title">함께해요</h1>
+				<h1 th:if="${selectedSubMenu == '/upm_news/faq'}" class="title">FAQ</h1>
+				<h1 th:if="${selectedSubMenu == '/terms'}" class="title" th:text="${terms.subject}"></h1>
+				<span th:if="${selectedSubMenu == '/search'}" th:remove="tag">
+					<form name="mobile_search"><input type="text" name="q" class="search_input" size="35" th:value="${q}" placeholder="검색어 입력"/></form>
+				</span>
+
+			</div>
+			
+			<div th:if="${selectedSubMenu == '/music/store' and request != null and isOwner}" class="header_morBtn" id="header_morBtn_store"></div>
+			<div th:if="${selectedSubMenu == '/music/vocal_casting/detail' and guideform == null and isOwner}" class="header_morBtn" id="header_morBtn_guide"></div>
+			<div th:if="${selectedSubMenu == '/music/guide_vocal' and isOwner}" class="header_morBtn" id="header_morBtn_vocal"></div>
+			
+			<!-- 피드 부분 -->
+			<a href="/feed/feedLikeList">
+				<div th:if="${selectedSubMenu == '/feed'}" class="header_smileBtn" id="header_smileBtn"></div>
+			</a>
+			<a href="/feed/feedInsertForm">
+				<div th:if="${selectedSubMenu == '/feed'}" class="header_writeBtn" id="header_writeBtn"></div>
+			</a>
+
+			<!-- 제작의뢰 / 함께해요 상세 -->
+			<div th:if="${selectedSubMenu == '/upm_news/upm_band/detail' and isOwner}" class="header_morBtn" id="header_morBtn_band"></div>
+
+			<!-- top search -->
+			<div id="search" th:unless="${(selectedSubMenu == '/music/store' and request != null and isOwner) or (selectedSubMenu == '/music/vocal_casting/detail' and guideform == null) or (selectedSubMenu == '/upm_news/upm_band/detail') or (selectedSubMenu == '/search') or (selectedSubMenu == '/music/guide_vocal' and isOwner)}" class="top-search" onclick="UPMusic.goto('/search?q=')">
+				<label class="btn btn-trans" for="search-input" data-toggle="collapse" data-target="#nav-searchbox">
+					<i class="ico_top_search"></i>
+				</label>
+			</div>
+
+			<!--more button modal-->
+			<div class="modal fade" id="toggleMenu" data-keyboard="false" data-backdrop="false">
+				<div class="lab-modal-body">
+					<h1>메뉴<p class="close" data-dismiss="modal"></p></h1>
+					<ul>
+						<li><a class="btm_m07" id="btn_update">수정하기</a></li>
+						<li><a class="btm_m08" id="btn_delete">삭제하기</a></li>
+					</ul>
+				</div>
+				<!-- /.modal-body -->
+				<div class="modalbg"></div>
+			</div>
+			<!-- more button modal close -->
+			<script th:inline="javascript">
+                $(function () {
+                    var cnt = document.getElementsByTagName("textarea").length;
+					if(cnt > 0){
+                        $('#txt_btn_back').removeClass('hide');
+                        $('#search').addClass('hide');
+                        $('#open-sb').addClass('hide');
+                        $('#mobile_home').addClass('hide');
+                        $('.ios_btn_back').addClass('hide');
+					};
+					
+					$('.header_morBtn').on('click',function () {
+					    console.log('morBtn click');
+						$('#toggleMenu').modal('show');
+                    });
+
+					$('#header_morBtn_band').on('click',function () {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const bandRecruitId = urlParams.get('bandRecruitId');
+						$('#btn_update').attr('href','/upm_news/upm_band/updateForm?bandRecruitId=' + bandRecruitId);
+						$('#btn_delete').on('click', function () {
+							btnDelete('/upm_news/upm_band/delete?bandRecruitId=' + bandRecruitId);
+                        });
+                    });
+
+					$('#header_morBtn_store').on('click',function () {
+					    var currentUrl = window.location.href;
+					    var requestId = currentUrl.substring(currentUrl.lastIndexOf('/') + 1, currentUrl.length);
+                        $('#btn_update').attr('href','/music/store/request/' + requestId + '/edit');
+                        $('#btn_delete').on('click', function () {
+                            UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+                                UPMusic.ajaxDelete(UPMusic._config._api_request + '/' + requestId, headers, deleteRequestCallback);
+                            });
+                        });
+                    });
+
+					$('#header_morBtn_guide').on('click',function () {
+                        var currentUrl = window.location.href;
+                        var vocalCastingId = currentUrl.substring(currentUrl.lastIndexOf('/') + 1, currentUrl.length);
+                        $('#btn_update').attr('href','/music/vocal_casting/' + vocalCastingId + '/edit');
+                        $('#btn_delete').on('click', function () {
+                            UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+                                UPMusic.ajaxDelete(UPMusic._config._api_vocal_casting + '/' + vocalCastingId, headers, deleteCastingCallback);
+                            });
+                        });
+                    });
+
+					$('#header_morBtn_vocal').on('click',function () {
+                        var currentUrl = window.location.href;
+                        var guideVocalId = currentUrl.substring(currentUrl.lastIndexOf('/') + 1, currentUrl.length);
+                        $('#btn_update').attr('href','/music/guide_vocal/' + guideVocalId + '/edit');
+                        $('#btn_delete').on('click', function () {
+                            UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+                                UPMusic.ajaxDelete(UPMusic._config._api_guide_vocal+ '/' + guideVocalId, headers, deleteGuideCallback);
+                            });
+                        });
+                    });
+
+					function btnDelete(url) {
+						UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+						    location.href= url;
+                        	}
+						)
+                    };
+
+                    function deleteRequestCallback(msg, object) {
+                        if (msg == 'true') {
+                            window.location.href = '/music/store#store-request';
+                        } else {
+                            UPMusic.alert("삭제하지 못했습니다");
+                        }
+                    };
+
+                    function deleteCastingCallback(msg, object) {
+                        if (msg == 'true') {
+                            window.location.href = '/music/vocal_casting';
+                        } else {
+                            UPMusic.alert("삭제하지 못했습니다");
+                        }
+                    };
+
+                    function deleteGuideCallback(msg, object) {
+                        if (msg == 'true') {
+                            window.location.href = '/music/artist#artist-guide';
+                        } else {
+                            UPMusic.alert("삭제하지 못했습니다");
+                        }
+                    };
+                })
+			</script>
+		</div>
+	</header>
+</body>
+
+</html>

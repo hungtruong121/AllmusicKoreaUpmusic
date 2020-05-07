@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl" th:text="#{nav.my_playlist.collection}"></h2>
+				<button class="btn btn-custom btn-dark fr" onclick="UPMCollectioNewModal.showCollectionNewModal(false);"><i><img th:src="@{/img/change_icon2.png}" alt="" /></i> <span th:text="#{button.collection.new}" th:remove="tag"></span></button>
+				<div class="producing_listhead">
+					<p class="content_title2 fl clear"><span th:text="#{common.music.collection.description_1}" th:remove="tag"></span> <span th:text="#{common.music.collection.description_2}"></span></p>
+					<div class="btn2_wrap fr mt30">
+						<div class="listcontrols">
+							<ul>
+								<li class="list_deleteform"><a th:onclick="@{${'UPMListCollection.deleteSelectedCollection(&quot;#' + collectionsFragmentId + '&quot;);'}}"><span th:text="#{button.delete}" th:remove="tag"></span></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div th:if="${collections != null and 0 < collections.getTotalElements()}" th:replace="fragments/common/list_collection :: list_collection(${collectionsFragmentId}, ${collections}, ${paginationUrl})"></div>
+				<div th:unless="${collections != null and 0 < collections.getTotalElements()}" class="list_none">
+					<ul>
+						<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+						<li>리스트를 추가해주세요.</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<div th:replace="fragments/common/modal_collection_new"></div>
+
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript">
+			var UPMListCollection = {
+				deleteSelectedCollection: function(fragmentId) {
+					UPMLoginModal.showModal();
+				}
+			};
+	    </script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript">
+			var UPMListCollection = {
+				_config : {
+					loading : false	
+				},
+				addTrackToCollection : function() {
+					UPMusic.alert('리스트에 음원을 추가해주세요');
+				},
+				addToPlaylist : function(collectionId) {
+					if (UPMListCollection._config.loading) return;
+					UPMListCollection._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_collection + '/' + collectionId + '/play', headers, params, UPMListCollection.addToPlaylistCallback);
+				},
+				modifyListName : function(){
+
+				},
+				addToPlaylistCallback : function(msg, object) {
+					if (msg == 'true') {
+						$('#button-upm-player').click();
+					} else {
+						UPMusic.alert(msg);
+					}
+					UPMListCollection._config.loading = false;
+				},
+				deleteSelectedCollection: function(fragmentId) {
+					var checkedIds = $(fragmentId + ' input:checkbox:checked').map(function() {
+					    if (this.value) return this.value;
+					}).get();
+					if (0 < checkedIds.length) {
+						UPMusic.confirm("내 리스트 삭제 시 등록한 정보가 모두 삭제됩니다.<br>정말 삭제하시겠습니까?", function() {
+							UPMListCollection.deleteConfirm(fragmentId);
+						});
+					} else {
+						UPMusic.alert('리스트를 선택해주세요');
+					}
+				},
+				deleteConfirm: function(fragmentId) {
+					if (UPMListCollection._config.loading) return;
+					UPMListCollection._config.loading = true;
+					var checkedIds = $(fragmentId + ' input:checkbox:checked').map(function() {
+					    if (this.value) return this.value;
+					}).get();
+					var params = {ids : checkedIds};
+		  			UPMusic.ajaxDeleteItems(UPMusic._config._api_collection + '/delete', headers, params, UPMListCollection.deleteSelectedCollectionCallback);
+				},
+				deleteSelectedCollectionCallback: function(msg, object) {
+					if (msg == 'true') {
+						window.location.reload();
+					} else {
+						UPMusic.alert("리스트를 삭제하지 못했습니다. 잠시 후 다시 시도하십시오.");
+					}
+					UPMListCollection._config.loading = false;
+				}
+			};
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

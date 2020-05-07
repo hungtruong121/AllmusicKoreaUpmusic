@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+	
+		<div class="subpage_wrap">
+			<div class="albuminfo_wrap section">
+				<div class="albuminfo_head">
+					<h2 class="page-title" th:text="#{common.musicalbum.information}"></h2>
+					<ul class="hits_wrap">
+						<li><span th:text="#{model.music.hits}" th:remove="tag"></span> : <span th:text="${album.hitCnt}" th:remove="tag"></span><span th:text="#{common.times}" th:remove="tag"></span></li>
+						<li><span th:text="#{button.registration}" th:remove="tag"></span> : <span th:text="${album.formattedTime()}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="album_infomation">
+					<div class="album_img">
+						<img class="album-original-cover" th:src="@{${album.getCoverImageUrl()}}" src="${album.getCoverImageUrl()}" title="coverimage" />
+						<img class="album-cover-image" th:src="@{/img/album_cover.png}" alt="" />
+					</div>
+					<div class="album_infotext">
+						<h2 class="album-title" th:text="${album.subject}"></h2>
+						<p class="album_singer"><a th:href="${owner.getUrl()}"><span th:text="${owner.nick}" th:remoove="tag"></span></a></p>
+						<dl th:if="${album.genre != null}" class="hashtag_wrap">
+							<dt th:if="${#strings.equals(album.albumType, 'SA')}" class="hashtag"><a th:href="@{${'/music/album?genre=' + album.genre.id}}">#<span th:text="#{${album.getGenreName()}}" th:remove="tag"></span></a></dt>
+							<dt th:if="${#strings.equals(album.albumType, 'GA')}" class="hashtag"><a th:href="@{${'/music/album?genre=' + album.genre.id + '#ga'}}">#<span th:text="#{${album.getGenreName()}}" th:remove="tag"></span></a></dt>
+						</dl>
+						<!--<div class="commerce_btn abcommerce_btn" th:onclick="@{${'UPMusic.goto(&quot;/music/store&quot;);'}}">-->
+							<!--<ul>-->
+								<!--<li><i><img th:src="@{/img/store_icon.png}" alt="" /></i><span th:text="#{nav.music.store}" th:remove="tag"></span></li>-->
+							<!--</ul>-->
+						<!--</div>-->
+					</div>
+					<div class="album_sharebox">
+						<ul>
+							<li>
+								<div id="album-detail-heart" class="like_btn_round" th:classappend="${likedAlbum} ? 'like_btn_round_on' : 'like_btn_round_off'" onclick="UPMAlbumDetail.likeAlbum();"><i><span class="heart">&nbsp;</span></i><span th:text="#{common.like}" th:remove="tag"></span><span id="album-detail-heart-cnt" th:text="${album.heartCnt}"></span></div>
+							</li>
+							<li>
+								<div class="comment_info"><a href="#album-comment"><i><img th:src="@{/img/comment_icon.png}" alt="" /></i><span th:text="#{model.comment}" th:remove="tag"></span><span id="album-comment-count-button" th:text="${albumComments.getTotalElements()}"></span><span th:text="#{common.count.collectedTrack}"></span></a></div>
+							</li>
+							<li>
+								<div class="share_info"><i><img th:src="@{/img/listcontrols_icon3.png}" alt="" /></i><span th:text="#{button.share}" th:remove="tag"></span>
+									<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://facebook.com/sharer/sharer.php?u=&quot;);'}}" target="_blank" aria-label=""><img th:src="@{/img/share_facebook.png}" alt="" /></a></b>
+									<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://twitter.com/intent/tweet/?url=&quot;);'}}" target="_blank" aria-label=""><img th:src="@{/img/share_twitter.png}" alt="" /></a></b>
+									<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://story.kakao.com/s/share?url=&quot;);'}}" target="_blank" aria-label=""><img th:src="@{/img/share_kakao.png}" alt="" /></a></b>
+									<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://share.naver.com/web/shareView.nhn?title=UPMusic&url=&quot;);'}}" target="_blank" class="share-btn-small" aria-label=""><img th:src="@{/img/naver.png}" alt="" /></a></b>
+									<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;upmusic&quot;);'}}" target="_blank" class="share-btn-small" aria-label=""><img th:src="@{/img/upmusic.png}" alt="" /></a></b>
+									<b><a th:onclick="@{${'UPMShareModal.copyUrl();return false;'}}"><img th:src="@{/img/share_link.png}" alt="" /></a></b>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="sub_line"></div>
+			
+			<!-- Album Tracks -->
+			<div class="sidetrack_wrap section">
+				<div th:replace="fragments/common/list_track_default :: list_track('album-track-list', ${album.getAcceptedTracks()}, null)"></div>
+				<div th:if="${album.hasUnacceptedTrack()}" class="list_none">
+					<ul>
+						<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+						<li>심사에 통과한 음원만 수록곡 리스트에 보여집니다.</li>
+					</ul>
+				</div>
+			</div>
+			
+			<!-- Album Description -->
+			<div class="sub_line"></div>
+			<div class="album_introduce_wrap section">
+				<div class="introduce_head">
+					<h3 class="content_title" th:text="#{model.music.label.description}"></h3>
+				</div>
+				<div class="introduce_info">
+					<ul>
+						<li th:utext="${#strings.replace( #strings.escapeXml( album.description ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></li>
+					</ul>
+				</div>
+				<div th:if="${isOwner and album.hasUnacceptedTrack()}" class="commerce_btn commerce_btn_ver2 text-right">
+					<ul>
+						<li th:onclick="@{${'UPMusic.goto(&quot;' + album.getUrl() + '/edit&quot;);'}}"><i><img th:src="@{/img/change_icon.png}" alt="" /></i><span th:text="#{button.modify}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+			</div>
+			
+			<!-- Album Comment -->
+			<div id="album-comment"></div>
+			<div th:replace="fragments/common/list_comment :: list_comment(${'/api/album/' + album.id}, ${albumComments}, ${currentUserId}, ${paginationUrl})"></div>
+		</div>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMAlbumDetail = {
+				likeAlbum: function() {
+					UPMLoginModal.showModal();
+				},
+				likeTrack: function(trackId) {
+					UPMLoginModal.showModal();
+				}
+			};
+	    </script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var albumId = /*[[ ${album.id} ]]*/;
+			var heartCnt = /*[[ ${album.heartCnt} ]]*/;
+			var UPMAlbumDetail = {
+				_config : {
+					loading : false
+				},
+				likeAlbum: function() {
+					if (UPMAlbumDetail._config.loading) return;
+					UPMAlbumDetail._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_album + '/' + albumId + '/like', headers, params, UPMAlbumDetail.likeCallback);
+				},
+				likeCallback: function(msg, object) {
+					if (msg == 'true') {
+						$('#album-detail-heart').toggleClass('like_btn_round_off like_btn_round_on');
+					} else {
+						$('#album-detail-heart').toggleClass('like_btn_round_on like_btn_round_off');
+					}
+					$('#album-detail-heart-cnt').html(object);
+					UPMAlbumDetail._config.loading = false;
+				}
+			};
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

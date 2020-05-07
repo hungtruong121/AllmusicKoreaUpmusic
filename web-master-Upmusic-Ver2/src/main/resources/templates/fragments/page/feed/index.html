@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	  layout:decorate="~{layout/default_layout}">
+<head>
+	<style type="text/css">
+		.feed_like_img {
+			pointer-events: none !important;
+			cursor: default;
+		}
+		.feed_cnt {
+			pointer-events: none !important;
+			cursor: default;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="content">
+			<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<div class="page-title-wrap">
+					<h2 class="page-title fl">피드</h2>
+					<button class="btn btn-custom btn-dark fr" data-target="#artist_search" data-toggle="modal" id="btn_artist_search"><i><img src="/img/search.png" alt="" /></i> 아티스트 검색</button>
+				</div>
+				<div class="tab_design clear">
+					<ul>
+						<li id="feed_home">피드 홈
+							<div class="tab_line tab_line"></div>
+						</li>
+						<li id="my_feed">나의 피드</li>
+						<li id="all_feed">UPM 피드</li>
+					</ul>
+					<input type="hidden" id="feed_flag" th:value="${feed_flag}">
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="feed_wrap">
+							<div class="feed_contentwrap">
+								<form action="#" th:action="@{'/feed/feedInsert'}" role="form" id="feedInsertForm" enctype="multipart/form-data" method="post" th:object="${paramData}">
+								<div class="feed_commentinput">
+									<!-- <input type="text" placeholder="뮤직스토리를 입력해주세요." class="form-control comment_input_ver3" name="content"> -->
+									<div class="fake_input">
+										<textarea placeholder="뮤직스토리를 입력해주세요." id="feed_insert_content" name="content"></textarea>
+										<div class="img_box">
+											<ul id="img_ul">
+												<li id="li_clone" style="display: none;">
+													<img src="/img/close.png" alt="" class="close_imgbox">
+													<input type="hidden" class="img_name">
+												</li>
+												<li id="li_img_add"></li>
+											</ul>
+										</div>
+									</div>
+									<div class="feed_commentupload">
+										<ul class="feed_uploadicon">
+											<li id="feed_input_file">
+												<img src="/img/feed_upload_picture.png" alt="" />
+											</li>
+											<li><input type="file" id="feedImg" multiple="multiple" style="display: none;"></li>
+										</ul>
+										<ul class="feed_commentsend">
+											<li>
+												<!-- <select class="selectbox_design" name="publicRangeFormValue">
+													<option value="ALL">전체 공개</option>
+													<option value="LIKE">좋아요 공개</option>
+													<option value="PRIVATE">나만 보기</option>
+												</select> -->
+												<div class="selectbox_design">
+													<input type="hidden" name="publicRangeFormValue" id="publicRangeFormValue" value="ALL">
+													<span id="selectbox_seleted_text">전체 공개</span><i><img src="/img/select_ar.png" alt=""></i>
+													<ul class="selectbox_option selectbox_off">
+														<li class="ALL">전체 공개</li>
+														<li class="LIKE">좋아요 공개</li>
+														<li class="PRIVATE">나만 보기</li>
+													</ul>
+												</div>
+											</li>
+											<li>
+												<button class="btn btn-custom3 fr w100p" id="btn_feed_insert" type="button" style="display: none;">등록</button>
+											</li>
+										</ul>
+									</div>
+								</div>
+								</form>
+								
+								<div id="feed_home_div">
+								<div class="feed_content parentFlag" th:each="feedHome : ${feedHomeList.content}">
+									<div class="feedcontent_head">
+										<a th:href="@{${feedHome.member.getUrl()}}">
+										<div class="feedprofile"><img th:src="${feedHome.member.getProfileImageUrl()}" alt="" /></div>
+										<div class="feedinfo">
+											<ul>
+												<li th:text="${feedHome.member.nick}"></li>
+												<li th:text="${feedHome.getCreateAtFormat()}"></li>
+											</ul>
+										</div>
+										</a>
+									</div>
+									<div class="feedcontent_cont">
+										<div class="feedmemo" th:uText="${#strings.replace(feedHome.content, T(System).getProperty('line.separator'), '<br />')}">
+										</div>
+										<div class="feed_video_section" th:if="${feedHome.feedFileList.size()} > 0">
+											<img th:src="${feedHome.getFirstImgUrl()}" class="img_detail"/>
+											<input type="hidden" class="img_detail_search_id" th:value="${feedHome.feedId}">
+											<p class="img_view_num"> 1 / <span th:text="${feedHome.feedFileList.size()}"></span> </p>
+										</div>
+									</div>
+									<div class="feedcontent_footer">
+										<ul>
+											<li class="comment-toggle"><i><img src="/img/feedbtn_0.png" alt="" /></i>댓글<span th:text="${feedHome.commentCnt} + 개" class="comment_cnt"></span></li>
+											<li class="feed_share"><i><img src="/img/feedbtn_1.png" alt="" /></i>공유</li>
+											<li class="feed_like_toggle" th:classappend="${feedHome.feedLikeClass}">
+												<i><img th:src="${feedHome.feedLikeImgUrl}" alt="" class="feed_like_img"/></i>좋아요<span th:text="${feedHome.likeCnt}" class="feed_cnt"></span>
+												<input type="hidden" class="like_feed_id" th:value="${feedHome.feedId}">
+											</li>
+										</ul>
+									</div>
+									<div class="comment_wrap feedcomment_wrap">
+										<h3 class="content_title">댓글<span th:text="${feedHome.commentCnt} + 개" class="comment_cnt"></span></h3>
+										<form action="#" role="form" enctype="utf-8"
+										th:object="${paramData}" method="post" class="feed_comment_insert_form">
+										<input type="hidden" name="feedId" th:value="${feedHome.feedId}">
+										<div class="inputbox mt0" sec:authorize="isAuthenticated()">
+											<textarea class="form-control comment_input" name="content" onsubmit="return false;"></textarea>
+											<input type="hidden" style="display: none;">
+											<button class="btn btn-dark btn-custom comment_btn btn_feed_comment" type="button">등록</button>
+										</div>
+										</form>
+										<div class="comment_list_wrap feed_comment_list_result">
+											<div class="comment_list feed_comment_form" th:each="comment : ${feedHome.feedCommentListDate.content}">
+												<div class="feedprofile">
+													<!-- <img src="/img/comment_profile1.png" alt="" /> -->
+													<a th:href="@{${comment.member.getUrl()}}">
+													<img th:src="${comment.member.getProfileImageUrl()}" alt="" />
+													</a>
+												</div>
+												<div class="comment_content" >
+													<h3 class="comment_id" th:text="${comment.member.nick}"></h3>
+
+													<p class="comment_memo comment_update_form feed_comment_content" th:uText="${#strings.replace(comment.content, T(System).getProperty('line.separator'), '<br />')}"></p>
+													<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_update">
+													<input type="hidden" id="feedCommentId" name="feedCommentId" th:value="${comment.feedCommentId}">
+													<input type="hidden" id="feedId" name="feedId" th:value="${feedHome.feedId}">
+													<div class="inputbox w677 comment_change_form" style="display: none;">
+														<textarea class="form-control comment_input_ver2 feed_update_content" name="content"></textarea>
+														<button class="btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update" type="button">저장</button>
+													</div>
+													</form>
+												</div>
+												<div class="comment_day_wrap">
+													<p class="comment_day" id="comment_createAt" th:text="${comment.getCreateAtFormat()}"></p>
+													<form action="#" role="form" enctype="utf-8" method="post" class="comment_delete_form">
+													<input type="hidden" name="feedCommentId" th:value="${comment.feedCommentId}">
+													<input type="hidden" name="feedId" th:value="${feedHome.feedId}">
+													<ul class="comment_update_form" th:if="${comment.registrantFlag}">
+														<li class="btn_updateForm">수정</li>
+														<li class="btn_delete">삭제</li>
+													</ul>
+													</form>
+													<ul class="comment_change comment_change_form" style="display: none;">
+														<li class="btn_update_cancel">취소</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_paging">
+										<input type="hidden" name="feedId" th:value="${feedHome.feedId}">
+										<input type="hidden" name="pageSize" class="feed_page_size" th:value="${feedHome.feedCommentListDate.content.size()}">
+										<div class="showmore_wrap" th:style="${feedHome.feedCommentListDate.hasNext()}? '' : 'display: none;'">
+											<p class="feed_next_paging">
+												SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i>
+											</p>
+										</div>
+										</form>
+									</div>
+								</div>
+								</div>
+
+								<div class="showmore_wrap" th:style="${feedHomeList.hasNext()}? '' : 'display: none;'">
+									<input type="hidden" id="feed_home_pageSize" th:value="${allFeedList.content.size()}">
+									<p id="feed_home_more">
+										SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i>
+									</p>
+								</div>
+
+							</div>
+							<div class="feed_likelist">
+								<div class="feed_likelist_head">
+									<p class="content_title2 feed_likelist_title">좋아요 리스트<br /></p>
+								</div>
+								<div class="likemusician_list" th:each="member : ${likeList}">
+									<a th:href="@{${member.getUrl()}}">
+									<div class="feedprofile"><img th:src="${member.getProfileImageUrl()}" style="height: 100%;"/></div>
+									<div class="feedinfo">
+										<ul>
+											<li th:text="${member.nick}"></li>
+										</ul>
+									</div>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 나의 피드 -->
+					<div class="tab_content">
+						<div class="feed_wrap">
+							<div class="feed_contentwrap">
+								<div id="my_feed_div">
+								<div class="feed_content" th:unless="${myFeedList.hasContent()}">
+								</div>
+								<div class="feed_content parentFlag" th:each="myFeed : ${myFeedList.content}">
+									<div class="feedcontent_head">
+										<a th:href="@{${myFeed.member.getUrl()}}">
+										<div class="feedprofile"><img th:src="${myFeed.member.getProfileImageUrl()}" alt="" /></div>
+										<div class="feedinfo">
+											<ul>
+												<li th:text="${myFeed.member.nick}"></li>
+												<li th:text="${myFeed.getCreateAtFormat()}"></li>
+											</ul>
+										</div>
+										</a>
+										<div class="feed_menu">
+											<img src="/img/menu2.png" alt="">
+											<ul class="feed_option feed_option_off">
+												<li class="btn_feed_update" data-target="#feed_update" data-toggle="modal" th:value="${myFeed.feedId}">수정하기</li>
+												<li class="btn_feed_delete">
+												<form action="#" class="feedDeleteForm" th:action="@{/feed/feedDelete}" role="form" enctype="utf-8" th:object="${paramData}" method="post">
+													<input type="hidden" name="feedId" th:value="${myFeed.feedId}">
+													삭제하기
+												</form>
+												</li>
+												<li class="myFeed_publicRange_update ALL" th:classappend="${myFeed.publicRange.toString()} eq 'ALL' ? 'feedoption_on' : ''">전체공개</li>
+												<li class="myFeed_publicRange_update LIKE" th:classappend="${myFeed.publicRange.toString()} eq 'LIKE' ? 'feedoption_on' : ''" >좋아요 공개</li>
+												<li class="myFeed_publicRange_update PRIVATE" th:classappend="${myFeed.publicRange.toString()} eq 'PRIVATE' ? 'feedoption_on' : ''" >나만보기</li>
+											</ul>
+										</div>
+										<!-- <div style="float: right;">
+											<button type="button" class="form-control btn_feed_update" data-target="#feed_update" data-toggle="modal" th:value="${myFeed.feedId}">피드 수정</button>
+										</div>
+										<form action="#" class="feedDeleteForm" th:action="@{/feed/feedDelete}" role="form" enctype="utf-8" th:object="${paramData}" method="post">
+										<input type="hidden" name="feedId" th:value="${myFeed.feedId}">
+										<div style="float: right;">
+											<button type="button" class="form-control btn_feed_delete">피드 삭제</button>
+										</div>
+										</form> -->
+									</div>
+									<div class="feedcontent_cont">
+										<div class="feedmemo" th:uText="${#strings.replace(myFeed.content, T(System).getProperty('line.separator'), '<br />')}">
+										</div>
+										<div class="feed_video_section" th:if="${myFeed.feedFileList.size()} > 0">
+											<img th:src="${myFeed.getFirstImgUrl()}" class="img_detail"/>
+											<input type="hidden" class="img_detail_search_id" th:value="${myFeed.feedId}">
+											<p class="img_view_num"> 1 / <span th:text="${myFeed.feedFileList.size()}"></span> </p>
+										</div>
+									</div>
+									<div class="feedcontent_footer">
+										<ul>
+											<li class="comment-toggle"><i><img src="/img/feedbtn_0.png" alt="" /></i>댓글<span th:text="${myFeed.commentCnt} + 개" class="comment_cnt"></span></li>
+											<li class="feed_share"><i><img src="/img/feedbtn_1.png" alt="" /></i>공유</li>
+											<li class="feed_like_toggle" th:classappend="${myFeed.feedLikeClass}">
+												<i><img th:src="${myFeed.feedLikeImgUrl}" alt="" class="feed_like_img"/></i>좋아요<span th:text="${myFeed.likeCnt}" class="feed_cnt"></span>
+												<input type="hidden" class="like_feed_id" th:value="${myFeed.feedId}">
+											</li>
+										</ul>
+									</div>
+									<div class="comment_wrap feedcomment_wrap">
+										<h3 class="content_title">댓글<span th:text="${myFeed.commentCnt} + 개" class="comment_cnt"></span></h3>
+										<form action="#" role="form" enctype="utf-8"
+										th:object="${paramData}" method="post" class="feed_comment_insert_form">
+										<input type="hidden" name="feedId" th:value="${myFeed.feedId}">
+										<div class="inputbox mt0" sec:authorize="isAuthenticated()">
+											<textarea class="form-control comment_input" name="content" onsubmit="return false;"></textarea>
+											<input type="hidden" style="display: none;">
+											<button class="btn btn-dark btn-custom comment_btn btn_feed_comment" type="button">등록</button>
+										</div>
+										</form>
+										<div class="comment_list_wrap feed_comment_list_result">
+											<div class="comment_list feed_comment_form" th:each="comment : ${myFeed.feedCommentListDate.content}">
+												<div class="feedprofile">
+													<a th:href="@{${comment.member.getUrl()}}">
+													<img th:src="${comment.member.getProfileImageUrl()}" alt="" />
+													</a>
+												</div>
+												<div class="comment_content" >
+													<h3 class="comment_id" th:text="${comment.member.nick}"></h3>
+													<p class="comment_memo comment_update_form feed_comment_content" th:uText="${#strings.replace(comment.content, T(System).getProperty('line.separator'), '<br />')}"></p>
+													<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_update">
+													<input type="hidden" id="feedCommentId" name="feedCommentId" th:value="${comment.feedCommentId}">
+													<input type="hidden" id="feedId" name="feedId" th:value="${myFeed.feedId}">
+													<div class="inputbox w677 comment_change_form" style="display: none;">
+														<textarea class="form-control comment_input_ver2 feed_update_content" name="content"></textarea>
+														<button class="btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update" type="button">저장</button>
+													</div>
+													</form>
+												</div>
+												<div class="comment_day_wrap">
+													<p class="comment_day" id="comment_createAt" th:text="${comment.getCreateAtFormat()}"></p>
+													<form action="#" role="form" enctype="utf-8" method="post" class="comment_delete_form">
+													<input type="hidden" name="feedCommentId" th:value="${comment.feedCommentId}">
+													<input type="hidden" name="feedId" th:value="${myFeed.feedId}">
+													<ul class="comment_update_form" th:if="${comment.registrantFlag}">
+														<li class="btn_updateForm">수정</li>
+														<li class="btn_delete">삭제</li>
+													</ul>
+													</form>
+													<ul class="comment_change comment_change_form" style="display: none;">
+														<li class="btn_update_cancel">취소</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_paging">
+										<input type="hidden" name="feedId" th:value="${myFeed.feedId}">
+										<input type="hidden" name="pageSize" class="feed_page_size" th:value="${myFeed.feedCommentListDate.content.size()}">
+										<div class="showmore_wrap" th:style="${myFeed.feedCommentListDate.hasNext()}? '' : 'display: none;'">
+											<p class="feed_next_paging">
+												SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i>
+											</p>
+										</div>
+										</form>
+									</div>
+								</div>
+								</div>
+
+								<!-- <div class="showmore_wrap" th:if="${myFeedList.hasNext()}"> -->
+								<div class="showmore_wrap" th:style="${myFeedList.hasNext()}? '' : 'display: none;'">
+									<input type="hidden" id="my_feed_pageSize" th:value="${myFeedList.content.size()}">
+									<p id="my_feed_more">
+										SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i>
+									</p>
+								</div>
+							</div>
+
+							<div class="feed_likelist">
+								<div class="feed_likelist_head">
+									<p class="content_title2 feed_likelist_title">좋아요 리스트<br /></p>
+								</div>
+								<div class="likemusician_list" th:each="member : ${likeList}">
+									<a th:href="@{${member.getUrl()}}">
+									<div class="feedprofile"><img th:src="${member.getProfileImageUrl()}" style="height: 100%;" /></div>
+									<div class="feedinfo">
+										<ul>
+											<li th:text="${member.nick}"></li>
+										</ul>
+									</div>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- ~ 나의 피드 -->
+
+					<!-- 전체 피드 -->
+					<div class="tab_content">
+						<div class="feed_wrap">
+							<div class="feed_contentwrap">
+								<div id="all_feed_div">
+								<div class="feed_content" th:unless="${allFeedList.hasContent()}">
+								</div>
+								<div class="feed_content parentFlag" th:each="allFeed : ${allFeedList.content}">
+									<div class="feedcontent_head">
+										<a th:href="@{${allFeed.member.getUrl()}}">
+										<div class="feedprofile"><img th:src="${allFeed.member.getProfileImageUrl()}" alt="" /></div>
+										<div class="feedinfo">
+											<ul>
+												<li th:text="${allFeed.member.nick}"></li>
+												<li th:text="${allFeed.getCreateAtFormat()}"></li>
+											</ul>
+										</div>
+										</a>
+									</div>
+									<div class="feedcontent_cont">
+										<div class="feedmemo" th:uText="${#strings.replace(allFeed.content, T(System).getProperty('line.separator'), '<br />')}">
+										</div>
+										<div class="feed_video_section" th:if="${allFeed.feedFileList.size()} > 0">
+											<img th:src="${allFeed.getFirstImgUrl()}" class="img_detail"/>
+											<input type="hidden" class="img_detail_search_id" th:value="${allFeed.feedId}">
+											<p class="img_view_num"> 1 / <span th:text="${allFeed.feedFileList.size()}"></span> </p>
+										</div>
+									</div>
+									<div class="feedcontent_footer">
+										<ul>
+											<li class="comment-toggle"><i><img src="/img/feedbtn_0.png" alt="" /></i>댓글<span th:text="${allFeed.commentCnt} + 개" class="comment_cnt"></span></li>
+											<li class="feed_share"><i><img src="/img/feedbtn_1.png" alt="" /></i>공유</li>
+											<li class="feed_like_toggle" th:classappend="${allFeed.feedLikeClass}">
+												<i><img th:src="${allFeed.feedLikeImgUrl}" alt="" class="feed_like_img"/></i>좋아요<span th:text="${allFeed.likeCnt}" class="feed_cnt"></span>
+												<input type="hidden" class="like_feed_id" th:value="${allFeed.feedId}">
+											</li>
+										</ul>
+									</div>
+									<div class="comment_wrap feedcomment_wrap">
+										<h3 class="content_title">댓글<span th:text="${allFeed.commentCnt} + 개" class="comment_cnt"></span></h3>
+										<form action="#" role="form" enctype="utf-8"
+										th:object="${paramData}" method="post" class="feed_comment_insert_form">
+										<input type="hidden" name="feedId" th:value="${allFeed.feedId}">
+										<div class="inputbox mt0" sec:authorize="isAuthenticated()">
+											<textarea class="form-control comment_input" name="content" onsubmit="return false;"></textarea>
+											<input type="hidden" style="display: none;">
+											<button class="btn btn-dark btn-custom comment_btn btn_feed_comment" type="button">등록</button>
+										</div>
+										</form>
+										<div class="comment_list_wrap feed_comment_list_result">
+											<div class="comment_list feed_comment_form" th:each="comment : ${allFeed.feedCommentListDate.content}">
+												<div class="feedprofile">
+													<a th:href="@{${comment.member.getUrl()}}">
+													<img th:src="${comment.member.getProfileImageUrl()}" alt="" />
+													</a>
+												</div>
+												<div class="comment_content" >
+													<h3 class="comment_id" th:text="${comment.member.nick}"></h3>
+													<p class="comment_memo comment_update_form feed_comment_content" th:text="${#strings.replace(comment.content, T(System).getProperty('line.separator'), '&lt;br /&gt;')}"></p>
+													<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_update">
+													<input type="hidden" id="feedCommentId" name="feedCommentId" th:value="${comment.feedCommentId}">
+													<input type="hidden" id="feedId" name="feedId" th:value="${allFeed.feedId}">
+													<div class="inputbox w677 comment_change_form" style="display: none;">
+														<textarea class="form-control comment_input_ver2 feed_update_content" name="content"></textarea>
+														<button class="btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update" type="button">저장</button>
+													</div>
+													</form>
+												</div>
+												<div class="comment_day_wrap">
+													<p class="comment_day" id="comment_createAt" th:text="${comment.getCreateAtFormat()}"></p>
+													<form action="#" role="form" enctype="utf-8" method="post" class="comment_delete_form">
+													<input type="hidden" name="feedCommentId" th:value="${comment.feedCommentId}">
+													<input type="hidden" name="feedId" th:value="${allFeed.feedId}">
+													<ul class="comment_update_form" th:if="${comment.registrantFlag}">
+														<li class="btn_updateForm">수정</li>
+														<li class="btn_delete">삭제</li>
+													</ul>
+													</form>
+													<ul class="comment_change comment_change_form" style="display: none;">
+														<li class="btn_update_cancel">취소</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_paging">
+										<input type="hidden" name="feedId" th:value="${allFeed.feedId}">
+										<input type="hidden" name="pageSize" class="feed_page_size" th:value="${allFeed.feedCommentListDate.content.size()}">
+										<div class="showmore_wrap" th:style="${allFeed.feedCommentListDate.hasNext()}? '' : 'display: none;'">
+											<p class="feed_next_paging">
+												SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i>
+											</p>
+										</div>
+										</form>
+									</div>
+								</div>
+								</div>
+
+								<div class="showmore_wrap" th:style="${allFeedList.hasNext()}? '' : 'display: none;'">
+									<input type="hidden" id="all_feed_pageSize" th:value="${allFeedList.content.size()}">
+									<p id="all_feed_more">
+										SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i>
+									</p>
+								</div>
+							</div>
+							<div class="feed_likelist">
+								<div class="feed_likelist_head">
+									<p class="content_title2 feed_likelist_title">좋아요 리스트<br /></p>
+								</div>
+								<div class="likemusician_list" th:each="member : ${likeList}">
+									<a th:href="@{${member.getUrl()}}">
+									<div class="feedprofile"><img th:src="${member.getProfileImageUrl()}" style="height: 100%;" /></div>
+									<div class="feedinfo">
+										<ul>
+											<li th:text="${member.nick}"></li>
+										</ul>
+									</div>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</div>
+
+		<div class="modal fade" id="artist_search" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">아티스트 검색</h2>
+						<img src="/img/close.png" class="close" alt="" data-dismiss="modal" />
+	                </div>
+
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<form action="" role="form" enctype="utf-8" method="post" class="artist_find_form" id="mailSearchForm">
+							<div class="inputbox mt10">
+								<label class="input_title pop_title">아티스트 닉네임</label>
+								<input type="text" placeholder="아티스트 닉네임을 입력하세요." class="form-control login_input" name="nick" id="modal_email">
+								<input type="text" style="display: none;">
+							</div>
+							<div class="login_btn upload_btn mt10">
+								<button class="btn btn-custom3 h50 w100p" type="button" id="btn_artist_find">검색</button>
+							</div>
+							</form>
+						</div>
+						<hr class="login_line" />
+						<div id="artist_find_result">
+						</div>
+	                </div>
+
+	            </div>
+	        </div>
+	    </div>
+
+	    <div class="modal fade" id="feed_update" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">피드 수정</h2>
+						<img src="/img/close.png" class="close" alt="" data-dismiss="modal" />
+	                </div>
+
+	                <div class="modal-body login_body">
+	                	<form action="#" id="feedUptForm" th:action="@{/feed/feedUpdate}" role="form" enctype="multipart/form-data" th:object="${paramData}" method="post">
+							<div class="feed_commentinput">
+								<input type="hidden" name="feedId" id="feed_update_feedId">
+								<input type="hidden" name="publicRangeFormValue" id="feed_update_publicRange">
+								<div class="fake_input">
+									<textarea placeholder="뮤직스토리를 입력해주세요." name="content" id="modal_feed_content" class="textarea_style"></textarea>
+									<!--
+									<div class="img_box">
+										<ul id="modal_img_ul">
+											<li id="modal_li_clone" style="display: none;">
+												<img src="/img/close.png" alt="" class="modal_close_imgbox">
+												<input type="hidden" class="img_name">
+											</li>
+											<li id="modal_li_img_add"></li>
+										</ul>
+									</div>
+									-->
+								</div>
+							</div>
+						</form>
+						<div class="login_btn upload_btn mt10">
+							<button class="btn btn-custom3 w100p h50" style="margin:0 auto;" type="button" id="btn_feed_upt">수정</button>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+
+	    <div class="modal fade" id="img_detail" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+			<div class="modal-dialog img_detail_wrap">
+				<div class="modal-content">
+					<div class="modal-body login_body img_detail_wrap_body">
+						<img src="/img/close.png" class="close" alt="" data-dismiss="modal">
+						<div class="img_detail_view_wrap">
+							<div class="img_view_list">
+								<ul id="modal_img_detail_list">
+									<li id="modal_img_detail_li" style="display: none;">
+										<input type="hidden" class="modal_img_detail_src" style="display: none;">
+									</li>
+								</ul>
+							</div>
+							<div class="img_view_content">
+								<div class="img_view_itemwrap">
+									<img src="/img/img_detail_item1.png" id="modal_img_detail_main" data-target="#img_detail" data-toggle="modal">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feed_content parentFlag" id="feed_sample" style="display: none;">
+			<div class="feedcontent_head">
+				<a id="feed_memberUrl">
+				<div class="feedprofile"><img id="feed_member_profile" alt="" /></div>
+				<div class="feedinfo">
+					<ul>
+						<li id="feed_member_nick"></li>
+						<li id="feed_createAt"></li>
+					</ul>
+				</div>
+				</a>
+			</div>
+			<div class="feedcontent_cont">
+				<div class="feedmemo" id="feed_content">
+				</div>
+				<div class="feed_video_section">
+					<img id="feed_first_img" src="/img/comment_profile1.png" class="img_detail"/>
+					<input type="hidden" class="img_detail_search_id" >
+					<p class="img_view_num"> 1 / <span id="feed_file_size"></span> </p>
+				</div>
+			</div>
+			<div class="feedcontent_footer">
+				<ul>
+					<li class="comment-toggle"><i><img src="/img/feedbtn_0.png" alt="" /></i>댓글<span class="comment_cnt"></span></li>
+					<li class="feed_share"><i><img src="/img/feedbtn_1.png" alt="" /></i>공유</li>
+					<li class="feed_like_toggle">
+						<i><img src="/img/feedbtn_2.png" alt="" class="feed_like_img"/></i>좋아요<span class="feed_cnt"></span>
+						<input type="hidden" class="like_feed_id">
+					</li>
+				</ul>
+			</div>
+			<div class="comment_wrap feedcomment_wrap">
+				<h3 class="content_title">댓글<span class="comment_cnt"></span></h3>
+				<form action="#" role="form" enctype="utf-8"
+				th:object="${paramData}" method="post" class="feed_comment_insert_form">
+				<input type="hidden" name="feedId" class="feedId">
+				<div class="inputbox mt0">
+					<textarea class="form-control comment_input" name="content" onsubmit="return false;"></textarea>
+					<input type="hidden" style="display: none;">
+					<button class="btn btn-dark btn-custom comment_btn btn_feed_comment" type="button">등록</button>
+				</div>
+				</form>
+				<div class="comment_list_wrap feed_comment_list_result">
+					<div class="comment_list feed_comment_form" >
+						<div class="feedprofile">
+							<!-- <img src="/img/comment_profile1.png" alt="" /> -->
+							<a id="feed_comment_member_url" >
+							<img id="feed_comment_member_profile" src="/img/comment_profile1.png" alt="" />
+							</a>
+						</div>
+						<div class="comment_content" >
+							<h3 class="comment_id" ></h3>
+
+							<p class="comment_memo comment_update_form feed_comment_content" id="feed_comment_content"></p>
+							<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_update">
+							<input type="hidden" id="feedCommentId" name="feedCommentId" class="feedCommentId">
+							<input type="hidden" id="feedId" name="feedId" class="feedId">
+							<div class="inputbox w677 comment_change_form" style="display: none;">
+								<textarea class="form-control comment_input_ver2 feed_update_content" name="content"></textarea>
+								<button class="btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update" type="button">저장</button>
+							</div>
+							</form>
+						</div>
+						<div class="comment_day_wrap">
+							<p class="comment_day" id="comment_createAt" ></p>
+							<form action="#" role="form" enctype="utf-8" method="post" class="comment_delete_form">
+							<input type="hidden" name="feedCommentId" class="feedCommentId">
+							<input type="hidden" name="feedId" class="feedId">
+							<ul class="comment_update_form" id="registrantFlag" >
+								<li class="btn_updateForm">수정</li>
+								<li class="btn_delete">삭제</li>
+							</ul>
+							</form>
+							<ul class="comment_change comment_change_form" style="display: none;">
+								<li class="btn_update_cancel">취소</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_paging">
+				<input type="hidden" name="feedId" class="feedId">
+				<input type="hidden" name="pageSize" class="feed_page_size">
+				<div id="feed_comment_more" class="showmore_wrap" >
+					<p class="feed_next_paging">
+						SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i>
+					</p>
+				</div>
+				</form>
+			</div>
+		</div>
+		
+		<div class="feed_content parentFlag" id="myFeed_sample" style="display: none;">
+			<div class="feedcontent_head">
+				<a id="feed_memberUrl">
+				<div class="feedprofile"><img id="feed_member_profile" alt="" /></div>
+				<div class="feedinfo">
+					<ul>
+						<li id="feed_member_nick"></li>
+						<li id="feed_createAt"></li>
+					</ul>
+				</div>
+				</a>
+				<div class="feed_menu">
+					<img src="/img/menu2.png" alt="">
+					<ul class="feed_option feed_option_off">
+						<li class="btn_feed_update feedId" data-target="#feed_update" data-toggle="modal" id="myFeed_feedId">수정하기</li>
+						<li class="btn_feed_delete">
+						<form action="#" class="feedDeleteForm" th:action="@{/feed/feedDelete}" role="form" enctype="utf-8" th:object="${paramData}" method="post">
+							<input type="hidden" name="feedId" class="feedId" >
+							삭제하기
+						</form>
+						</li>
+						<li id="ALL" class="myFeed_publicRange_update ALL">전체공개</li>
+						<li id="LIKE" class="myFeed_publicRange_update LIKE">좋아요 공개</li>
+						<li id="PRIVATE" class="myFeed_publicRange_update PRIVATE">나만보기</li>
+					</ul>
+				</div>
+			</div>
+			<div class="feedcontent_cont">
+				<div class="feedmemo" id="feed_content">
+				</div>
+				<div class="feed_video_section">
+					<img id="feed_first_img" src="/img/comment_profile1.png" class="img_detail"/>
+					<input type="hidden" class="img_detail_search_id" >
+					<p class="img_view_num"> 1 / <span id="feed_file_size"></span> </p>
+				</div>
+			</div>
+			<div class="feedcontent_footer">
+				<ul>
+					<li class="comment-toggle"><i><img src="/img/feedbtn_0.png" alt="" /></i>댓글<span class="comment_cnt"></span></li>
+					<li class="feed_share"><i><img src="/img/feedbtn_1.png" alt="" /></i>공유</li>
+					<li class="feed_like_toggle">
+						<i><img src="/img/feedbtn_2.png" alt="" class="feed_like_img"/></i>좋아요<span class="feed_cnt"></span>
+						<input type="hidden" class="like_feed_id">
+					</li>
+				</ul>
+			</div>
+			<div class="comment_wrap feedcomment_wrap">
+				<h3 class="content_title">댓글<span class="comment_cnt"></span></h3>
+				<form action="#" role="form" enctype="utf-8"
+				th:object="${paramData}" method="post" class="feed_comment_insert_form">
+				<input type="hidden" name="feedId" class="feedId">
+				<div class="inputbox mt0">
+					<textarea class="form-control comment_input" name="content" onsubmit="return false;"></textarea>
+					<input type="hidden" style="display: none;">
+					<button class="btn btn-dark btn-custom comment_btn btn_feed_comment" type="button">등록</button>
+				</div>
+				</form>
+				<div class="comment_list_wrap feed_comment_list_result">
+					<div class="comment_list feed_comment_form" >
+						<div class="feedprofile">
+							<!-- <img src="/img/comment_profile1.png" alt="" /> -->
+							<a id="myFeed_comment_member_url" >
+							<img id="myFeed_comment_member_profile" src="/img/comment_profile1.png" alt="" />
+							</a>
+						</div>
+						<div class="comment_content" >
+							<h3 class="comment_id" ></h3>
+
+							<p class="comment_memo comment_update_form feed_comment_content" id="feed_comment_content"></p>
+							<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_update">
+							<input type="hidden" id="feedCommentId" name="feedCommentId" class="feedCommentId">
+							<input type="hidden" id="feedId" name="feedId" class="feedId">
+							<div class="inputbox w677 comment_change_form" style="display: none;">
+								<textarea class="form-control comment_input_ver2 feed_update_content" name="content"></textarea>
+								<button class="btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update" type="button">저장</button>
+							</div>
+							</form>
+						</div>
+						<div class="comment_day_wrap">
+							<p class="comment_day" id="comment_createAt" ></p>
+							<form action="#" role="form" enctype="utf-8" method="post" class="comment_delete_form">
+							<input type="hidden" name="feedCommentId" class="feedCommentId">
+							<input type="hidden" name="feedId" class="feedId">
+							<ul class="comment_update_form" id="registrantFlag" >
+								<li class="btn_updateForm">수정</li>
+								<li class="btn_delete">삭제</li>
+							</ul>
+							</form>
+							<ul class="comment_change comment_change_form" style="display: none;">
+								<li class="btn_update_cancel">취소</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_paging">
+				<input type="hidden" name="feedId" class="feedId">
+				<input type="hidden" name="pageSize" class="feed_page_size">
+				<div id="feed_comment_more" class="showmore_wrap" >
+					<p class="feed_next_paging">
+						SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i>
+					</p>
+				</div>
+				</form>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+			$('#feed_input_file').click(function(){
+				$('#feedImg').click();
+			});
+			$('#li_img_add').click(function(){
+				$('#feedImg').click();
+			});
+
+			$('#modal_feed_input_file').click(function(){
+				$('#upt_feedImg').click();
+			});
+			$('#modal_li_img_add').click(function(){
+				$('#upt_feedImg').click();
+			});
+
+			$('#modal_email').keydown(function(event){
+				if (event.keyCode == "13") {
+					$('#btn_artist_find').click();
+			    }
+
+			});
+
+			// multiple 파일 업로드
+		    var fileList = [];
+		    $('#feedImg').change(function(e){
+		    	
+		    	if(fileList.length > 20 || e.target.files.length > 20){
+		    		UPMusic.alert('이미지 파일은 최대 20개 까지만 등록할 수 있습니다.');
+		    		return false;
+		    	}
+
+		    	for(var i=0; i<e.target.files.length; i++){
+		    		var temp = e.target.files[i].name.split('.');
+		            var fileExt = temp[temp.length-1].toLowerCase();
+
+		    		if(fileExt == "jpg" || fileExt == "jpeg" || fileExt == "png" || fileExt == "gif" || fileExt == "bmp"){
+		            	var li = $('#li_clone').clone();
+		            	li.css('background', 'url('+ URL.createObjectURL(e.target.files[i]) +') center center').css('background-size', 'cover');
+				    	$('#img_ul').prepend(li);
+				    	li.show();
+
+				    	fileList.push(e.target.files[i]);
+		            }else{
+		            	UPMusic.alert('이미지 형태의 파일만 업로드 할 수 있습니다.');
+		            	return false;
+		            }
+		    	}
+
+                console.log(fileList);
+
+	    	    $('#feedImg').val('');
+
+	    	  	//2018-08-03 인풋에 x클릭하면 해당박스 사라짐
+	    		$(".close_imgbox").click(function(){
+	    			var index = $(this).parent("li").index();
+	    			fileList[index] = null;
+	    			$(this).parent("li").fadeOut(300);
+	    			
+	    			if($(this).parent("li:last").index() > 1){
+			    		$('#btn_feed_insert').show();
+		    	  	}else{
+		    	  		$('#btn_feed_insert').hide();
+		    	  	}
+	    	    });
+	    	  	
+	    		if(fileList.length > 0){
+		    		$('#btn_feed_insert').show();
+	    	  	}else{
+	    	  		$('#btn_feed_insert').hide();
+	    	  	}
+
+		    });
+
+		    // 수정 창 파일 업로드
+		    var modal_fileList = [];
+		    $('#upt_feedImg').change(function(e){
+
+		    	if(modal_fileList.length > 20){
+		    		UPMusic.alert('이미지 파일은 최대 20개 까지만 등록할 수 있습니다.');
+		    		return false;
+		    	}
+
+		    	for(var i=0; i<e.target.files.length; i++){
+		    		var temp = e.target.files[i].name.split('.');
+		            var fileExt = temp[temp.length-1].toLowerCase();
+
+		    		if(fileExt == "jpg" || fileExt == "jpeg" || fileExt == "png" || fileExt == "gif" || fileExt == "bmp"){
+		            	var li = $('#modal_li_clone').clone();
+		            	li.css('background', 'url('+ URL.createObjectURL(e.target.files[i]) +') center center').css('background-size', 'cover');
+				    	$('#modal_img_ul').prepend(li);
+				    	li.show();
+
+				    	modal_fileList.push(e.target.files[i]);
+		            }else{
+		            	UPMusic.alert('이미지 형태의 파일만 업로드 할 수 있습니다.');
+		            	return false;
+		            }
+		    	}
+
+	    	    $('#upt_feedImg').val('');
+
+	    	  	//2018-08-03 인풋에 x클릭하면 해당박스 사라짐
+	    		$(".modal_close_imgbox").click(function(){
+	    			var index = $(this).parent("li").index();
+	    			modal_fileList[index] = null;
+	    			$(this).parent("li").fadeOut(300);
+	    	    });
+
+		    });
+		    
+		    
+		    // 2018-10-10 피드 내용을 작성하거나, 이미지를 등록할시에만 등록 버튼 노출하도록
+		    $('#feed_insert_content').keyup(function(){
+		    	var feed_insert_content = $('#feed_insert_content').val();
+		    	
+		    	if(feed_insert_content.length > 0){
+		    		$('#btn_feed_insert').show();
+		    	}else{
+		    		$('#btn_feed_insert').hide();
+		    	}
+		    });
+		    
+		    $('#btn_feed_insert').click(function(){
+		    	var form = $('#feedInsertForm')[0];
+		        var formData = new FormData(form);
+		        for(var i=0; i<fileList.length; i++){
+		            formData.append("feedImg", fileList[i]);
+		        }
+		        
+		        $.ajax({
+		            type : 'post',
+		            url : '/api/feed/insert.json',
+		            data : formData,
+		            processData : false,
+		            contentType : false,
+		            success : function(data){
+		            	UPMusic.alert("피드 등록이 완료 되었습니다.");
+		            	UPMusic.goto("/feed");
+		            }
+		        });
+		    });
+
+		    var modal_html_1 = "";
+		    imgDetail(modal_html_1);
+
+		    // 피드 수정
+		    $('#btn_feed_upt').click(function(){
+		    	var form = $('#feedUptForm')[0];
+		        var formData = new FormData(form);
+		        for(var i=0; i<modal_fileList.length; i++){
+		            formData.append("feedImg", modal_fileList[i]);
+		        }
+		        var pageSize = $('#my_feed_more').closest('.showmore_wrap').find('#my_feed_pageSize').val();
+	    		formData.append("myFeedPage", pageSize);
+	    		
+		        $.ajax({
+		            type : 'post',
+		            url : '/api/feed/feedUpdate.json',
+		            data : formData,
+		            processData : false,
+		            contentType : false,
+		            success : function(data){
+		            	UPMusic.alert("피드 수정이 완료 되었습니다.");
+		            	//location.reload();
+		            	$('#feed_update').modal('hide');
+		            	$('#my_feed_div').empty();
+		            	myFeedSetting(data, modal_html_1);
+		            	myFeedMore();
+		            	feedUpdateForm();
+		            	feedDelete();
+		            	feedSelectboxOption();
+		            }
+		        });
+		    });
+
+		    commentDelete();
+		    reBindEvent();
+		    commentUpdate();
+		    commentInsert();
+		    feedCommentPaging();
+		    feedLikeToggle();
+		    allFeedMore();
+		    feedHomeMore();
+		    myFeedMore();
+		    feedUpdateForm();
+        	feedDelete();
+        	feedSelectboxOption();
+        	feedPublicRangeUpdate();
+        	feedShare();
+
+		    $('#all_feed').on('click', function(){
+		    	$.ajax({
+		            type : 'get',
+		            url : '/api/feed/allFeed.json',
+		            success : function(data){
+		            	$('#all_feed_div').empty();
+		            	allFeedSetting(data, modal_html_1);
+		            	allFeedMore();
+		            }
+		        });
+		    });
+		    
+		    $('#feed_home').on('click', function(){
+		    	$.ajax({
+		            type : 'get',
+		            url : '/api/feed/feedHome.json',
+		            success : function(data){
+		            	$('#feed_home_div').empty();
+		            	feedHomeSetting(data, modal_html_1);
+		            	feedHomeMore();
+		            }
+		        });
+		    });
+		    
+		    $('#my_feed').on('click', function(){
+		    	$.ajax({
+		            type : 'get',
+		            url : '/api/feed/myFeed.json',
+		            success : function(data){
+		            	$('#my_feed_div').empty();
+		            	myFeedSetting(data, modal_html_1);
+		            	myFeedMore();
+		            	feedUpdateForm();
+		            	feedDelete();
+		            	feedSelectboxOption();
+		            	feedPublicRangeUpdate();
+		            }
+		        });
+		    });
+		    
+		    function allFeedSetting(data, modal_html_1){
+		    	for(var i=0; i<data.allFeedList.content.length; i++){
+            		var resultObj = data.allFeedList.content[i];
+            		
+            		var feedSample = $('#feed_sample').clone();
+            		feedSample.find('#feed_memberUrl').attr('href', resultObj.memberUrl);
+            		feedSample.find('#feed_member_profile').attr('src', resultObj.memberProfileUrl);
+            		feedSample.find('#feed_member_nick').html(resultObj.member.nick);
+            		feedSample.find('#feed_createAt').html(resultObj.createAtFomatStr);
+            		feedSample.find('#feed_content').html(resultObj.content);
+            		feedSample.find('#feed_first_img').attr('src', resultObj.firstImg);
+            		feedSample.find('.img_detail_search_id').val(resultObj.feedId);
+            		feedSample.find('#feed_file_size').html(resultObj.fileSize);
+            		feedSample.find('.comment_cnt').html(resultObj.commentCnt);
+            		feedSample.find('.feed_cnt').html(resultObj.likeCnt);
+            		feedSample.find('.feed_like_toggle').removeClass('feedbtn_on');
+            		feedSample.find('.feed_like_toggle').addClass(resultObj.feedLikeClass);
+            		feedSample.find('.feed_like_img').attr('src', '/img/feedbtn_2.png');
+            		feedSample.find('.feed_like_img').attr('src', resultObj.feedLikeImgUrl);
+            		feedSample.find('.like_feed_id').val(resultObj.feedId);
+            		feedSample.find('.feedId').val(resultObj.feedId);
+            		if(resultObj.fileSize < 1){
+            			feedSample.find('.feed_video_section').hide();
+            		}else{
+            			feedSample.find('.feed_video_section').show();
+            		}
+            		
+            		var result = "";
+            		for(var j=0; j<resultObj.feedCommentListDate.content.length; j++){
+            			var dataObj = resultObj.feedCommentListDate.content[j];
+            			
+            			result += "<div class='comment_list feed_comment_form'><div class='feedprofile'>";
+                		result += "<a href='" + dataObj.memberUrl + "'>";
+    	        		result += "<img src='" + dataObj.memberImgUrl + "' /></a>";
+    	        		result += "</div><div class='comment_content'><h3 class='comment_id'>" + dataObj.member.nick + "</h3>";
+    	        		result += "<p class='comment_memo comment_update_form feed_comment_content'>" + (dataObj.content).replace(/\n/g, "<br />"); + "</p>";
+    	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='feed_comment_update'>";
+    	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+    	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + resultObj.feedId + "'>";
+    	        		result += "<div class='inputbox w677 comment_change_form' style='display: none;'>";
+    	        		result += "<textarea class='form-control comment_input_ver2 feed_update_content' name='content'></textarea>";
+    	        		result += "<button class='btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update' type='button'>저장</button></div></form></div>";
+    	        		result += "<div class='comment_day_wrap'>";
+    	        		result += "<p class='comment_day' id='comment_createAt'>" + dataObj.createdAtFormat + "</p>";
+    	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='comment_delete_form'>";
+    	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+    	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + resultObj.feedId + "'>";
+    	        		if(dataObj.registrantFlag) {
+    	        			result += "<ul class='comment_update_form'>";
+    	        			result += "<li class='btn_updateForm'>수정</li>";
+    	        			result += "<li class='btn_delete'>삭제</li></ul></form>";
+    	        		}
+    	        		result += "<ul class='comment_change comment_change_form' style='display: none;'>";
+    	        		result += "<li class='btn_update_cancel'>취소</li>";
+    	        		result += "</ul></div></div>";
+            		}
+            		
+            		var list = feedSample.find('.feed_comment_list_result');
+                	list.empty();
+                	list.append(result);
+                	
+                	var comment_totalPage = resultObj.commentTotalPage;
+					var comment_size = resultObj.feedCommentListDate.content.length;
+                	
+                	if(comment_size < 5){
+                		comment_size = 0;
+                	}
+                	
+                	feedSample.find('.feed_page_size').val(comment_size);
+                	feedSample.find('.feedId').val(resultObj.feedId);
+                	
+                	if(comment_totalPage <=	 1){
+                		feedSample.find('.showmore_wrap').hide();
+                	}else{
+                		feedSample.find('.showmore_wrap').show();
+                	}
+                	
+                	
+                	feedSample.show();
+                	$('#all_feed_div').append(feedSample);
+            		
+            	}
+            	
+            	var feedTotalPage = data.totalPage;
+            	
+            	if(feedTotalPage <= 1){
+            		$('#all_feed_more').hide();
+            	}else{
+            		$('#all_feed_more').show();
+            		$('#all_feed_pageSize').val(data.allFeedList.content.length);
+            	}
+            	
+            	$(".comment-toggle").parents("ul").parents().siblings(".feedcomment_wrap").hide();
+            	$(".comment-toggle").click(function(){
+        			$(this).parents("ul").parents().siblings(".feedcomment_wrap").slideToggle();
+        		});
+            	reBindEvent();
+            	commentDelete();
+            	commentUpdate();
+            	commentInsert();
+            	feedCommentPaging();
+            	feedLikeToggle();
+            	feedShare();
+            	
+            	$('.img_detail').unbind();
+            	modal_html_1 = "";
+            	imgDetail(modal_html_1);
+		    }
+		    
+		    function feedHomeSetting(data, modal_html_1){
+		    	for(var i=0; i<data.feedHomeList.content.length; i++){
+            		var resultObj = data.feedHomeList.content[i];
+            		
+            		var feedSample = $('#feed_sample').clone();
+            		feedSample.find('#feed_memberUrl').attr('href', resultObj.memberUrl);
+            		feedSample.find('#feed_member_profile').attr('src', resultObj.memberProfileUrl);
+            		feedSample.find('#feed_member_nick').html(resultObj.member.nick);
+            		feedSample.find('#feed_createAt').html(resultObj.createAtFomatStr);
+            		feedSample.find('#feed_content').html(resultObj.content);
+            		feedSample.find('#feed_first_img').attr('src', resultObj.firstImg);
+            		feedSample.find('.img_detail_search_id').val(resultObj.feedId);
+            		feedSample.find('#feed_file_size').html(resultObj.fileSize);
+            		feedSample.find('.comment_cnt').html(resultObj.commentCnt);
+            		feedSample.find('.feed_cnt').html(resultObj.likeCnt);
+            		feedSample.find('.feed_like_toggle').removeClass('feedbtn_on');
+            		feedSample.find('.feed_like_toggle').addClass(resultObj.feedLikeClass);
+            		feedSample.find('.feed_like_img').attr('src', '/img/feedbtn_2.png');
+            		feedSample.find('.feed_like_img').attr('src', resultObj.feedLikeImgUrl);
+            		feedSample.find('.like_feed_id').val(resultObj.feedId);
+            		feedSample.find('.feedId').val(resultObj.feedId);
+            		if(resultObj.fileSize < 1){
+            			feedSample.find('.feed_video_section').hide();
+            		}else{
+            			feedSample.find('.feed_video_section').show();
+            		}
+            		
+            		var result = "";
+            		for(var j=0; j<resultObj.feedCommentListDate.content.length; j++){
+            			var dataObj = resultObj.feedCommentListDate.content[j];
+            			
+            			result += "<div class='comment_list feed_comment_form'><div class='feedprofile'>";
+                		result += "<a href='" + dataObj.memberUrl + "'>";
+    	        		result += "<img src='" + dataObj.memberImgUrl + "' /></a>";
+    	        		result += "</div><div class='comment_content'><h3 class='comment_id'>" + dataObj.member.nick + "</h3>";
+    	        		result += "<p class='comment_memo comment_update_form feed_comment_content'>" + (dataObj.content).replace(/\n/g, "<br />"); + "</p>";
+    	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='feed_comment_update'>";
+    	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+    	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + resultObj.feedId + "'>";
+    	        		result += "<div class='inputbox w677 comment_change_form' style='display: none;'>";
+    	        		result += "<textarea class='form-control comment_input_ver2 feed_update_content' name='content'></textarea>";
+    	        		result += "<button class='btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update' type='button'>저장</button></div></form></div>";
+    	        		result += "<div class='comment_day_wrap'>";
+    	        		result += "<p class='comment_day' id='comment_createAt'>" + dataObj.createdAtFormat + "</p>";
+    	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='comment_delete_form'>";
+    	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+    	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + resultObj.feedId + "'>";
+    	        		if(dataObj.registrantFlag) {
+    	        			result += "<ul class='comment_update_form'>";
+    	        			result += "<li class='btn_updateForm'>수정</li>";
+    	        			result += "<li class='btn_delete'>삭제</li></ul></form>";
+    	        		}
+    	        		result += "<ul class='comment_change comment_change_form' style='display: none;'>";
+    	        		result += "<li class='btn_update_cancel'>취소</li>";
+    	        		result += "</ul></div></div>";
+            		}
+            		
+            		var list = feedSample.find('.feed_comment_list_result');
+                	list.empty();
+                	list.append(result);
+                	
+                	var comment_totalPage = resultObj.commentTotalPage;
+					var comment_size = resultObj.feedCommentListDate.content.length;
+                	
+                	if(comment_size < 5){
+                		comment_size = 0;
+                	}
+                	
+                	feedSample.find('.feed_page_size').val(comment_size);
+                	feedSample.find('.feedId').val(resultObj.feedId);
+                	
+                	if(comment_totalPage <=	 1){
+                		feedSample.find('.showmore_wrap').hide();
+                	}else{
+                		feedSample.find('.showmore_wrap').show();
+                	}
+                	
+                	feedSample.show();
+                	$('#feed_home_div').append(feedSample);
+            		
+            	}
+            	
+            	var feedTotalPage = data.totalPage;
+            	
+            	if(feedTotalPage <= 1){
+            		$('#feed_home_more').hide();
+            	}else{
+            		$('#feed_home_more').show();
+            		$('#feed_home_pageSize').val(data.feedHomeList.content.length);
+            	}
+            	
+            	$(".comment-toggle").parents("ul").parents().siblings(".feedcomment_wrap").hide();
+            	$(".comment-toggle").click(function(){
+        			$(this).parents("ul").parents().siblings(".feedcomment_wrap").slideToggle();
+        		});
+            	reBindEvent();
+            	commentDelete();
+            	commentUpdate();
+            	commentInsert();
+            	feedCommentPaging();
+            	feedLikeToggle();
+            	feedShare();
+            	
+            	$('.img_detail').unbind();
+            	modal_html_1 = "";
+            	imgDetail(modal_html_1);
+		    }
+		    
+		    function myFeedSetting(data, modal_html_1){
+		    	for(var i=0; i<data.myFeedList.content.length; i++){
+            		var resultObj = data.myFeedList.content[i];
+            		
+            		var feedSample = $('#myFeed_sample').clone();
+            		feedSample.find('#feed_memberUrl').attr('href', resultObj.memberUrl);
+            		feedSample.find('#feed_member_profile').attr('src', resultObj.memberProfileUrl);
+            		feedSample.find('#feed_member_nick').html(resultObj.member.nick);
+            		feedSample.find('#feed_createAt').html(resultObj.createAtFomatStr);
+            		feedSample.find('#feed_content').html(resultObj.content);
+            		feedSample.find('#feed_first_img').attr('src', resultObj.firstImg);
+            		feedSample.find('.img_detail_search_id').val(resultObj.feedId);
+            		feedSample.find('#feed_file_size').html(resultObj.fileSize);
+            		feedSample.find('.comment_cnt').html(resultObj.commentCnt);
+            		feedSample.find('.feed_cnt').html(resultObj.likeCnt);
+            		feedSample.find('.feed_like_toggle').removeClass('feedbtn_on');
+            		feedSample.find('.feed_like_toggle').addClass(resultObj.feedLikeClass);
+            		feedSample.find('.feed_like_img').attr('src', '/img/feedbtn_2.png');
+            		feedSample.find('.feed_like_img').attr('src', resultObj.feedLikeImgUrl);
+            		feedSample.find('.like_feed_id').val(resultObj.feedId);
+            		feedSample.find('.feedId').val(resultObj.feedId);
+            		
+            		feedSample.find('.ALL').removeClass('feedoption_on');
+            		feedSample.find('.LIKE').removeClass('feedoption_on');
+            		feedSample.find('.PRIVATE').removeClass('feedoption_on');
+            		
+            		feedSample.find('.' + resultObj.publicRange.toString()).addClass('feedoption_on');
+            		if(resultObj.fileSize < 1){
+            			feedSample.find('.feed_video_section').hide();
+            		}else{
+            			feedSample.find('.feed_video_section').show();
+            		}
+            		
+            		var result = "";
+            		for(var j=0; j<resultObj.feedCommentListDate.content.length; j++){
+            			var dataObj = resultObj.feedCommentListDate.content[j];
+            			
+            			result += "<div class='comment_list feed_comment_form'><div class='feedprofile'>";
+                		result += "<a href='" + dataObj.memberUrl + "'>";
+    	        		result += "<img src='" + dataObj.memberImgUrl + "' /></a>";
+    	        		result += "</div><div class='comment_content'><h3 class='comment_id'>" + dataObj.member.nick + "</h3>";
+    	        		result += "<p class='comment_memo comment_update_form feed_comment_content'>" + (dataObj.content).replace(/\n/g, "<br />"); + "</p>";
+    	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='feed_comment_update'>";
+    	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+    	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + resultObj.feedId + "'>";
+    	        		result += "<div class='inputbox w677 comment_change_form' style='display: none;'>";
+    	        		result += "<textarea class='form-control comment_input_ver2 feed_update_content' name='content'></textarea>";
+    	        		result += "<button class='btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update' type='button'>저장</button></div></form></div>";
+    	        		result += "<div class='comment_day_wrap'>";
+    	        		result += "<p class='comment_day' id='comment_createAt'>" + dataObj.createdAtFormat + "</p>";
+    	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='comment_delete_form'>";
+    	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+    	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + resultObj.feedId + "'>";
+    	        		if(dataObj.registrantFlag) {
+    	        			result += "<ul class='comment_update_form'>";
+    	        			result += "<li class='btn_updateForm'>수정</li>";
+    	        			result += "<li class='btn_delete'>삭제</li></ul></form>";
+    	        		}
+    	        		result += "<ul class='comment_change comment_change_form' style='display: none;'>";
+    	        		result += "<li class='btn_update_cancel'>취소</li>";
+    	        		result += "</ul></div></div>";
+            		}
+            		
+            		var list = feedSample.find('.feed_comment_list_result');
+                	list.empty();
+                	list.append(result);
+                	
+                	var comment_totalPage = resultObj.commentTotalPage;
+                	var comment_size = resultObj.feedCommentListDate.content.length;
+                	
+                	if(comment_size < 5){
+                		comment_size = 0;
+                	}
+                	
+                	feedSample.find('.feed_page_size').val(comment_size);
+                	feedSample.find('.feedId').val(resultObj.feedId);
+                	
+                	if(comment_totalPage <=	 1){
+                		feedSample.find('.showmore_wrap').hide();
+                	}else{
+                		feedSample.find('.showmore_wrap').show();
+                	}
+                	
+                	feedSample.show();
+                	$('#my_feed_div').append(feedSample);
+            		
+            	}
+            	
+            	var feedTotalPage = data.totalPage;
+            	
+            	if(feedTotalPage <= 1){
+            		$('#my_feed_more').hide();
+            	}else{
+            		$('#my_feed_more').show();
+            		$('#my_feed_pageSize').val(data.myFeedList.content.length);
+            	}
+            	
+            	$(".comment-toggle").parents("ul").parents().siblings(".feedcomment_wrap").hide();
+            	$(".comment-toggle").click(function(){
+        			$(this).parents("ul").parents().siblings(".feedcomment_wrap").slideToggle();
+        		});
+            	reBindEvent();
+            	commentDelete();
+            	commentUpdate();
+            	commentInsert();
+            	feedCommentPaging();
+            	feedLikeToggle();
+            	feedShare();
+            	
+            	$('.img_detail').unbind();
+            	modal_html_1 = "";
+            	imgDetail(modal_html_1);
+            	
+            	$(".feed_menu").click(function() {
+	           	    if ( $(this).children(".feed_option").hasClass("feed_option_off") ){
+	           			$(this).children(".feed_option").removeClass("feed_option_off");
+	           	    }else{
+	           	        $(this).children(".feed_option").addClass("feed_option_off")
+	           	    }
+           		});
+		    }
+		    
+		    function allFeedMore(){
+		    	$('#all_feed_more').unbind();
+		    	$('#all_feed_more').on('click', function(e){
+		    		var pageSize = $(e.target).closest('.showmore_wrap').find('#all_feed_pageSize').val();
+		    		
+		    		$.ajax({
+			            type : 'get',
+			            url : '/api/feed/allFeed.json',
+			            data : {
+			            	"allFeedPage" : pageSize
+			            },
+			            success : function(data){
+			            	$('#all_feed_div').empty();
+			            	allFeedSetting(data, modal_html_1);
+			            }
+			        });
+		    		
+			    });
+		    }
+		    
+		    function feedHomeMore(){
+		    	$('#feed_home_more').unbind();
+		    	$('#feed_home_more').on('click', function(e){
+		    		var pageSize = $(e.target).closest('.showmore_wrap').find('#feed_home_pageSize').val();
+		    		
+		    		$.ajax({
+			            type : 'get',
+			            url : '/api/feed/feedHome.json',
+			            data : {
+			            	"feedHomePage" : pageSize
+			            },
+			            success : function(data){
+			            	$('#feed_home_div').empty();
+			            	feedHomeSetting(data, modal_html_1);
+			            }
+			        });
+		    		
+			    });
+		    }
+		    
+		    function myFeedMore(){
+		    	$('#my_feed_more').unbind();
+		    	$('#my_feed_more').on('click', function(e){
+		    		var pageSize = $(e.target).closest('.showmore_wrap').find('#my_feed_pageSize').val();
+		    		
+		    		$.ajax({
+			            type : 'get',
+			            url : '/api/feed/myFeed.json',
+			            data : {
+			            	"myFeedPage" : pageSize
+			            },
+			            success : function(data){
+			            	$('#my_feed_div').empty();
+			            	myFeedSetting(data, modal_html_1);
+			            	feedUpdateForm();
+			            	feedDelete();
+			            	feedSelectboxOption();
+			            }
+			        });
+		    		
+			    });
+		    }
+
+		    function getCommentHtml(data, e){
+		    	var result = "";
+		    	for(var i=0; i<data.commentList.content.length; i++){
+            		var dataObj = data.commentList.content[i];
+            		result += "<div class='comment_list feed_comment_form'><div class='feedprofile'>";
+            		result += "<a href='" + dataObj.memberUrl + "'>";
+	        		result += "<img src='" + dataObj.memberImgUrl + "' /></a>";
+	        		result += "</div><div class='comment_content'><h3 class='comment_id'>" + dataObj.member.nick + "</h3>";
+	        		result += "<p class='comment_memo comment_update_form feed_comment_content'>" + (dataObj.content).replace(/\n/g, "<br />"); + "</p>";
+	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='feed_comment_update'>";
+	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + data.feedId + "'>";
+	        		result += "<div class='inputbox w677 comment_change_form' style='display: none;'>";
+	        		result += "<textarea class='form-control comment_input_ver2 feed_update_content' name='content'></textarea>";
+	        		result += "<button class='btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update' type='button'>저장</button></div></form></div>";
+	        		result += "<div class='comment_day_wrap'>";
+	        		result += "<p class='comment_day' id='comment_createAt'>" + dataObj.createdAtFormat + "</p>";
+	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='comment_delete_form'>";
+	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + data.feedId + "'>";
+	        		if(dataObj.registrantFlag) {
+	        			result += "<ul class='comment_update_form'>";
+	        			result += "<li class='btn_updateForm'>수정</li>";
+	        			result += "<li class='btn_delete'>삭제</li></ul></form>";
+	        		}
+	        		result += "<ul class='comment_change comment_change_form' style='display: none;'>";
+	        		result += "<li class='btn_update_cancel'>취소</li>";
+	        		result += "</ul></div></div>";
+            	}
+
+		    	$(e.target).closest('.parentFlag').find('.comment_cnt').html(data.commentCnt + "개");
+            	$(e.target).closest('.parentFlag').find('.comment_input').val('');
+            	var list = $(e.target).closest('.feedcomment_wrap').find('.feed_comment_list_result');
+            	
+            	list.empty();
+            	list.append(result);
+            	
+            	reBindEvent();
+            	commentDelete();
+            	commentUpdate();
+            	feedCommentPaging();
+		    }
+
+		    
+		    function commentInsert(){
+		    	// feed comment 등록
+		    	$('.btn_feed_comment').unbind();
+			    $('.btn_feed_comment').click(function(e){
+			    	
+			    	var content = $(e.target).closest('.feed_comment_insert_form').find('.comment_input').val();
+			    	if(content.length < 1){
+			    		UPMusic.alert('댓글 내용을 입력해 주세요');
+			    		return false;
+			    	}
+			    	
+					var byteCnt = UPMusic.byteCheck(content);
+					
+					if(byteCnt > 200){
+						UPMusic.alert('댓글 글자수는 한글기준 최대 100자를 초과할 수 없습니다.');
+						return false;
+					}
+			    	
+			    	var form = $(e.target).closest('.feed_comment_insert_form')[0];
+			    	var formData = new FormData(form);
+			    	var pageSize = Number($(e.target).closest('.feedcomment_wrap').find('.feed_page_size').val() - 5);
+			    	
+			    	if(pageSize < 0){
+			    		pageSize = 0;
+			    	}
+			    	
+			    	formData.append('pageSize', pageSize);
+			    	
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/comment_insert.json',
+			            data : formData,
+			            processData : false,
+			            contentType : false,
+			            success : function(data){
+			            	getCommentHtml(data, e);
+			            	
+			            	if(data.commentTotalPage <= 1){
+			           			$(e.target).parents('.feedcomment_wrap').find('.showmore_wrap').hide();
+			               	}else{
+			               		$(e.target).closest('.feedcomment_wrap').find('.showmore_wrap').show();
+			               	}
+			            }
+			        });
+
+			    });
+		    }
+
+		    function reBindEvent(){
+		    	$('.btn_updateForm').click(function(e){
+			    	$(e.target).closest('.comment_list').find('.comment_update_form').hide();
+			    	$(e.target).closest('.comment_list').find('.comment_change_form').show();
+			    });
+
+			    $('.btn_update_cancel').click(function(e){
+			    	$(e.target).closest('.comment_list').find('.comment_update_form').show();
+			    	$(e.target).closest('.comment_list').find('.comment_change_form').hide();
+			    });
+
+		    }
+
+		    function commentDelete(){
+		    	$('.btn_delete').on('click', function(e){
+		    		UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+		    			var form = $(e.target).closest('.comment_delete_form')[0];
+				    	var formData = new FormData(form);
+				    	var pageSize = Number($(e.target).closest('.feedcomment_wrap').find('.feed_page_size').val()) - 5;
+				    	
+				    	if(pageSize < 0){
+				    		pageSize = 0;
+				    	}
+				    	
+				    	formData.append('pageSize', pageSize);
+				    	
+				    	$.ajax({
+				            type : 'post',
+				            url : '/api/feed/comment_delete.json',
+				            data : formData,
+				            processData : false,
+				            contentType : false,
+				            success : function(data){
+				            	if(data.totalpage <= 1){
+				           			$(e.target).closest('.feedcomment_wrap').find('.showmore_wrap').hide();
+				               	}else{
+				               		$(e.target).closest('.feedcomment_wrap').find('.showmore_wrap').show();
+				               	}
+				            	
+				            	getCommentHtml(data, e);
+				            }
+				        });
+				    });
+			    });
+		    }
+
+		    function commentUpdate(){
+		    	$('.btn_comment_update').on('click', function(e){
+		    		
+		    		var content = $(e.target).closest('.feed_comment_update').find('.feed_update_content').val();
+		    		if(content.length < 1){
+		    			UPMusic.alert('댓글 내용을 입력해 주세요');
+			    		return false;
+		    		}
+		    		
+		    		var byteCnt = UPMusic.byteCheck(content);
+					
+					if(byteCnt > 200){
+						UPMusic.alert('댓글 글자수는 한글기준 최대 100자를 초과할 수 없습니다.');
+						return false;
+					}
+		    		
+		    		var form = $(e.target).closest('.feed_comment_update')[0];
+			    	var formData = new FormData(form);
+
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/comment_update.json',
+			            data : formData,
+			            processData : false,
+			            contentType : false,
+			            success : function(data){
+			            	$(e.target).closest('.feed_comment_form').find('.btn_update_cancel').click();
+			            	$(e.target).closest('.feed_comment_form').find('.feed_comment_content').html(data.content);
+			            	$(e.target).closest('.feed_comment_form').find('.feed_update_content').val('');
+			            }
+			        });
+		    	});
+		    }
+
+		    function getPageingHtml(data, e){
+		    	var result = "<div class='showmore_wrap'><p class=''>";
+		    	result += "SHOW MORE <i><img src='/img/show_ar.png' /></i></p></div>";
+
+		    }
+
+		    function feedCommentPaging(){
+		    	$('.feed_next_paging').unbind();
+		    	$('.feed_next_paging').on('click', function(e){
+		    		var form = $(e.target).closest('.feed_comment_paging')[0];
+			    	var formData = new FormData(form);
+			    	
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/comment_paging.json',
+			            data : formData,
+			            processData : false,
+			            contentType : false,
+			            success : function(data){
+			            	getCommentHtml(data, e);
+
+			            	$(e.target).closest('.feed_comment_paging').find('.feed_page_size').val(data.pageSize);
+			            	if(!data.hasNext){
+			            		$(e.target).closest('.feed_comment_paging').hide();
+			            	}
+			            }
+			        });
+		    	});
+		    }
+
+		    $('#btn_artist_find').click(function(){
+		    	var form = $('.artist_find_form')[0];
+		    	var formData = new FormData(form);
+
+		    	if ($('#modal_email').val().trim() == "") {
+		    	    UPMusic.alert("닉네임을 입력하여 주십시오.");
+		    	    return false;
+				}
+
+		    	//fix bug IE
+		    	formData.append('_method', 'POST');
+
+		    	$.ajax({
+		            type : 'post',
+		            url : '/api/feed/artist_find.json',
+		            data : formData,
+		            processData : false,
+		            contentType : false,
+		            success : function(data){
+
+		            	var html = "";
+		            	for(var i=0; i<data.result.length; i++){
+		            		var resultObj = data.result[i];
+		            		html += "<div class='search_result login_body1'>";
+		            		html += "<div class='artist_search_profile'>";
+		            		html += "<a href='" + resultObj.memberUrl + "'>";
+		            		html += "<img src='" + resultObj.imgUrl + "' style='height: 63px;'/></a></div>";
+		            		html += "<div class='artist_search_info'>";
+		            		html += "<a href='" + resultObj.memberUrl + "'>";
+		            		html += "<ul><li>" + resultObj.nick + "</li>";
+		            		html += "<li>" + resultObj.email + "</li></ul></a></div>";
+		            		html += "<div class='artist_search_like'>";
+		            		if(resultObj.liked){
+			            		html += "<div class='artist_search_heart likeToggle artist_search_heart_on'>";
+		            		}else{
+		            			html += "<div class='artist_search_heart likeToggle'>";
+		            		}
+		            		html += "<i><input type='hidden' class='artist_id' value='" + resultObj.id + "'><img src='/img/heart.png' /></i>";
+		            		html += "<span class='modal_like_cnt'>" +resultObj.heartCnt + "</span></div>";
+		            		html += "</div></div>";
+
+		            	}
+
+		            	$('#artist_find_result').empty();
+		            	$('#artist_find_result').append(html);
+		            	likerToggle();
+		            }
+		        });
+		    });
+
+		    function likerToggle(){
+		    	/*<![CDATA[*/
+			    var memberId = /*[[${id}]]*/;
+			    /*]]>*/
+		    	$('.likeToggle').on('click', function(e){
+		    		var artistId = $(e.target).closest('.likeToggle').find('.artist_id').val();
+		    		
+		    		if(artistId == memberId){
+				    	UPMusic.alert("본인입니다.", null);
+				    	return false;
+				    }
+		    		
+		    		$.ajax({
+			            type : 'post',
+			            url : '/api/feed/artist_like_toggle.json',
+			            data : {
+			            	"artist_id" : artistId
+			            },
+			            success : function(data){
+			            	var cnt = $(e.target).closest('.likeToggle').find('.modal_like_cnt').html();
+			            	var cntInt = Number(cnt);
+
+			            	if(data.result == "1"){
+			            		$(e.target).closest('.likeToggle').addClass('artist_search_heart_on');
+			            		$(e.target).closest('.likeToggle').find('.modal_like_cnt').html(cntInt + 1);
+			            	}else if(data.result == "0"){
+			            		$(e.target).closest('.likeToggle').removeClass('artist_search_heart_on');
+			            		$(e.target).closest('.likeToggle').find('.modal_like_cnt').html(cntInt - 1);
+			            	}
+			            }
+			        });
+		    	});
+		    }
+		    
+		    function imgDetail(modal_html_1){
+		    	// 이미지 상세보기
+			    $('.img_detail').on('click', function(e){
+			    	var img_detail_id = $(e.target).closest('.feed_video_section').find('.img_detail_search_id').val();
+
+			    	if (modal_html_1 == "") {
+						modal_html_1 = document.getElementById("img_detail").innerHTML;
+					} else {
+						document.getElementById("img_detail").innerHTML = "";
+						document.getElementById("img_detail").innerHTML = modal_html_1;
+					}
+
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/imgDetail.json',
+			            data : {
+			            	"feedId" : img_detail_id
+			            },
+			            dataType : "JSON",
+			            success : function(data){
+			            	for(var i=0; i<data.result.length; i++){
+			            		var li = $('#modal_img_detail_li').clone();
+			            		var resultObj = data.result[i];
+			            		li.css('background', 'url('+ resultObj.imgSrcText +') center center').css('background-size', 'cover');
+			            		li.find('.modal_img_detail_src').val(resultObj.imgSrcText);
+			            		li.show();
+
+			            		$('#modal_img_detail_list').prepend(li);
+			            	}
+
+			            	if(data.result.length > 0){
+			            		var mainSrc = $('#modal_img_detail_list').children('li').eq(0).find('.modal_img_detail_src').val();
+			            		$('#modal_img_detail_main').attr('src', mainSrc);
+			            	}
+
+			            	$('#img_detail').modal();
+
+			            	$(".img_view_list>ul>li").click(function(){
+			        			imgViewNum = $(this).index();
+			        			var mainSrc = $('#modal_img_detail_list').children('li').eq(imgViewNum).find('.modal_img_detail_src').val();
+			        			$(".img_view_itemwrap>img").attr("src", mainSrc);
+			        		});
+			            }
+			        });
+
+			    });
+		    	
+			    $('#img_detail').on('hidden.bs.modal', function(){
+			    	document.getElementById("img_detail").innerHTML = modal_html_1;
+			    });
+		    }
+		    
+		    function feedLikeToggle(){
+		    	// 좋아요 toggle
+		    	$('.feed_like_toggle').unbind();
+			    $('.feed_like_toggle').on('click', function(e){
+			    	var feedId = $(e.target).closest('.feed_like_toggle').find('.like_feed_id').val();
+				    
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/feedLike.json',
+			            data : {
+			            	"feedId" : feedId
+			            },
+			            success : function(data){
+			            	$(e.target).find('.feed_cnt').html(data);
+
+			            	// 같은 feedId의 피드 좋아요 동기화
+			            	$('.feed_like_toggle').each(function(){
+			            		var syncFeedId = $(this).find('.like_feed_id').val();
+			            		if(feedId == syncFeedId){
+			            			if($(this).hasClass('feedbtn_on')){
+			            				$(this).removeClass('feedbtn_on');
+				            			$(this).find('.feed_like_img').attr('src', '/img/feedbtn_2.png');
+			            			}else{
+			            				$(this).addClass('feedbtn_on');
+				            			$(this).find('.feed_like_img').attr('src', '/img/afeedbtn_2.png');
+			            			}
+			            			$(this).find('.feed_cnt').html(data);
+			            		}
+			            	});
+
+			            }
+			        });
+			    });
+		    }
+		    
+		    function feedUpdateForm(){
+		    	$('.btn_feed_update').unbind();
+		    	$('.btn_feed_update').on('click', function(e){
+					$('#feed_update_feedId').val($(e.target).val());
+					var content = $(e.target).closest('.parentFlag').find('.feedmemo').html();
+					$('#modal_feed_content').val(UPMusic.unescapeHTML(content));
+				});
+		    }
+		    
+		    function feedDelete(){
+		    	// 피드 삭제
+		    	$('.btn_feed_delete').unbind();
+				$('.btn_feed_delete').on('click', function(e){
+					UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+						//$(e.target).closest('.feedDeleteForm').submit();
+						var form = $('.feedDeleteForm')[0];
+				        var formData = new FormData(form);
+				        var pageSize = $('#my_feed_more').closest('.showmore_wrap').find('#my_feed_pageSize').val();
+			    		formData.append("myFeedPage", pageSize);
+						$.ajax({
+				            type : 'post',
+				            url : '/api/feed/feedDelete.json',
+				            data : formData,
+				            processData : false,
+				            contentType : false,
+				            success : function(data){
+				            	UPMusic.alert("피드 삭제 완료 되었습니다.", null);
+				            	$('#feed_update').modal('hide');
+				            	$('#my_feed_div').empty();
+				            	myFeedSetting(data, modal_html_1);
+				            	myFeedMore();
+				            	feedUpdateForm();
+				            	feedDelete();
+				            	feedSelectboxOption();
+				            }
+				        });
+				    });
+				});
+		    }
+		    
+		    function feedSelectboxOption(){
+		    	// 공개여부 선택
+				$('.selectbox_option').on('click', function(e){
+					var selectboxText = $(e.target).html();
+					var selectValue = $(e.target).attr('class');
+
+					$('#selectbox_seleted_text').html(selectboxText);
+					$('#publicRangeFormValue').val(selectValue);
+
+				});
+		    }
+		    
+		    function feedPublicRangeUpdate(){
+		    	$('.myFeed_publicRange_update').unbind();
+		    	$('.myFeed_publicRange_update').on('click', function(e){
+			        var pageSize = $('#my_feed_more').closest('.showmore_wrap').find('#my_feed_pageSize').val();
+			        var feedId = $(e.target).closest('#myFeed_sample').find('.feedId').val();
+			        var publicRangeFormValue = $(e.target).attr('id');
+			        
+					$.ajax({
+			            type : 'post',
+			            url : '/api/feed/feedPublicRangeUpdate.json',
+			            data : {
+			            	"feedId" : feedId,
+			            	"publicRangeFormValue" : publicRangeFormValue,
+			            	"myFeedPage" : pageSize
+			            },
+			            success : function(data){
+			            	UPMusic.alert("공개범위 수정이 완료 되었습니다.");
+			            	$('#my_feed_div').empty();
+			            	myFeedSetting(data, modal_html_1);
+			            	myFeedMore();
+			            	feedUpdateForm();
+			            	feedDelete();
+			            	feedSelectboxOption();
+			            	feedPublicRangeUpdate();
+			            }
+			        });
+		    	});
+		    }
+		    
+		    function feedShare(){
+		    	$('.feed_share').on('click', function(e){
+		    		var feedId = $(e.target).closest('.parentFlag').find('.like_feed_id').val();
+		    		
+		    		UPMShareModal.showShareFeedModal(feedId);
+		    		
+		    	});
+		    }
+
+		</script>
+
+
+
+	</div>
+
+</body>
+</html>

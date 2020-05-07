@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+    <div class="subpage_wrap">
+        <div class="production_section1 section">
+            <h2 class="page-title fl">메인 배너 관리</h2>
+            <div class="tab_design clear">
+                <ul>
+                    <li id="banner_event">이벤트 배너
+                        <div class="tab_line tab_line"></div>
+                    </li>
+                    <li id="banner_artist">아티스트 배너</li>
+                </ul>
+            </div>
+            <!--
+            <div class="tab_contentwrap">
+                <div class="tab_content active">
+                    <form action="#" th:action="@{/admin/main/banner/insert}" role="form" enctype="multipart/form-data" th:object="${paramData}" method="post">
+                        <div class="subpage_wrap section">
+                            <h2 class="page-title" id="titleBanner"></h2>
+                            <div class="membership_wrap">
+                                <ul>
+                                    <li>
+                                        <div id="form-group-imageFilename" class="form-group inputbox">
+                                            <div class="input-file">
+                                                <label class="input_title" id="title">이벤트 배너 썸네일 이미지</label>
+                                                <input th:type="text" id="imageFilename" placeholder="이미지를 등록하세요" class="form-control imgupload_input" onclick="$('.cropit-image-input').trigger('click');return false;" onkeypress="return event.keyCode != 13;"/>
+                                                <input type="file" name="thumbnailImg" id="cropit-image-input" class="cropit-image-input" style="display: none;"/>
+                                                <img th:src="@{/img/inputicon_img.png}" alt="" />
+                                            </div>
+                                        </div>
+                                        <div class="banner_view" style="display: none"></div>
+                                    </li>
+                                    <li>
+                                        <div class="inputbox">
+                                            <label class="input_title">링크</label>
+                                            <input type="text" placeholder="입력하세요." class="form-control" name="link" required="required">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="inputbox">
+                                            <label class="input_title">노출 여부</label>
+                                            <div>
+                                                <select class="form-control" name="shown" style="height: 50px;">
+                                                    <option value="1">노출</option>
+                                                    <option value="0">비노출</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="inputbox">
+                                            <label class="input_title">노출순서</label>
+                                            <input type="text" placeholder="입력하세요." class="form-control" name="orderNo" required="required">
+                                            <input type="hidden" name="bannerType" id="bannerType" value="0">
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="membership_btn mt50">
+                                <div class="btn_centerwrap btn_centerwrap2">
+                                    <button class="btn btn-custom btn-dark h50" type="submit">등록</button>
+                                    <button type="button" class="btn btn-custom2 h50" id="btn_delete">삭제</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            -->
+            <div style="margin-top: 10px;">
+                <button id="newBannerButton" class="btn btn-custom2 fr"><i><img src="img/add-event.png" alt="" /></i>배너 등록</button>
+            </div>
+            <div class="subpage_wrap section hide" id="mainSection">
+                <div class="membership_wrap">
+                    <div>
+                        <form action="#" th:action="@{/admin/main/banner/insert}" role="form" id="insertForm" enctype="multipart/form-data" th:object="${paramData}" method="post">
+                            <div class="inputbox_wrap" style="margin-bottom: 0px">
+                                <div class="input-videofile">
+                                    <label class="input_title">이미지 미리보기</label>
+                                </div>
+                                <div id="video-information" class="video-info-container w100p">등록된 이미지가 없습니다.</div>
+                                <ul>
+                                    <li>
+                                        <div class="form-group inputbox">
+                                            <label class="input_title">노출 여부</label>
+                                            <div>
+                                                <select class="form-control selectpicker clear w100p" name="shown" style="height: 50px;">
+                                                    <option value="1">노출</option>
+                                                    <option value="0">비노출</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-group inputbox">
+                                            <label class="input_title">노출순서</label>
+                                            <input type="text" placeholder="입력하세요." class="form-control" name="orderNo" required="required">
+                                            <input type="hidden" name="bannerType" id="bannerType" value="0">
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div id="form-group-imageFilename" class="form-group inputbox" style="margin-top: 0px;">
+                                <div class="input-file">
+                                    <label class="input_title" id="title">이미지 등록</label>
+                                    <input th:type="text" id="imageFilename" placeholder="여기를 눌러 이미지를 등록해 주세요" class="form-control imgupload_input" onclick="$('.cropit-image-input').trigger('click');return false;" onkeypress="return event.keyCode != 13;"/>
+                                    <input type="file" id="cropit-image-input" class="cropit-image-input hidden" style="display: none;"/>
+                                    <img th:src="@{/img/inputicon_img.png}" alt="" />
+                                </div>
+                            </div>
+                            <div class="inputbox">
+                                <label class="input_title">링크</label>
+                                <input type="text" placeholder="링크를 입력하세요." class="form-control" id="link" name="link" required="required">
+                            </div>
+                        </form>
+                        <div class="clearfix"></div>
+                        <div class="mt20" style="text-align: right;">
+                            <div>
+                                <button type="button" class="btn btn-custom btn-dark mr1p" id="btn_insert">등록</button>
+                                <button type="button" class="btn btn-custom2 btn-pink" id="btn_cancel">취소</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- subpage_wrap	 -->
+            </div><!-- section wrap	 -->
+
+            <!---->
+            <div id="eventBannerSection" class="mt20">
+                <div id="eventBannerMain" th:if="${eventBannerList.size() > 0}" th:each="eventBanner : ${eventBannerList}">
+                    <div th:replace="fragments/admin/common/list_main_banner :: list_banner(${eventBanner})"></div>
+                </div>
+                <div id="eventBannerEmpty" th:if="${eventBannerList.size() == 0}">
+                    <div class="nodataBox clear">
+                        <span>등록된 배너가 없습니다.</span>
+                    </div>
+                </div>
+            </div>
+            <!---->
+
+            <!---->
+            <div id="artistBannerSection" class="hide mt20">
+                <div id="artistBannerMain" th:if="${artistBannerList.size() > 0}" th:each="artistBanner : ${artistBannerList}">
+                    <div th:replace="fragments/admin/common/list_main_banner :: list_banner(${artistBanner})"></div>
+                </div>
+                <div id="artistBannerEmpty" th:if="${artistBannerList.size() == 0}">
+                    <div class="nodataBox clear">
+                        <span>등록된 배너가 없습니다.</span>
+                    </div>
+                </div>
+            </div>
+            <!---->
+
+        </div>
+    </div>
+    <div th:replace="fragments/common/modal_crop_image"></div>
+    <script type="text/javascript" th:inline="javascript">
+        var ratio = 981/158;
+        var mimeType = 'img/';
+        var UPMBannerUpload = {
+            _config : {
+                loading : false
+            },
+            readURL: function(input) {
+                UPMBannerUpload._config.loading = false;
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        UPMCropImageModal.showModal(e, ratio, '');
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                    UPMBannerUpload.readURLCallback(input.files[0]);
+                }
+            },
+            readURLCallback : function (file) {
+
+            },
+            submitAction: function(e) {
+                if (!e) var e = window.event;
+                e.cancelBubble = true;
+                if (e.stopPropagation) e.stopPropagation();
+                if (UPMBannerUpload._config.loading) return;
+                UPMBannerUpload._config.loading = true;
+                UPMusicAdmin.startLoading();
+                var form = document.getElementById('insertForm');
+                var formData = new FormData(form);
+                if (UPMCropImageModal._config.imageBlob) formData.append('thumbnailImg', UPMCropImageModal._config.imageBlob, $('input#imageFilename').val());
+                UPMusicAdmin.ajaxPostFormData("/admin/main/banner/insert", headers, formData, UPMBannerUpload.submitCallback);
+
+            },
+            submitCallback : function(message, object) {
+                window.location.href = '/admin/main/banner';
+                UPMBannerUpload._config.loading = false;
+                UPMusicAdmin.stopLoading();
+            }
+        };
+
+        // $('#btn_delete').click(function(){
+        //     history.back();
+        // });
+
+        $('#btn_insert').on('click', function () {
+            UPMBannerUpload.submitAction(event);
+        });
+
+        $('.cropit-image-input').change(function(e){
+            if (UPMBannerUpload._config.loading) return;
+            UPMBannerUpload._config.loading = true;
+            UPMBannerUpload.readURL(this);
+
+            var temp = $(this).val().split('.');
+            var fileExt = temp[temp.length-1].toLowerCase();
+            mimeType += fileExt;
+
+            if(fileExt == "jpg" || fileExt == "jpeg" || fileExt == "png" || fileExt == "gif" || fileExt == "bmp"){
+                // $('#img_fileName').val(e.target.files[0].name);
+                // $('.banner_view').css('display','block');
+                // $('.banner_view').css('background','url(' + URL.createObjectURL(e.target.files[0]) + ')');
+            }else{
+                alert('이미지 파일만 등록 가능 합니다.');
+                $(this).val('');
+            }
+        });
+
+        $('#modal-cropper-pop').on('hidden.bs.modal', function () {
+            var binaryData = [];
+            if(UPMCropImageModal._config.imageBlob != null){
+                binaryData.push(UPMCropImageModal._config.imageBlob);
+                var objectUrl = window.URL.createObjectURL(new Blob(binaryData, {type: mimeType}));
+                var img = '<img src="' + objectUrl + '"/>';
+                $('#video-information').html(img);
+            }
+        });
+
+        $('#banner_event').on('click', function () {
+            $('#title').html("이벤트 배너 이미지");
+            $('#bannerType').val('0');
+            ratio = 981/158;
+            $('#imageFilename').val('');
+            $('#cropit-image-input').val('');
+            $('#link').val('');
+            $('#mainSection').addClass('hide');
+            $('#artistBannerSection').addClass('hide');
+            $('#eventBannerSection').removeClass('hide');
+        });
+
+        $('#banner_artist').on('click', function () {
+            $('#title').html("아티스트 배너 이미지");
+            $('#bannerType').val('1');
+            ratio = 549/158;
+            $('#imageFilename').val('');
+            $('#cropit-image-input').val('');
+            $('#link').val('');
+            $('#mainSection').addClass('hide');
+            $('#eventBannerSection').addClass('hide');
+            $('#artistBannerSection').removeClass('hide');
+        });
+
+        $('#newBannerButton').on('click', function () {
+            $('#mainSection').removeClass('hide');
+        })
+
+        $('#btn_cancel').on('click',function () {
+            $('#mainSection').addClass('hide');
+            $('#bannerType').val('0');
+            $('#imageFilename').val('');
+            $('#cropit-image-input').val('');
+            $('#video-information').html('등록된 이미지가 없습니다.');
+            $('#link').val('');
+        })
+    </script>
+</div>
+</body>
+</html>

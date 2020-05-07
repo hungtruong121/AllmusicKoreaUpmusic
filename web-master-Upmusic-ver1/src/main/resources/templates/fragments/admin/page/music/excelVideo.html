@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl">엑셀 영상 업로드</h2>
+				<!-- 20181119 지민추가 -->
+
+				<input type="file" id="upload" accept=".xlsx">
+
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="accordion_btn"></div>
+						<div class="genre_listcontent">
+							<div id="uploaded-member-list" class="musiclist_table musiclist_table_hover2">
+								<table id="excelTable">
+                                   <thead>
+								   		<tr>
+											<td></td>
+										</tr>
+                                   </thead>
+                                   <tbody>
+                                   </tbody>
+								</table>
+							</div>
+						</div>
+						<!--
+						<div th:if="${members != null and members.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${members.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not members.first}" th:href="@{${'/admin/member'}(page=${members.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${members.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, members.totalPages - 1)}" th:class="${members.number eq pageNo}? 'active' : ''">
+						            <a th:if="${members.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (members.number eq pageNo)}" th:href="@{${'/admin/member'}(page=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${members.number + 1 ge members.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not members.last}" th:href="@{${'/admin/member'}(page=${members.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${members.last}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+						-->
+					</div>
+					<button id="btn">button</button>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+            var info;
+			var videoArray = new Array();
+            var video = new Object();
+			$(function() {
+				$('#upload').change(function (event) {
+                    /* set up XMLHttpRequest */
+                    var url = URL.createObjectURL(event.target.files[0]);
+                    console.log(url);
+                    var oReq = new XMLHttpRequest();
+                    oReq.open("GET", url, true);
+                    oReq.responseType = "arraybuffer";
+
+                    oReq.onload = function(e) {
+                        var arraybuffer = oReq.response;
+
+                        /* convert data to binary string */
+                        var data = new Uint8Array(arraybuffer);
+                        var arr = new Array();
+                        for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+                        var bstr = arr.join("");
+
+                        /* Call XLSX */
+                        var workbook = XLSX.read(bstr, {
+                            type: "binary"
+                        });
+
+                        /* DO SOMETHING WITH workbook HERE */
+                        var first_sheet_name = workbook.SheetNames[0];
+                        /* Get worksheet */
+                        var worksheet = workbook.Sheets[first_sheet_name];
+                        info = XLSX.utils.sheet_to_json(worksheet);
+
+                        info.forEach(function (v, i, a) {
+                            UPMVideoAddModal.loadVideo(a[i].url, a[i].type);
+                        });
+                    };
+                    oReq.send();
+                });
+
+				$('#btn').click(function () {
+					$.ajax({
+						url : '../../api/video/excelVideoUpload',
+						dataType : 'json',
+						contentType : 'application/json',
+						type : 'POST',
+						data : JSON.stringify(videoArray),
+						success : function (data) {
+							console.log(data);
+                        }
+					})
+                });
+            });
+            var UPMVideoAddModal = {
+                _config : {
+                    loading : false
+                },
+                loadVideo : function(url, type) {
+                    var url = url;
+                    if (url == '') {
+                        UPMusic.alert("YouTube 또는 Vimeo의 URL을 입력해주세요");
+                        return;
+                    }
+                    if (UPMVideoAddModal._config.loading) return;
+                    UPMVideoAddModal._config.loading = true;
+
+                    // Video URL 검증
+                    var videoObj = UPMVideoAddModal.parseVideo(url);
+                    UPMusic.log(videoObj);
+                    if (videoObj.type == '' || (videoObj.type != 'youtube' && videoObj.type != 'vimeo')) {
+                        UPMusic.alert("YouTube 또는 Vimeo의 URL만 입력 가능합니다");
+                        UPMVideoAddModal._config.loading = false;
+                        return;
+                    }
+                    if (videoObj.id == '') {
+                        UPMusic.alert("URL이 유효하지 않습니다. 다시 확인을 해주세요");
+                        UPMVideoAddModal._config.loading = false;
+                        return;
+                    }
+
+                    // Video 데이터 검증
+                    UPMVideoAddModal.getVideoData(type, videoObj, UPMVideoAddModal.inputVideoDataToForm);
+                },
+                getVideoData : function(type, videoObj, callback) {
+                    var videoApiUrl = '';
+                    if (videoObj.type == 'youtube') {
+                        videoApiUrl = "https://www.googleapis.com/youtube/v3/videos?id=" + videoObj.id
+                            + "&key=AIzaSyDYwPzLevXauI-kTSVXTLroLyHEONuF9Rw&part=snippet,contentDetails";
+                        $.ajax({
+                            async: false,
+                            type: 'GET',
+                            url: videoApiUrl,
+                            success: function(data) {
+                                UPMusic.log(data);
+                                callback(type, videoObj, data.items[0]);
+                            },
+                            error: function (e) {
+                                UPMusic.alert(e.message, true);
+                                callback(type, videoObj, '');
+                            }
+                        });
+                    } else {
+                        videoApiUrl = "https://vimeo.com/api/v2/video/" + videoObj.id + ".json";
+                        $.ajax({
+                            async: false,
+                            type:'GET',
+                            url: videoApiUrl,
+                            jsonp: 'callback',
+                            dataType: 'jsonp',
+                            success: function(data){
+                                UPMusic.log(data);
+                                callback(type, videoObj, data[0]);
+                            },
+                            error: function (e) {
+                                UPMusic.alert(e.message, true);
+                                callback(type, videoObj, '');
+                            }
+                        });
+                    }
+                },
+                inputVideoDataToForm : function(type, videoObj, videoData) {
+                    if (videoData == '') {
+                        UPMusic.alert("URL이 유효하지 않습니다. 다시 확인을 해주세요");
+                        UPMVideoAddModal._config.loading = false;
+                        return;
+                    }
+                    var duration = 0;
+                    var thumbnail = '';
+                    var subject = '';
+                    var description = '';
+                    if (videoObj.type == 'youtube') {
+                        var youtube_time = videoData.contentDetails.duration;
+                        duration = UPMVideoAddModal.convertYoutubeTime(youtube_time);
+                        if (0 == duration) {
+                            UPMusic.alert("영상의 재생시간이 0초입니다. 다시 확인을 해주세요");
+                            UPMVideoAddModal._config.loading = false;
+                            return;
+                        }
+                        thumbnail = videoData.snippet.thumbnails.high ? videoData.snippet.thumbnails.high.url : videoData.snippet.thumbnails.default.url;
+                        if (videoData.snippet.title) subject = videoData.snippet.title;
+                        if (videoData.snippet.description) description = videoData.snippet.description;
+                    } else {
+                        duration = videoData.duration;
+                        if (0 == duration) {
+                            UPMusic.alert("영상의 재생시간이 0초입니다. 다시 확인을 해주세요");
+                            UPMVideoAddModal._config.loading = false;
+                            return;
+                        }
+                        thumbnail = videoData.thumbnail_large ? videoData.thumbnail_large : videoData.thumbnail_medium;
+                        if (videoData.title) subject = videoData.title;
+                        if (videoData.description) description = videoData.description;
+                    }
+
+                    var video = new Object();
+                    video.type = type;
+                    video.object = videoObj.id;
+                    video.service = videoObj.type;
+                    video.duration = duration;
+                    video.thumbnail = thumbnail;
+                    if (subject != '') video.subject = subject;
+                    if (description != '') video.description = description;
+                    videoArray.push(video);
+                    UPMVideoAddModal._config.loading = false;
+                },
+                parseVideo : function(url) {
+                    var type = '';
+                    var id = '';
+                    url = String(url);
+                    url.match(/(http:|https:|)\/\/(player.|www.)?(vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com))\/(video\/|embed\/|watch\?v=|v\/)?([A-Za-z0-9._%-]*)(\&\S+)?/);
+                    if (RegExp.$3.indexOf('youtu') > -1) {
+                        type = 'youtube';
+                        id = RegExp.$6;
+
+                    } else if (RegExp.$3.indexOf('vimeo') > -1) {
+                        type = 'vimeo';
+                        id = RegExp.$6;
+                        var isnum = /^\d+$/.test(id);
+                        if (!isnum) {
+                            url.match(/^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/);
+                            id = RegExp.$5;
+                        }
+                    }
+                    return {
+                        type: type,
+                        id: id
+                    };
+                },
+                createVideo : function(url, width, height) {
+                    var videoObj = parseVideo(url);
+                    var $iframe = $('<iframe>', { width: width, height: height });
+                    $iframe.attr('frameborder', 0);
+                    if (videoObj.type == 'youtube') {
+                        $iframe.attr('src', '//www.youtube.com/embed/' + videoObj.id);
+                    } else {
+                        $iframe.attr('src', '//player.vimeo.com/video/' + videoObj.id);
+                    }
+                    return $iframe;
+                },
+                getVideoThumbnail : function(videoObj, callback) {
+                    try {
+                        if (videoObj.type == 'youtube') {
+                            callback('//img.youtube.com/vi/' + videoObj.id + '/maxresdefault.jpg');
+                        } else {
+                            $.get('http://vimeo.com/api/v2/video/' + videoObj.id + '.json', function(data) {
+                                callback(data[0].thumbnail_large);
+                            });
+                        }
+                    } catch (e) {
+                        UPMusic.alert("URL이 유효하지 않습니다. 다시 확인을 해주세요");
+                        UPMVideoAddModal._config.loading = false;
+                        return;
+                    }
+
+                },
+                convertYoutubeTime : function(duration) {
+                    var a = duration.match(/\d+/g);
+
+                    if (duration.indexOf('M') >= 0 && duration.indexOf('H') == -1 && duration.indexOf('S') == -1) {
+                        a = [0, a[0], 0];
+                    }
+
+                    if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1) {
+                        a = [a[0], 0, a[1]];
+                    }
+                    if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1 && duration.indexOf('S') == -1) {
+                        a = [a[0], 0, 0];
+                    }
+
+                    duration = 0;
+
+                    if (a.length == 3) {
+                        duration = duration + parseInt(a[0]) * 3600;
+                        duration = duration + parseInt(a[1]) * 60;
+                        duration = duration + parseInt(a[2]);
+                    }
+
+                    if (a.length == 2) {
+                        duration = duration + parseInt(a[0]) * 60;
+                        duration = duration + parseInt(a[1]);
+                    }
+
+                    if (a.length == 1) {
+                        duration = duration + parseInt(a[0]);
+                    }
+                    return duration
+                }
+            };
+		</script>
+	</div>
+</body>
+</html>

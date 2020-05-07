@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+	<div id="content">
+		<!-- 캐스팅 등록 -->
+		<form class="form-inline" action="#" th:action="@{/upm_news/upm_band/update}" role="form" enctype="multipart/form-data" th:object="${paramData}" method="post">
+			<input type="hidden" th:value="${result.bandRecruitId}" name="bandRecruitId">
+			<input type="hidden" th:value="${result.filename}" name="filename">
+			<div class="nl_panel">
+				<div class="memberJoin_box">
+					<div class="form-group">
+						<label class="control-label">제목</label>
+						<input type="text" placeholder="제목을 입력하세요." id="demo-inline-inputmail" class="form-control" name="subject" th:value="${result.subject}" maxlength="200">
+					</div>
+					<div class="form-group">
+						<label class="control-label">배경 이미지</label>
+						<div class="input-group mar-btm">
+							<div class="filebox">
+								<input type="file" class="upload-hidden" name="thumbnailImg" style="display: none">
+								<input class="upload-name" placeholder="배경 이미지를 업로드하세요." disabled="disabled" th:placeholder="${result.filename}">
+								<label class="img_ico" onclick="$('.upload-hidden').trigger('click');return false;"></label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group mar-btm">
+							<textarea th:text="${result.content}" rows="10" class="form-control" name="content"></textarea>
+						</div>
+					</div>
+				</div><!-- //memberJoin_box -->
+			</div>
+			<div class="btn_box fixedBox">
+				<button class="btn btn-block btn-lg btn-dark" type="submit">수정</button>
+			</div>
+		</form>
+		<!-- //end 캐스팅 등록 -->
+	</div>
+	<!-- //end content -->
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function(){
+            var fileTarget = $('.filebox .upload-hidden');
+
+            fileTarget.on('change', function(e){
+                // 값이 변경되면
+                if(window.FileReader){
+                    // modern browser
+                    var filename = $(this)[0].files[0].name;
+                } else { // old IE
+                    var filename = $(this).val().split('/').pop().split('\\').pop(); // 파일명만 추출
+                }
+
+                // 추출한 파일명 삽입
+                $(this).siblings('.upload-name').val(filename);
+            });
+        });
+
+	</script>
+  </div>
+
+</body>
+</html>

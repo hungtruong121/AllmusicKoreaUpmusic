@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="subpage_wrap section video-upload">
+			<h2 class="page-title"><span th:text="#{model.member.artist.family}" th:remove="tag"></span></h2>
+			<input id="cropit-image-input" type="file" accept="image/*" class="cropit-image-input hidden" value="">
+			<div class="membership_wrap">
+				<div>
+					<form id="member-registration" action="#" th:action="@{/admin/member/artist/family/insert}" th:object="${familyArtistForm}" method="POST" class="form-registration" enctype="multipart/form-data" role="form">
+						<input th:field="*{videoService}" name="videoService" type="hidden" value="">
+						<input th:field="*{videoServiceObjectId}" type="hidden" value=""/>
+						<input th:field="*{duration}" type="hidden"/>
+						<input th:field="*{thumbnail}" type="hidden"/>
+						<div class="inputbox_wrap">
+							<ul>
+								<li>
+									<div id="form-group-email" class="form-group inputbox" th:classappend="${#fields.hasErrors('email')} ? 'has-error' : ''">
+										<label class="input_title db"><span th:text="#{model.member.id}" th:remove="tag"></span></label>
+										<input th:type="email" th:field="*{email}" th:placeholder="#{model.member.id.placeholder}" class="form-control w80p fl clear mr2p" />
+										<button  id="check-memberform-email" class="btn btn-custom2 fl h50 w18p p60" type="button"><span th:text="#{model.member.check}" th:remove="tag"></span></button>
+										<p th:if="${#fields.hasErrors('email')}" th:id="error-upw" class="help-block" th:errors="*{email}"></p>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-nick" class="form-group inputbox" th:classappend="${#fields.hasErrors('nick')} ? 'has-error' : ''">
+										<label class="input_title"><span th:text="#{model.member.artist_nick}" th:remove="tag"></span></label>
+										<input th:field="*{nick}" th:type="text"
+											th:placeholder="#{model.member.nick.placeholder}"
+											class="form-control" id="nick" />
+										<p th:if="${#fields.hasErrors('nick')}" th:id="error-nick"
+											class="help-block" th:errors="*{nick}"></p>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-password" class="form-group inputbox" th:classappend="${#fields.hasErrors('password')} ? 'has-error' : ''">
+										<label class="input_title"><span th:text="#{model.member.password}" th:remove="tag"></span></label>
+										<input th:field="*{password}" th:type="password"
+											th:placeholder="#{model.member.password.placeholder}"
+											class="form-control" />
+										<p th:if="${#fields.hasErrors('password')}" th:id="error-password"
+											class="help-block" th:errors="*{password}"></p>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-passwordConfirm" class="form-group inputbox" th:classappend="${#fields.hasErrors('passwordConfirm')} ? 'has-error' : ''">
+										<label class="input_title"><span th:text="#{model.member.password_confirm}" th:remove="tag"></span></label>
+										<input th:field="*{passwordConfirm}" th:type="password"
+											th:placeholder="#{model.member.password_confirm.placeholder}"
+											class="form-control" />
+										<p th:if="${#fields.hasErrors('passwordConfirm')}"
+											th:id="error-passwordConfirm" class="help-block"
+											th:errors="*{passwordConfirm}"></p>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-profileImage" class="form-group inputbox" th:classappend="${#fields.hasErrors('profileImage')} ? 'has-error' : ''">
+										<div class="input-file" id="profileImage">
+											<label class="input_title" th:text="#{model.member.image}"></label>
+											<input id="imageFilename" th:type="text" th:field="*{profileImage}" th:placeholder="#{model.member.image.placeholder}" class="form-control imgupload_input" data-target="#imgupload_pop" data-toggle="modal" readonly/>
+											<img th:src="@{/img/inputicon_img.png}" alt="" />
+										</div>
+										<p th:if="${#fields.hasErrors('profileImage')}" th:id="error-thumbnail" class="help-block" th:errors="*{profileImage}"></p>
+									</div>
+								</li>
+								<li>
+									<div class="form-group inputbox fl w30p mr2p">
+										<label class="input_title"><span th:text="#{model.member.birthday}" th:remove="tag"></span></label>
+										<input th:field="*{birthday}" th:type="text" placeholder="ex) 19450815" class="form-control" />
+									</div>
+									<div class="form-group inputbox fl w30p mr2p">
+										<label class="input_title"><span th:text="#{model.member.gender}" th:remove="tag"></span></label>
+										<input th:field="*{genderNo}" th:type="text" placeholder="ex) 0 or 1" class="form-control" />
+									</div>
+									<div class="form-group inputbox fl w30p">
+										<label class="input_title"><span th:text="#{model.member.phoneNumber}" th:remove="tag"></span></label>
+										<input th:field="*{phoneNumber}" th:type="text" placeholder="ex) 01012345678" class="form-control" />
+									</div>
+								</li>
+								<li class="w100p">
+									<div id="form-group-videoServiceObjectId" class="form-group" th:classappend="${#fields.hasErrors('videoServiceObjectId')} ? 'has-error' : ''">
+										<div class="input-videofile">
+											<label class="input_title" th:text="#{common.video.upload.description_1}"></label>
+										</div>
+										<div id="video-information" onclick="UPMVideoAddModal.showVideoAddModal();" class="video-info-container w100p">여기를 클릭하여 URL 정보를 입력하세요.</div>
+										<p th:if="${#fields.hasErrors('videoServiceObjectId')}" th:id="error-videoServiceObjectId" class="help-block" th:errors="*{videoServiceObjectId}"></p>
+									</div>
+								</li>
+								<li></li>
+								<li>
+									<div class="inputbox">
+										<label class="input_title db" th:text="#{model.video.type}"></label>
+										<select class="form-control selectpicker clear w100p" th:field="*{videoType}" onchange="UPMUploadVideo .changeVideoType(this.value);">
+											<option th:each="videoTypeOption : ${videoTypeMap}" th:value="${videoTypeOption['key']}" th:text="${videoTypeOption['value']}"></option>
+										</select>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-subject" class="form-group inputbox" th:classappend="${#fields.hasErrors('subject')} ? 'has-error' : ''">
+										<label class="input_title" th:text="#{model.video.subject}"></label>
+										<input th:field="*{subject}" th:type="text" th:placeholder="#{model.video.subject.placeholder}" onkeypress="return event.keyCode != 13;" class="form-control" />
+										<p th:if="${#fields.hasErrors('subject')}" th:id="error-subject" class="help-block" th:errors="*{subject}"></p>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="inputbox">
+							<label class="input_title" th:text="#{model.video.label.description}"></label>
+							<textarea class="form-control masage_input" th:field="*{description}" th:placeholder="#{model.video.description.placeholder}" rows="3"></textarea>
+						</div>
+					</form>
+					<div class="clearfix"></div>
+					<div class="membership_btn mt50">
+						<div class="btn_centerwrap">
+							<button class="btn btn-custom btn-dark h50" onclick="UPMRegistration.submitAction(); return false;">
+								<span th:text="#{model.member.artist.family.complete}" th:remove="tag"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div><!-- subpage_wrap	 -->
+
+			<!--이미지 업로드 팝업-->
+			<div class="modal fade" id="imgupload_pop" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+				<div class="modal-dialog login_pop upload_pop">
+					<div class="modal-content">
+						<div class="modal-header login_header">
+							<h2 class="modal_title">이미지 업로드</h2>
+							<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal"/>
+						</div>
+						<div class="modal-body login_body">
+							<div class="login_body1">
+								<ul class="uploadpop_btn">
+									<li onclick="UPMRegistration.showDefaultImagePopup();">기본 이미지</li>
+									<li onclick="$('.cropit-image-input').trigger('click');return false;">이미지 업로드</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--기본 이미지 팝업-->
+			<div class="modal fade" id="default_profile_image_pop" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+				<div class="modal-dialog modal_social_sharewrap">
+					<div class="modal-content">
+						<div class="modal-header social_sharehead">
+							<h2 class="modal_title">기본 이미지 팝업</h2>
+							<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal"/>
+						</div>
+						<div class="modal-body profilebody">
+							<ul>
+								<li>
+									<a class="resp-sharing-button__link" onclick="UPMRegistration.selectDefaultProfileImage(1);" aria-label="">
+										<img th:src="@{/img/basic_img1.png}" alt="" />
+									</a>
+								</li>
+								<li>
+									<a class="resp-sharing-button__link" onclick="UPMRegistration.selectDefaultProfileImage(2);" aria-label="">
+										<img th:src="@{/img/basic_img2.png}" alt="" />
+									</a>
+								</li>
+								<li>
+									<a class="resp-sharing-button__link" onclick="UPMRegistration.selectDefaultProfileImage(3);" aria-label="">
+										<img th:src="@{/img/basic_img3.png}" alt="" />
+									</a>
+								</li>
+								<li>
+									<a class="resp-sharing-button__link" onclick="UPMRegistration.selectDefaultProfileImage(4);" aria-label="">
+										<img th:src="@{/img/basic_img4.png}" alt="" />
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div th:replace="fragments/common/modal_video_add"></div>
+			<div th:replace="fragments/common/modal_crop_image"></div>
+
+			<script type="text/javascript" th:inline="javascript">
+                /*<![CDATA[*/
+                var password = /*[[ ${familyArtistForm.password} ]]*/;
+                var passwordConfirm = /*[[ ${familyArtistForm.passwordConfirm} ]]*/;
+                var headers = { /*[[ ${_csrf.headerName} ]] : [[ ${_csrf.token} ]]*/ };
+                var UPMRegistration = {
+                    _config : {
+                        loading : false
+                    },
+                    readURL: function(input) {
+                        UPMRegistration._config.loading = false;
+                        if (input.files && input.files[0]) {
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                $('#imgupload_pop').modal('hide');
+                                UPMCropImageModal.showModal(e, 1/1, '');
+                            }
+                            reader.readAsDataURL(input.files[0]);
+                        }
+                    },
+                    submitAction : function() {
+                        if (!e) var e = window.event;
+                        e.cancelBubble = true;
+                        if (e.stopPropagation) e.stopPropagation();
+                        if (UPMRegistration._config.loading) return;
+                        UPMRegistration._config.loading = true;
+                        UPMusicAdmin.startLoading();
+                        var form = document.getElementById('member-registration');
+                        var formData = new FormData(form);
+                        if (UPMCropImageModal._config.imageBlob) formData.append('profileImageMultipart', UPMCropImageModal._config.imageBlob, $('input#imageFilename').val());
+                        UPMusicAdmin.ajaxPostFormDataXml('/admin/member/artist/family/insert', headers, formData, UPMRegistration.submitCallback);
+                    },
+                    submitCallback : function() {
+                        UPMRegistration._config.loading = false;
+                        window.location.href = '/admin/member/artist/family';
+                        UPMusicAdmin.stopLoading();
+                    },
+                    showDefaultImagePopup : function() {
+                        $('#imgupload_pop').modal('hide');
+                        $('#default_profile_image_pop').modal('show');
+                    },
+                    selectDefaultProfileImage : function(no) {
+                        $('#imageFilename').val(no);
+                        $('#default_profile_image_pop').modal('hide');
+                    }
+                };
+                var UPMUploadVideo = {
+                    setVideoObject : function(videoObj) {
+                        $('#videoService').val(videoObj.type);
+                        $('#videoServiceObjectId').val(videoObj.id);
+                    },
+                    setThumbnail : function(src) {
+                        $('#thumbnail').val(src);
+                        var img = '<img src="' + src + '"/>';
+                        $('#video-information').html(img);
+                    },
+                    setVideoDuration : function(duration) {
+                        $('#duration').val(duration);
+                    },
+                    setSubject : function(subject) {
+                        if (subject.length > 50) {
+                            UPMusic.alert('영상 제목은 50자를 넘을 수 없습니다');
+                            subject = subject.substr(0, 50);
+                        }
+                        $('#subject').val(subject);
+                    },
+                    setDescription : function(description) {
+                        $('#description').val(description);
+                    },
+                    changeVideoType : function(value) {
+                        if ('MV' == value) {
+                            $('#form-group-genre').show();
+                        } else {
+                            $('#form-group-genre').hide();
+                        }
+                    }
+				};
+                $("#cropit-image-input").change(function() {
+                    if (UPMRegistration._config.loading) return;
+                    UPMRegistration._config.loading = true;
+                    UPMRegistration.readURL(this);
+                });
+                $(function() {
+                    if($('#videoType').val() == 'GV') $('#form-group-genre').hide();
+                });
+                $(function() {
+                    $('#check-memberform-email').click(function() {
+                        var params = {
+                            email: $('#form-group-email #email').val()
+                        };
+                        UPMusic.ajaxPost(UPMusic._config._api_check_email, headers, params, UPMusic.checkCallback);
+                    });
+
+                    if (password != '') $('input#password').val(password);
+                    if (passwordConfirm != '') $('input#passwordConfirm').val(passwordConfirm);
+
+                    $("#cropit-image-input").change(function() {
+                        if (UPMRegistration._config.loading) return;
+                        UPMRegistration._config.loading = true;
+                        UPMRegistration.readURL(this);
+                    });
+
+                    $('input#subject').keyup(function(){
+                        if ($(this).val().length > 50) {
+                            UPMusic.alert('50자를 넘을 수 없습니다');
+                            $(this).val($(this).val().substr(0, 50));
+                        }
+                    });
+                });
+                /*]]>*/
+			</script>
+		</div><!-- section wrap	 -->
+	</div>
+</body>
+</html>

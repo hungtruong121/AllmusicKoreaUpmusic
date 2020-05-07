@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_video(fragmentId, videoList)" th:id="${fragmentId}">
+		<div class="popularity_video">
+			<h3 class="content_title">
+				<a href="/video/hot"><span th:text="#{common.video.hot}" th:remove="tag"></span><i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+			</h3>
+			<div th:each="video,iter : ${videoList}" class="popularity_content">
+				<div th:if="${iter.index lt 3}" th:remove="tag">
+					<div class="popularity_img videoplay_on2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;)'}}" th:style="@{${'background-image: url(' + video.getThumbnailUrl() + ');'}}">
+						<div class="play_iconwrap play_iconwrap2">
+							<ul>
+								<li><a th:href="@{${video.getUrl()}}"><img th:src="@{/img/play_icon.png}" alt=""></a></li>
+								<li th:text="${video.formattedDuration()}"></li>
+							</ul>
+						</div>
+					</div>
+					<div class="popularity_info">
+						<ul class="popularity_iteminfo">
+							<li><a th:href="@{${video.getUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a></li>
+							<li><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getMember().getNick()}" th:remove="tag"></span></a></li>
+							<li th:text="${video.description}"></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

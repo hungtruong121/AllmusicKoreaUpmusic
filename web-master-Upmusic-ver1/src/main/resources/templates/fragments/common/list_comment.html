@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_comment(objectApiUrl, comments, currentUserId, paginationUrl)">
+		<div class="sub_line"></div>
+		<div class="comment_wrap section">
+			<h3 class="content_title">
+				<span th:text="#{model.comment}" th:remove="tag"></span><span id="list-comment-count-form" th:text="${comments.getTotalElements()}"></span><span th:text="#{common.count.collectedTrack}" th:remove="tag"></span>
+			</h3>
+			<div class="inputbox">
+				<textarea id="list-comment-content" class="form-control comment_input" name="content" onkeyup="UPMCommentList.changeSendButtonStatus();" th:placeholder="#{model.comment.placeholder}" rows="3" maxlength="200"></textarea>
+				<button id="button-send-comment" class="btn btn-dark btn-custom comment_btn disabled" onclick="UPMCommentList.sendComment();">
+					<span th:text="#{button.registration}" th:remove="tag"></span>
+				</button>
+			</div>
+			<div id="list-comment-each" class="comment_list_wrap">
+				<div th:each="comment : ${comments}" th:id="'list-comment-' + ${comment.id}" class="comment_list">
+					<div class="comment_profile">
+						<a th:href="@{${comment.member.getUrl()}}">
+							<img th:src="@{${comment.member.getProfileImageUrl()}}" width="60" title="profileimage"/>
+						</a>
+					</div>
+					<div class="comment_content">
+						<h3 class="comment_id" th:text="${comment.member.nick}"></h3>
+						<p class="comment_memo" th:id="'list-comment-' + ${comment.id} + '-content'" th:utext="${#strings.replace( #strings.escapeXml( comment.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+					</div>
+					<div class="comment_day_wrap">
+						<p class="comment_day" th:text="${comment.formattedTime()}"></p>
+						<ul th:if="${currentUserId} == ${comment.member.id}" th:id="'list-comment-' + ${comment.id} + '-buttons'">
+							<li>
+								<a id="edit-list-comment" th:onclick="'UPMCommentList.editComment(' + ${comment.id} + ');'">
+									<span th:text="#{button.modify}" th:remove="tag"></span>
+								</a>
+							</li>
+							<li>
+								<a id="delete-list-comment" th:onclick="'UPMCommentList.deleteComment(' + ${comment.id} + ');'">
+									<span th:text="#{button.delete}" th:remove="tag"></span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="comment-more-button" class="showmore_wrap" th:classappend="${comments != null and comments.totalPages gt 1} ? '' : 'hidden'">
+				<p>
+					<a th:onclick="@{${'UPMCommentList.loadPage(&quot;' + paginationUrl + '&quot;);'}}">SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></a>
+				</p>
+			</div>
+		</div>
+
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentPage = 0;
+			var totalPages = /*[[ ${comments.totalPages} ]]*/;
+			var UPMCommentList = {
+				loadPage: function(paginationUrl) {
+					currentPage++;
+					var url = paginationUrl + '?page=' + currentPage;
+					$.get(url, function(data) {
+						$(data).appendTo('#list-comment-each').fadeIn("slow");
+					});
+					if (totalPages - 1 <= currentPage) {
+						$('#comment-more-button').addClass('hidden');
+					}
+				},
+				sendComment: function() {
+					UPMLoginModal.showModal();
+				}
+			};
+		/*]]>*/
+	    </script>
+		</div>
+
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentPage = 0;
+			var totalPages = /*[[ ${comments.totalPages} ]]*/;
+			var objectApiUrl = /*[[ ${objectApiUrl} ]]*/;
+			var buttonRegistrationName = /*[[ #{button.registration} ]]*/;
+			var buttonModifyName = /*[[ #{button.modify} ]]*/;
+			var buttonDeleteName = /*[[ #{button.delete} ]]*/;
+			var buttonCancelName = /*[[ #{button.cancel} ]]*/;
+			var UPMCommentList = {
+				_config : {
+					loading : false
+				},
+				loadPage: function(paginationUrl) {
+					currentPage++;
+					var url = paginationUrl + '?page=' + currentPage;
+					$.get(url, function(data) {
+						$(data).appendTo('#list-comment-each').fadeIn("slow");
+					});
+					if (totalPages - 1 <= currentPage) {
+						$('#comment-more-button').addClass('hidden');
+					}
+				},
+				changeSendButtonStatus : function() {
+					var content = $('#list-comment-content').val();
+					if (content) {
+						$('#button-send-comment').removeClass('disabled');
+					} else {
+						$('#button-send-comment').addClass('disabled');
+					}
+				},
+				changeUpdateButtonStatus : function(commentId) {
+					var content = $('#list-comment-'+ commentId + '-content').val();
+					if (content) {
+						$('#list-comment-'+ commentId + '-content-button').removeClass('disabled');
+					} else {
+						$('#list-comment-'+ commentId + '-content-button').addClass('disabled');
+					}
+				},
+				sendComment: function() {
+					var content = $('#list-comment-content').val();
+					if (content) {
+						if (UPMCommentList._config.loading) return;
+						UPMCommentList._config.loading = true;
+						var params = {
+							content : content
+						};
+                        UPMusic.ajaxPostResObj(objectApiUrl + '/comment', headers, params, UPMCommentList.sendCommentCallback);
+					}
+				},
+				sendCommentCallback: function(commentObj) {
+					$('#list-comment-content').val('');
+					var commentBlock = '<div id="list-comment-' + commentObj.id + '" class="comment_list">';
+					commentBlock += UPMCommentList.renderComment(commentObj);
+					commentBlock += '</div>';
+					$(commentBlock).prependTo('#list-comment-each').fadeIn("slow");
+					UPMCommentList.countComments(1);
+					UPMCommentList._config.loading = false;
+				},
+				updateCommentCallback: function(commentObj) {
+					var commentBlock = UPMCommentList.renderComment(commentObj);
+					$('#list-comment-' + commentObj.id).html(commentBlock);
+					UPMCommentList._config.loading = false;
+				},
+				renderComment: function(commentObj) {
+					var commentBlock = '<div class="comment_profile"><a href="/music/artist/' + commentObj.member.id + '">';
+					commentBlock += '<img src="' + commentObj.member.profileImageUrl + '" width="60"/></a></div>';
+					commentBlock += '<div class="comment_content"><h3 class="comment_id">' + commentObj.member.nick + '</h3>';
+					commentBlock += '<p class="comment_memo" id="list-comment-' + commentObj.id + '-content">' + commentObj.content.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p></div>';
+					commentBlock += '<div class="comment_day_wrap"><p class="comment_day">' + UPMCommentList.timeFormat(commentObj.createdAt) + '</p>';
+					commentBlock += '<ul id="list-comment-' + commentObj.id + '-buttons"><li><a id="edit-list-comment" onclick="UPMCommentList.editComment(' + commentObj.id + ');"><span>' + buttonModifyName + '</span></a></li>';
+					commentBlock += '<li><a id="delete-list-comment" onclick="UPMCommentList.deleteComment(' + commentObj.id + ');"><span>' + buttonDeleteName + '</span></a></li></ul></div>';
+					return commentBlock;
+				},
+				editComment: function(commentId) {
+					var commentOrigContent = $('#list-comment-' + commentId + '-content').html().replace(/\<br\\?>/g, "\n");
+					var commentEditElement = '<div class="inputbox w677">';
+					commentEditElement += '<textarea id="list-comment-'+ commentId + '-content" class="form-control comment_input_ver2" name="content" onkeyup="UPMCommentList.changeUpdateButtonStatus('+ commentId + ')" rows="1">' + commentOrigContent + '</textarea>';
+					commentEditElement += '<button id="list-comment-'+ commentId + '-content-button" class="btn btn-dark btn-custom comment_btn comment_btn_ver2" onclick="UPMCommentList.updateComment(' + commentId + ')">';
+					commentEditElement += buttonRegistrationName + '</button></div>';
+					$('#list-comment-' + commentId + '-content').replaceWith(commentEditElement);
+					var cancelButtonElement = '<ul class="comment_change"><li><a id="cancel-list-comment" onclick="UPMCommentList.cancelEditComment(' + commentId + ');">';
+					cancelButtonElement += buttonCancelName + '</a></li></ul>';
+					$('#list-comment-' + commentId + '-buttons').replaceWith(cancelButtonElement);
+					$('#list-comment-'+ commentId + '-content').keyup(function(){
+				        if ($(this).val().length > 200) {
+				            UPMusic.alert('댓글은 200자를 넘을 수 없습니다');
+				            $(this).val($(this).val().substr(0, 200));
+				        }
+				    });
+				},
+				updateComment: function(commentId) {
+					var newContent = $('#list-comment-' + commentId + '-content').val();
+					if (newContent) {
+						if (UPMCommentList._config.loading) return;
+						UPMCommentList._config.loading = true;
+						var params = {
+							content : newContent
+						};
+                        UPMusic.ajaxPostResObj(objectApiUrl + '/comment/' + commentId, headers, params, UPMCommentList.updateCommentCallback);
+					}
+				},
+				cancelEditComment :function(commentId) {
+                    $.get(objectApiUrl + '/comment/' + commentId, function(data) {
+						UPMCommentList.updateCommentCallback(data);
+					});
+				},
+				deleteComment: function(commentId) {
+				    UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+                        UPMusic.ajaxDelete(objectApiUrl + '/comment/' + commentId, headers, UPMCommentList.deleteCommentCallback);
+				    });
+				},
+				deleteCommentCallback: function(msg, object) {
+					if (object) {
+						$('#list-comment-' + object).remove();
+						UPMCommentList.countComments(-1);
+					} else {
+						UPMusic.alert("삭제하지 못했습니다");
+					}
+				},
+				countComments: function(elm) {
+					var commentCnt = parseInt($("#list-comment-count-form").html());
+					commentCnt += elm;
+					$('#list-comment-count-form').html(commentCnt);
+					if ($('#album-comment-count-button').length) $('#album-comment-count-button').html(commentCnt);
+					
+					// 10개 이상의 댓글 제외
+					if (11 == $('#list-comment-each .comment_list').length) {
+						$('#list-comment-each .comment_list').eq(10).remove();
+						if ($('#comment-more-button').hasClass('hidden')) $('#comment-more-button').removeClass('hidden');
+					}
+				},
+				timeFormat: function(time) {
+					var d = new Date(time);
+					var formattedTime = d.getFullYear()+'-'+(d.getMonth() + 1 < 10 ? '0' + (d.getMonth() + 1) : d.getMonth() + 1)+'-'+(d.getDate() < 10 ? '0' + d.getDate() : d.getDate())+' '+(d.getHours() < 10 ? '0' + d.getHours() : d.getHours())+':'+(d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes());
+					console.log(formattedTime);
+					return formattedTime;
+				}
+			};
+			
+			$(document).ready(function(){
+			    $('#list-comment-content').keyup(function(){
+			        if ($(this).val().length > 200) {
+			            UPMusic.alert('댓글은 200자를 넘을 수 없습니다');
+			            $(this).val($(this).val().substr(0, 200));
+			        }
+			    });
+			});
+		/*]]>*/
+		</script>
+		</div>
+
+	</div>
+</body>
+
+</html>

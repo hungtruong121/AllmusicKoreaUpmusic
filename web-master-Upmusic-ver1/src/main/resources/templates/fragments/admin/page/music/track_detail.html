@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title" th:text="#{model.music.track.information}"></h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="album_infomation">
+							<div class="album_img producing_price_profile">
+								<img th:src="@{${track.getCoverImageUrl()}}" alt="" />
+							</div>
+							<div class="album_infotext producing_price_infotext">
+								<table>
+									<tr>
+										<td>앨범명</td>
+										<td th:text="${track.getMusicAlbum().subject}"></td>
+										<td th:text="#{model.track.subject}"></td>
+										<td th:text="${track.subject}"></td>
+									</tr>
+									<tr>
+										<td>아티스트명</td>
+										<td><a th:href="@{${track.getArtistUrl()}}"><span th:text="${track.getArtistNick()}" th:remove="tag"></span></a></td>
+										<td th:text="#{model.track.upload_tracktype}"></td>
+										<td th:text="#{${track.getTrackTypeName()}}"></td>
+									</tr>
+									<tr>
+										<td th:text="#{model.track.genre}"></td>
+										<td th:text="#{${track.getGenreName()}}"></td>
+										<td th:text="#{model.track.theme}"></td>
+										<td><span th:if="${track.theme != null}" th:text="#{${track.getThemeName()}}" th:remove="tag"></span></td>
+									</tr>
+									<tr>
+										<td>업리그 참여</td>
+										<td><span th:text="${track.isInLeague() ? '예' : '아니오'}" th:remove="tag"></span></td>
+										<td>스토어 등록</td>
+										<td><span th:text="${track.isInStore() ? '예' : '아니오'}" th:remove="tag"></span></td>
+									</tr>
+									<tr>
+										<td th:text="#{model.music.rental_fee}"></td>
+										<td th:text="${track.getRentalFee()}"></td>
+										<td th:text="#{model.music.price}"></td>
+										<td th:text="${track.getPrice()}"></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="collaboration_wrap">
+							<div class="collaboration_head">
+								<p class="content_title2 fl mt0" th:text="#{model.track.cooperation}"></p>
+							</div>
+							<div class="collaboration_info">
+								<table th:if="${track.getCooperators() != null and track.getCooperators().size() gt 0}" id="track-cooperator-table">
+									<colgroup>
+										<col style="width:30%"/>
+										<col style="width:30%"/>
+										<col style="width:30%"/>
+										<col style="width:10%"/>
+									</colgroup>
+									<tr>
+										<th th:text="#{model.track.cooperator}"></th>
+										<th th:text="#{enum.track.cooperator.role}"></th>
+										<th><span th:text="#{model.track.distribution}" th:remove="tag"></span> <span>(&#37;)</span></th>
+									</tr>
+									<tr th:each="cooperator, cooperatorStat : ${track.getCooperators()}">
+										<td>
+											<a th:href="${cooperator.getMember().getUrl()}"><span th:text="${cooperator.getMember().getNick()}" th:remove="tag"></span></a>
+										</td>
+										<td>
+											<span th:text="#{${cooperator.getCooperatorRoleName()}}" th:remove="tag"></span>
+										</td>
+										<td>
+											<span th:text="${cooperator.distribution}"></span>
+										</td>
+									</tr>
+								</table>
+								<p th:unless="${track.getCooperators() != null and track.getCooperators().size() gt 0}">등록된 협력자가 없습니다</p>
+							</div>
+						</div>
+						
+						<div class="music_player vocal-casting-player">
+							<div id="audioWrap"></div>
+						</div>
+						<div class="commerce_btn like_event fl mt30 w444">
+							<ul>
+								<!--<li><a th:href="@{/admin/music}"><i><img th:src="@{/img/list_icon.png}" alt=""></i><span th:text="#{button.list}" th:remove="tag"></span></a></li>-->
+								<li id="listBtn"><i><img th:src="@{/img/list_icon.png}" alt=""></i><span th:text="#{button.list}" th:remove="tag"></span></li>
+							</ul>
+						</div>
+						<div th:if="${track.trackStatus == BEFORE_EXAM}" class="commerce_btn commerce_btn_ver2 mt30 w300">
+							<ul>
+								<!--<li><a th:onclick="@{${'UPMusicAdmin.acceptTrack(' + track.id + ');'}}"><i>V</i>승인</a></li>-->
+								<!--<li><a th:onclick="@{${'UPMTrackRejectedReasonModal.showModal(' + track.id + ');'}}"><i>X</i>거절</a></li>-->
+								<li th:onclick="@{${'UPMusicAdmin.acceptTrack(' + track.id + ');'}}"><i>V</i>승인</li>
+								<li th:onclick="@{${'UPMTrackRejectedReasonModal.showModal(' + track.id + ');'}}"><i>X</i>거절</li>
+							</ul>
+						</div>
+						<div th:unless="${track.trackStatus == BEFORE_EXAM}" class="commerce_btn commerce_btn_ver2 mt30 w300">
+							<div th:id="${track.id}" class="like_btn_round" th:classappend="${recommended} ? 'like_btn_round_on' : 'like_btn_round_off'" th:onclick="@{${'UPMusicAdmin.recommendTrack(' + track.id + ');'}}"><i><span class="heart">&nbsp;</span></i>추천음원 등록</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div th:replace="fragments/admin/common/modal_track_rejected_reason"></div>
+		
+		<script th:src="@{/js/jQuery.AudioPlayer.js}"></script>
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var audioSource = /*[[ ${track.getFilenameUrl()} ]]*/;
+			$(function() {
+		        var player = $.AudioPlayer;
+		        player.init({
+		            container: '#audioWrap'
+		            ,source: audioSource
+		            ,debuggers: false
+		            ,allowSeek: true
+		        });
+		
+		        $('[data-url]').on('click', function(event) {
+		            event.preventDefault();
+		
+		            player.updateSource({
+		                source: $(this).data('url')
+		            });
+		        });
+
+                $('#listBtn').click(function(){
+                    history.back();
+                });
+		    });
+		/*]]>*/
+		</script>
+		
+	</div>
+
+</body>
+</html>

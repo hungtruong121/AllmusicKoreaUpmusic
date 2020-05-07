@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_vocal_casting(castingFragmentId, castingList, castingPaginationUrl)" th:id="${castingFragmentId}" class="nl_panel pdt0">
+		<div class="item-list">
+			<div class="listing" th:each="casting, iter : ${castingList}" th:id="${casting.id}" th:onclick="@{${'UPMusic.goto(&quot;/music/vocal_casting/' + casting.id + '&quot;, event);'}}">
+				<div class="listing-item">
+					<div class="listing-claim">
+						<div class="listing-claim--subject"><p th:text="${casting.subject}" th:remove="tag"></p></div>
+						<div class="listing-claim--icon" th:if="${casting.newItem}">
+							<img th:src="@{/img/new.png}" alt="" />
+						</div>
+					</div>
+					<div class="listing-date"><span th:onclick="@{${'UPMusic.goto(&quot;' + casting.getMember().getUrl() + '&quot;, event);'}}" th:text="${casting.getMember().getNick()}"></span><span th:text="${casting.formattedTime()}"></span></div>
+					<div class="listing-info">
+						<span th:text="${casting.commentCnt}"></span> <span th:text="#{model.comment}"></span>
+					</div>
+				</div>
+			</div>
+			<!--  listing -->
+			
+			<div th:if="${castingPaginationUrl != null and castingList != null and castingList.totalPages gt pageNo + 1}" id="list-more-button" class="showmore_wrap">
+				<p><a th:onclick="@{${'UPMusic.appendPage(&quot;' + castingFragmentId + '&quot;, &quot;' + castingPaginationUrl + '&quot;, ' + (pageNo + 1) + ', ' + castingList.totalPages + ');'}}">SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></a></p>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

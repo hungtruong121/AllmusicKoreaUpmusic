@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+	<div class="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title">크라우드 펀딩</h2>
+				<div class="tab_design">
+					<ul>
+						<li>홈
+							<div class="tab_line tab_line"></div>
+						</li>
+						<li id="new_project">신규 프로젝트</li>
+						<li id="hot_project">인기 프로젝트</li>
+						<li id="infomation">프로젝트 소식</li>
+					</ul>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="artist_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl">크라우드 펀딩 홈 <span>* 전세계인과 직접 참여하고 함께 나누는 참여형 프로젝트</span></p>
+							</div>
+							<div class="artist_banner artist_banner_slide">
+								<!--  2018-06-29 인조이웍스 추가 -->
+								<ul class="advertisement_slide">
+									<!-- <li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li> -->
+								</ul>
+							</div>
+							<p class="content_title2 mb15">신규 프로젝트</p>
+							<div class="crowd_newproject_wrap"  th:each="newProject : ${newProjectList.content}">
+								<a th:href="@{${newProject.getDetailUrl()}}">
+								<div class="producing_profile crowd_profile" th:style="'background:url(' +@{${newProject.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+								</div>
+								<div class="producing_info crowd_info">
+									<div class="producing_infowrap">
+										<h3 class="crowd_title crowd_title2" th:text="${newProject.subject}" style="width: 100%;">
+										</h3>
+										<p class="producing_introduce mt10" th:text="${newProject.summary}">
+										</p>
+										<div class="funding_graph_wrap mt15">
+											<div class="funding_graph_head">
+												<h4 class="funding_percent">
+													<span th:text="${newProject.getPercent()}"></span>
+													(<span th:text="${newProject.joinCnt}"></span>표)</h4>
+												<p class="funcding_time">남은시간: <span th:text="${newProject.getDateTerm()} + 일"></span></p>
+												<input type="hidden" id="testCheck" th:value="@{${newProject.getPercentForLoadingBar()}}">
+												<input type="hidden" id="testCheck2" th:value="@{${newProject.attainmentPrice}}">
+											</div>
+											<div class="funding_bar_wrap">
+												<div class="funding_bar" th:style="'width: ' + @{${newProject.getPercentForLoadingBar()}} +'; max-width: 100%;'"></div>
+												<p th:text="${newProject.attainmentPrice} + 원"></p>
+											</div>
+										</div>
+										<div sec:authorize="isAnonymous()" class="commerce_btn mt15">
+											<ul>
+												<li><i><img th:src="@{/img/funding.png}" alt="" /></i>펀딩</li>
+											</ul>
+										</div>
+										<div sec:authorize="isAuthenticated()" class="commerce_btn mt15" th:onclick="@{${'UPMusicCommon.crowdFunding(' + newProject.crowdFundingId + ');'}}">
+											<ul>
+												<!-- <li><a th:href="@{${newProject.getRewardUrl()}}"><i><img src="img/funding.png" alt="" /></i>펀딩</a></li> -->
+												<li><i><img th:src="@{/img/funding.png}" alt="" /></i>펀딩</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								</a>
+							</div>
+						</div>
+						<p class="content_title2 mb15">인기 프로젝트</p>
+						<div class="public_project_wrap">
+							<ul>
+								<li th:each="hotProject : ${hotProjectList.content}">
+									<a th:href="@{${hotProject.getDetailUrl()}}">
+									<div class="public_project_profile" th:style="'background: url('+ @{${hotProject.getThumbnailImgUrl()}} +') center center no-repeat; background-size: cover;'">
+										<!-- <img src="../img/public_profile.png" alt="" /> -->
+										<!--
+										<img th:src="${hotProject.getThumbnailImgUrl()}" style="width: 100%; height: 330px;"/>
+										-->
+									</div>
+									<div class="public_project_info">
+										<h3 class="crowd_title" th:text="${hotProject.subject}" style="width: 100%;"><br /></h3>
+										<p class="crowd_title_ver2" ></p>
+										<div class="funding_graph_wrap mt15">
+											<div class="funding_graph_head">
+												<h4 class="funding_percent" >
+													<span th:text="${hotProject.getPercent()}"></span>
+													(<span th:text="${hotProject.joinCnt}"></span>표)</h4>
+												<p class="funcding_time">남은시간: <span th:text="${hotProject.getDateTerm()} + 일"></span></p>
+											</div>
+											<div class="funding_bar_wrap">
+												<div class="funding_bar" th:style="'width: ' + @{${hotProject.getPercentForLoadingBar()}} +'; max-width: 100%;'"></div>
+												<p th:text="${hotProject.attainmentPrice} + 원"></p>
+											</div>
+											<div sec:authorize="isAnonymous()" class="commerce_btn mt15">
+												<ul>
+													<li><i><img th:src="@{/img/funding.png}" alt="" /></i>펀딩</li>
+												</ul>
+											</div>
+											<div sec:authorize="isAuthenticated()" class="commerce_btn mt15" th:onclick="@{${'UPMusicCommon.crowdFunding(' + hotProject.crowdFundingId + ');'}}">
+												<ul>
+													<!-- <li><a th:href="@{${newProject.getRewardUrl()}}"><i><img src="img/funding.png" alt="" /></i>펀딩</a></li> -->
+													<li><i><img th:src="@{/img/funding.png}" alt="" /></i>펀딩</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- 신규 프로젝트 영역 -->
+
+					<div class="tab_content">
+						<p class="content_title2 mb15">신규 프로젝트</p>
+						<div class="public_project_wrap">
+							<ul>
+								<li th:each="newProjectMenu : ${newProjectMenuList.content}">
+									<a th:href="@{${newProjectMenu.getDetailUrl()}}">
+									<div class="public_project_profile" th:style="'background: url('+ @{${newProjectMenu.getThumbnailImgUrl()}} +') center center no-repeat; background-size: cover;'">
+										<!--
+										<img th:src="${newProjectMenu.getThumbnailImgUrl()}" style="width: 100%; height: 330px;"/>
+										-->
+									</div>
+									<div class="public_project_info">
+										<h3 class="crowd_title" th:text="${newProjectMenu.subject}" style="width: 100%;"></h3>
+										<div class="funding_graph_wrap mt15">
+											<div class="funding_graph_head">
+												<h4 class="funding_percent" th:text="${newProjectMenu.getPercent()}">
+													<span th:text="${newProjectMenu.getPercent()}"></span>
+													(<span th:text="${newProjectMenu.joinCnt}"></span>표)</h4>
+												<p class="funcding_time">남은시간: <span th:text="${newProjectMenu.getDateTerm()} + 일"></span></p>
+											</div>
+											<div class="funding_bar_wrap">
+												<div class="funding_bar" th:style="'width: ' + @{${newProjectMenu.getPercentForLoadingBar()}} +'; max-width: 100%;'"></div>
+													<p th:text="${newProjectMenu.attainmentPrice} + 원"></p>
+											</div>
+											<div sec:authorize="isAnonymous()" class="commerce_btn mt15">
+												<ul>
+													<li><i><img th:src="@{/img/funding.png}" alt="" /></i>펀딩</li>
+												</ul>
+											</div>
+											<div sec:authorize="isAuthenticated()" class="commerce_btn mt15" th:onclick="@{${'UPMusicCommon.crowdFunding(' + newProjectMenu.crowdFundingId + ');'}}">
+												<ul>
+													<!-- <li><a th:href="@{${newProject.getRewardUrl()}}"><i><img src="img/funding.png" alt="" /></i>펀딩</a></li> -->
+													<li><i><img th:src="@{/img/funding.png}" alt="" /></i>펀딩</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+
+						<div th:if="${newProjectMenuList != null and newProjectMenuList.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${newProjectMenuList.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not newProjectMenuList.first}" th:href="@{${'/crowd_funding/new_project#new_project'}(newPage=${newProjectMenuList.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${newProjectMenuList.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, newProjectMenuList.totalPages - 1)}" th:class="${newProjectMenuList.number eq pageNo}? 'active' : ''">
+						            <a th:if="${newProjectMenuList.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (newProjectMenuList.number eq pageNo)}" th:href="@{${'/crowd_funding/new_project#new_project'}(newPage=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${newProjectMenuList.number + 1 ge newProjectMenuList.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not newProjectMenuList.last or newProjectMenuList.number > 9}" th:href="@{${'/crowd_funding/new_project#new_project'}(newPage=${newProjectMenuList.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${newProjectMenuList.last or newProjectMenuList.number > 9}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+
+					</div>
+
+					<!-- 인기 프로젝트 메뉴 -->
+					<div class="tab_content">
+						<p class="content_title2 mb15">인기 프로젝트</p>
+						<div class="public_project_wrap">
+							<ul>
+								<li th:each="hotProjectMenu : ${hotProjectMenuList.content}">
+									<a th:href="@{${hotProjectMenu.getDetailUrl()}}">
+									<div class="public_project_profile" th:style="'background: url('+ @{${hotProjectMenu.getThumbnailImgUrl()}} +') center center no-repeat; background-size: cover;'">
+										<!--
+										<img th:src="${hotProjectMenu.getThumbnailImgUrl()}" style="width: 100%; height: 330px;"/>
+										-->
+									</div>
+									<div class="public_project_info">
+										<h3 class="crowd_title" th:text="${hotProjectMenu.subject}" style="width: 100%;"></h3>
+										<div class="funding_graph_wrap mt15">
+											<div class="funding_graph_head">
+												<h4 class="funding_percent" th:text="${hotProjectMenu.getPercent()}">
+													<span th:text="${hotProjectMenu.getPercent()}"></span>
+													(<span th:text="${hotProjectMenu.joinCnt}"></span>표)</h4>
+												<p class="funcding_time">남은시간: <span th:text="${hotProjectMenu.getDateTerm()} + 일"></span></p>
+											</div>
+											<div class="funding_bar_wrap">
+												<div class="funding_bar" th:style="'width: ' + @{${hotProjectMenu.getPercentForLoadingBar()}} +'; max-width: 100%;'"></div>
+													<p th:text="${hotProjectMenu.attainmentPrice} + 원"></p>
+											</div>
+											<div sec:authorize="isAnonymous()" class="commerce_btn mt15">
+												<ul>
+													<li><i><img th:src="@{/img/funding.png}" alt="" /></i>펀딩</li>
+												</ul>
+											</div>
+											<div sec:authorize="isAuthenticated()" class="commerce_btn mt15" th:onclick="@{${'UPMusicCommon.crowdFunding(' + hotProjectMenu.crowdFundingId + ');'}}">
+												<ul>
+													<!-- <li><a th:href="@{${newProject.getRewardUrl()}}"><i><img src="img/funding.png" alt="" /></i>펀딩</a></li> -->
+													<li><i><img th:src="@{/img/funding.png}" alt="" /></i>펀딩</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+									</a>
+								</li>
+							</ul>
+						</div>
+
+						<div th:if="${hotProjectMenuList != null and hotProjectMenuList.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${hotProjectMenuList.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not hotProjectMenuList.first}" th:href="@{${'/crowd_funding/hot_project#hot_project'}(hotPage=${hotProjectMenuList.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${hotProjectMenuList.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, hotProjectMenuList.totalPages - 1)}" th:class="${hotProjectMenuList.number eq pageNo}? 'active' : ''">
+						            <a th:if="${hotProjectMenuList.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (hotProjectMenuList.number eq pageNo)}" th:href="@{${'/crowd_funding/hot_project#hot_project'}(hotPage=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${hotProjectMenuList.number + 1 ge hotProjectMenuList.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not hotProjectMenuList.last or hotProjectMenuList.number > 9}" th:href="@{${'/crowd_funding/hot_project#hot_project'}(hotPage=${hotProjectMenuList.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${hotProjectMenuList.last or hotProjectMenuList.number > 9}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+
+					</div>
+
+					<!-- 프로젝트 소식 -->
+					<div class="tab_content">
+						<div class="artist_list clear" th:each="newProjectNews : ${newProjectNewsList.content}" th:onclick="@{${'UPMusic.goto(&quot;' + newProjectNews.getDetailUrl() + '&quot;);'}}" 
+						style="cursor: pointer;">
+							<p class="content_title2 mb15">가장 최근 소식</p>
+							<div class="crowd_newproject_wrap">
+							<div class="producing_profile crowd_profile" th:style="'background:url(' +@{${newProjectNews.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'"></div>
+								<div class="producing_info crowd_info">
+									<div class="producing_infowrap">
+										<h3 class="crowd_title" th:text="${newProjectNews.subject}" style="width: 100%;"></h3>
+										<p class="producing_introduce mt10" ></p>
+										<div class="commerce_btn mt15">
+											<ul>
+												<li><a th:href="${newProjectNews.getDetailUrl()}">소식보기</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<p class="content_title2 mb15">소식</p>
+						<div class="public_project_wrap">
+							<ul>
+								<li th:each="projectNews : ${projectNewsList.content}" th:onclick="@{${'UPMusic.goto(&quot;' + projectNews.getDetailUrl() + '&quot;);'}}" style="cursor: pointer;">
+									<div class="public_project_profile" th:style="'background:url(' +@{${projectNews.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+										<!-- <img th:src="${projectNews.getThumbnailImgUrl()}" alt="" /> -->
+									</div>
+									<div class="public_project_info">
+										<h3 class="crowd_title" th:text="${projectNews.subject}" style="width: 100%;"></h3>
+										<p class="producing_introduce"></p>
+										<div class="commerce_btn mt15">
+											<ul>
+												<li><a th:href="${projectNews.getDetailUrl()}">소식보기</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+
+						<div th:if="${projectNewsList != null and projectNewsList.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${projectNewsList.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not projectNewsList.first}" th:href="@{${'/crowd_funding/information#infomation'}(newsPage=${projectNewsList.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${projectNewsList.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, projectNewsList.totalPages - 1)}" th:class="${projectNewsList.number eq pageNo}? 'active' : ''">
+						            <a th:if="${projectNewsList.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (projectNewsList.number eq pageNo)}" th:href="@{${'/crowd_funding/information#infomation'}(newsPage=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${projectNewsList.number + 1 ge projectNewsList.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not projectNewsList.last or projectNewsList.number > 9}" th:href="@{${'/crowd_funding/information#infomation'}(newsPage=${projectNewsList.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${projectNewsList.last or projectNewsList.number > 9}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+	</div><!-- section wrap	 -->
+
+	<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	$(document).ready(function() {
+		// 초기 셋팅
+		[# th:each="bannerList,iter : ${bannerList}"]
+    		$(".advertisement_slide").append("<li></li>");
+		[/]
+
+		// 초기 선택
+		eventBannerSetting(0);
+
+		console.log($('#testCheck').val() + ":" + $('#testCheck2').val());
+
+
+		// 배너 슬라이드에서 선택
+		$(".advertisement_slide>li").click(function(event){
+			console.log("# .advertisement_slide>li : "+$(this).index())
+			eventBannerSetting($(this).index());
+			$(this).css("borderRadius","0").siblings("li").css("borderRadius","12px");
+			return false;
+		});
+	});
+
+	function eventBannerSetting(i){
+		testtest = i;
+	    [# th:each="bannerList,iter : ${bannerList}"]
+
+	    	[# th:if="${iter.index} == 0"]
+		    	// 첫번째 값 셋팅
+			 	if(testtest == 0) {
+					 $(".artist_banner_slide").css({'background':'url('+/*[[${bannerList.getImgUrl()}]]*/+') center center no-repeat','backgroundSize':'cover'}).css('cursor', 'pointer');
+					 $(".artist_banner_slide").attr("onClick", "window.open('" + [[${bannerList.link}]]+ "', '_parent')");
+
+	    		}	
+	    	[/]
+	    	[# th:if="${iter.index} == 1"]
+				if(testtest == 1) {
+					$(".artist_banner_slide").css({'background':'url('+/*[[${bannerList.getImgUrl()}]]*/+') center center no-repeat','backgroundSize':'cover'}).css('cursor', 'pointer');
+					$(".artist_banner_slide").attr("onClick", "window.open('" + [[${bannerList.link}]]+ "', '_parent')");
+				}
+			[/]
+	    	[# th:if="${iter.index} == 2"]
+				if(testtest == 2) {
+					$(".artist_banner_slide").css({'background':'url('+/*[[${bannerList.getImgUrl()}]]*/+') center center no-repeat','backgroundSize':'cover'}).css('cursor', 'pointer');
+					$(".artist_banner_slide").attr("onClick", "window.open('" + [[${bannerList.link}]]+ "', '_parent')");
+				}
+			[/]
+	    	[# th:if="${iter.index} == 3"]
+				if(testtest == 3) {
+					$(".artist_banner_slide").css({'background':'url('+/*[[${bannerList.getImgUrl()}]]*/+') center center no-repeat','backgroundSize':'cover'}).css('cursor', 'pointer');
+					$(".artist_banner_slide").attr("onClick", "window.open('" + [[${bannerList.link}]]+ "', '_parent')");
+				}
+			[/]
+	    	[# th:if="${iter.index} == 4"]
+				if(testtest == 4) {
+					$(".artist_banner_slide").css({'background':'url('+/*[[${bannerList.getImgUrl()}]]*/+') center center no-repeat','backgroundSize':'cover'}).css('cursor', 'pointer');
+					$(".artist_banner_slide").attr("onClick", "window.open('" + [[${bannerList.link}]]+ "', '_parent')");
+				}
+			[/]
+	    [/]
+	}
+
+
+
+	/*]]>*/
+	</script>
+
+	</div>
+
+</body>
+</html>

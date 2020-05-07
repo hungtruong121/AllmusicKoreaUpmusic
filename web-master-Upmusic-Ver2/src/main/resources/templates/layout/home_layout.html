@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+
+<head>
+<meta charset="utf-8"/>
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE" th:text="#{common.app.title}"></title>
+<meta name="keywords" content="Music" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+
+
+<style>
+input[type="checkbox"] {
+   display: inline-block;
+   margin-right: 5px;
+}
+</style>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+<script th:src="@{/js/upmusic.js}"></script>
+
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+</head>
+
+<body>
+	<div th:replace="fragments/common/header :: header"></div>
+	<!-- <div th:replace="fragments/common/navigation :: navigation"></div> -->
+
+	<div class="container" id="mainContent">
+		<div layout:fragment="content"></div>
+	</div>
+
+	<div th:replace="fragments/common/footer :: footer"></div>
+	
+	<div th:replace="fragments/common/modal_message :: modal_message"></div>
+	
+	<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		var msgUserAfterLogin = /*[[ #{common.request.auth} ]]*/;
+		var msgAddedToCollection = /*[[ #{common.track.added_to_collection} ]]*/;
+	/*]]>*/
+	</script>
+	
+	<div sec:authorize="isAnonymous()">
+		<div th:replace="fragments/common/modal_login"></div>
+		<script th:src="@{/js/upmusic_common_guest.js}"></script>
+	</div>
+	
+	<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var headers = { /*[[ ${_csrf.headerName} ]] : [[ ${_csrf.token} ]]*/ };
+		/*]]>*/
+		</script>
+		<script th:src="@{/js/upmusic_common_member.js}" th:inline="javascript"></script>
+	</div>
+</body>
+
+</html>

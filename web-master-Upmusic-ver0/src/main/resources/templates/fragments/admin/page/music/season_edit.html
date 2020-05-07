@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap section">
+			<h2 class="page-title">업리그 시즌 수정</h2>
+			<div class="tabcontent_wrap">
+				<div class="tabcontent_0">
+					<form action="#" th:action="@{${seasonform.getUrl()}}" th:object="${seasonform}" method="POST" class="form-music" enctype="multipart/form-data" role="form">
+						<div class="inputbox_wrap">
+							<ul>
+								<li>
+									<div id="form-group-subject" class="form-group inputbox" th:classappend="${#fields.hasErrors('subject')} ? 'has-error' : ''">
+										<label class="input_title">시즌명</label>
+										<input th:field="*{subject}" th:type="text" placeholder="시즌명을 입력하세요" class="form-control" />
+										<p th:if="${#fields.hasErrors('subject')}" th:id="error-subject" class="help-block" th:errors="*{subject}"></p>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-coverImageMultipart" class="form-group inputbox" th:classappend="${#fields.hasErrors('imageMultipart')} ? 'has-error' : ''">
+										<div class="input-file" id="imageMultipart">
+											<label class="input_title">이미지 업로드</label>
+											<input th:type="text" th:field="*{imageMultipart}" placeholder="시즌 이미지를 올려주세요" class="form-control imgupload_input" />
+											<img th:src="@{/img/inputicon_img.png}" alt="" />
+										</div>
+										<p th:if="${#fields.hasErrors('imageMultipart')}" th:id="error-thumbnail" class="help-block" th:errors="*{imageMultipart}"></p>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-open" class="form-group inputbox" th:classappend="${#fields.hasErrors('openDate')} ? 'has-error' : ''">
+					                	<label class="input_title">시즌 시작일</label>
+					                    <input id="season-open-datetimepicker" th:field="*{openDate}" th:type="text" placeholder="시즌 시작일을 입력하세요" class="form-control" />
+						                <p th:if="${#fields.hasErrors('openDate')}" th:id="error-open" class="help-block" th:errors="*{openDate}"></p>
+						            </div>
+					           </li>
+					           <li>
+									<div id="form-group-close" class="form-group inputbox" th:classappend="${#fields.hasErrors('closeDate')} ? 'has-error' : ''">
+					                	<label class="input_title">시즌 종료일</label>
+					                    <input id="season-close-datetimepicker" th:field="*{closeDate}" th:type="text" placeholder="시즌 종료일을 입력하세요" class="form-control" />
+						                <p th:if="${#fields.hasErrors('closeDate')}" th:id="error-close" class="help-block" th:errors="*{closeDate}"></p>
+										<p id="close_error" class="help-block hide" style="color: #f55a4e; font-weight: 700;">* 시즌 종료일은 시즌 시작일보다 늦거나 같아야 합니다.</p>
+						            </div>
+					           </li>
+							</ul>
+						</div>
+						
+						<div class="membership_btn mt50">
+							<div class="btn_centerwrap btn_centerwrap2">
+								<button id="btn_ok" class="btn btn-custom btn-dark h50" type="submit"><span th:text="#{button.save}" th:remove="tag"></span></button>
+								<button class="btn btn-custom2 h50" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + seasonform.getUrl() + '&quot;);return false;'}}"><span th:text="#{button.cancel}" th:remove="tag"></span></button>
+							</div>
+						</div>
+					</form>
+					
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			function input_file_to_upload() {
+				$(".input-file").before(
+					function() {
+						if ( ! $(this).prev().hasClass('input-ghost') ) {
+							var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0' accept='image/*'>");
+							element.attr("name",$(this).attr("id"));
+							element.change(function(){
+								element.next(element).find('input').val((element.val()).split('\\').pop());
+							});
+							$(this).find("button.btn-choose").click(function(){
+								element.click();
+							});
+							$(this).find("button.btn-reset").click(function(){
+								element.val(null);
+								$(this).parents(".input-file").find('input').val('');
+							});
+							$(this).find('input').css("cursor","pointer");
+							$(this).find('input').mousedown(function() {
+								$(this).parents('.input-file').prev().click();
+								return false;
+							});
+							return element;
+						}
+					}
+				);
+			}
+			$(function() {
+				input_file_to_upload();
+				$('#season-open-datetimepicker').datepicker({
+	                format: 'yyyy-mm-dd'
+	            }).on('changeDate', function(e){
+	                $(this).datepicker('hide');
+	            });
+				$('#season-close-datetimepicker').datepicker({
+	                format: 'yyyy-mm-dd'
+	            }).on('changeDate', function(e){
+	                $(this).datepicker('hide');
+	                var start = $('#season-open-datetimepicker').val();
+	                var end = $('#season-close-datetimepicker').val();
+	                if(end < start){
+	                    $('#close_error').removeClass('hide');
+	                    $('#btn_ok').attr('disabled', true);
+					} else {
+                        $('#close_error').addClass('hide');
+                        $('#btn_ok').attr('disabled', false);
+					}
+	            });
+			});
+		</script>
+	</div>
+
+</body>
+</html>

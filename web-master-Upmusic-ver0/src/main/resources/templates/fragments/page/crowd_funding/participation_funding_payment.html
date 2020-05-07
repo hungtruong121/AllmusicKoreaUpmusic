@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+  <div layout:fragment="content">
+
+    <div class="subpage_wrap section">
+			<h2 class="page-title">포인트 결제</h2>
+			<ul class="pageStep">
+				<li class="t01 ">
+					<img src="/img/ico_step01.png" />
+					<span>리워드 선택</span>
+					<img src="/img/ico_arr01.png" class="arr" />
+				</li>
+				<li class="t02 on">
+					<img src="/img/ico_step02.png" />
+					<span>포인트 결제</span>
+					<img src="/img/ico_arr01.png" class="arr" />
+				</li>
+				<li class="t03">
+					<img src="/img/ico_step03.png" />
+					<span>펀딩 완료</span>
+				</li>
+			</ul>
+
+			<!-- -->
+			<form action="#" id="fundingCompleteForm" th:action="@{/crowd_funding/participation/funding_complete}" role="form" th:object="${paramData}" method="post">
+			<div class="nbox">
+				<p class="content_title2 clear">결제 내역 <span>* 프로젝트 목표 달성 성공시 리워드를 지급합니다.  프로젝트 목표 달성 실패시 지급된 업뮤직 포인트는 환불 처리 됩니다.</span></p>
+				<div class="payPointBox">
+					<p class="subj" th:text="${reward} != null ? ${reward.rewardSubject} : ''">리워드 A</p>
+					<ul th:if="${reward} != null">
+						<li th:each="content : ${reward.getContentStrList()}" th:text="${content}"></li>
+					</ul>
+
+					<div class="bot">
+						<span class="s01">결제 포인트</span>
+						<span class="s02"><span th:text="${reward} != null ? ${reward.point} : ${point}"></span>P</span>
+					</div>
+				</div>
+
+
+
+				<p class="content_title2 clear">포인트 <span>* 후원을 진행할 때 펀딩 포인트가 우선적으로 소모됩니다. </span></p>
+				<div class="inputbox_wrap inputbox_wrap2 t02">
+					<ul>
+						<li>
+							<div class="items bg03">
+								<p class="t01"><span th:text="${currentUser.fundingPoint}"></span> P</p>
+								<p class="t02">펀딩 포인트</p>
+							</div>
+						</li>
+						<li>
+							<div class="items bg02">
+								<p class="t01"><span th:text="${currentUser.getUsablePoint()}"></span> P</p>
+								<p class="t02">사용가능 포인트</p>
+							</div>
+						</li>
+						<li>
+							<div class="items bg05">
+								<p class="t01 cr" ><span id="tribalPoint" th:text="${tribalPoint}"></span> P</p>
+								<p class="t02">부족한 포인트</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+
+				<p class="content_title2 clear">배송 정보 <span class="t01">*필수입력입니다.</span></p>
+				<input type="hidden" name="crowdFundingId" id="crowdFundingId" th:value="${crowdFundingId}">
+				<input type="hidden" name="crowdFundingRewardId" th:value="${crowdFundingRewardId}">
+				<input type="hidden" name="point" id="point" th:value="${reward} != null ? ${reward.point} : ${point}">
+				
+				<input type="hidden" name="useFundingPoint" id="useFundingPoint">
+				<input type="hidden" name="useUsablePoint" id="useUsablePoint">
+				<input type="hidden" name="crowdFundingJoinId" id="crowdFundingJoinId">
+				<div class="membership_wrap t01">
+					<ul>
+						<li>
+							<div class="inputbox">
+								<label class="input_title">이름</label>
+								<input type="text" placeholder="이름을 입력하세요." class="form-control" name="name" required="required">
+							</div>
+						</li>
+						<li>
+							<div class="inputbox">
+								<label class="input_title">이메일</label>
+								<input type="text" placeholder="이메일를 입력하세요." class="form-control" name="email" required="required">
+							</div>
+						</li>
+						<li>
+							<div class="inputbox">
+								<label class="input_title">전화번호</label>
+								<input type="text" placeholder="전화번호를 입력하세요." class="form-control" name="phoneNumber">
+								<span class="etxt">전화번호를 입력하지 않은 경우 배송이 거부되거나 물품이 반송될 수 있으며, 이 경우 재배송 비용을 추가로 지불해야합니다.
+								<br />또한 참여나 발송 정보가 SMS로 전송될 수 있으니 가급적 휴대폰 번호를 입력해 주시기 바랍니다.</span>
+							</div>
+						</li>
+						<li>
+							<div class="inputbox">
+								<label class="input_title db">우편번호</label>
+								<input type="text" placeholder="우편번호를 검색하세요." class="form-control w80p fl clear mr2p" name="postNumber" id="postNumber">
+								<button class="btn btn-custom2 fl h50 w18p p60" id="btn_find_postNum" type="button">검색</button>
+							</div>
+						</li>
+						<li>
+							<div class="inputbox">
+								<label class="input_title db">주소</label>
+								<input type="text" placeholder="주소를 입력하세요." class="form-control" name="addr" id="addr">
+								<span class="etxt">주소를 정확하게 입력해주세요. 주소가 잘못될 경우 리워드 배송이 지연되거나 반송될 수 있으며,    반송시 재배송 비용은 프로젝트 참여자가 부담하게 됩니다.</span>
+							</div>
+						</li>
+						<li>
+							<div class="inputbox">
+								<label class="input_title">상세주소</label>
+								<input type="text" placeholder="상세주소를 입력하세요." class="form-control" name="detailaddr">
+
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="inputbox t01 mb20">
+					<label class="input_title">비고</label>
+					<input type="text" class="form-control" placeholder="배송시 유의사항을 입력해주세요." name="note">
+					<span class="etxt">물품 배송시 유의사항이 있을 경우 비고란에 남겨주세요</span>
+				</div>
+
+			</div>
+			</form>
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom2 h50" id="btn_back" type="button">이전</button>
+					<button class="btn btn-custom btn-dark h50" id="btn_complates" type="button">완료</button>
+				</div>
+			</div>
+
+		</div><!-- subpage_wrap	 -->
+
+	  <div class="modal fade" id="modal-message2" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+		  <div class="modal-dialog login_pop">
+			  <div class="modal-content">
+				  <div class="modal-header login_header">
+					  <h2 class="modal_title" th:text="#{common.info}"></h2>
+					  <img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+				  </div>
+				  <div class="modal-body login_body">
+					  <div class="login_body1">
+						  <p id="alert-message" class="judge_info"></p>
+					  </div>
+					  <div class="login_btn upload_btn mt10">
+						  <button id="ok_btn_modal" class="btn btn-custom3 h50 w100p" data-dismiss="modal" th:text="#{button.ok}"></button>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+	  </div>
+
+     <script type="text/javascript" th:inline="javascript">
+     	$('#btn_back').click(function(){
+	    	history.back();
+	    });
+
+     	/*
+     	$('#btn_find_postNum').click(function(){
+     		new daum.Postcode({
+     	        oncomplete: function(data) {
+     	        	$('#postNumber').val(data.zonecode);
+     	        	$('#addr').val(data.roadAddress);
+     	        }
+     	    }).open();
+     	});
+     	*/
+        $('#btn_find_postNum').click(function(){
+            daum.postcode.load(function() {
+                new daum.Postcode({
+                    oncomplete: function (data) {
+                        $('#postNumber').val(data.zonecode);
+                        $('#addr').val(data.roadAddress);
+                    }
+                }).open();
+            })
+        });
+
+     	$('#btn_complates').click(function(){
+     		UPMusic.startLoading();
+     		var tribalPoint = $('#tribalPoint').html();
+
+     		if(tribalPoint > 0.0){
+     			// UPMusic.alert('결제 포인트가 부족합니다.\n크라우딩 펀딩 메인화면으로 이동합니다.');
+     			$('#alert-message').html('결제 포인트가 부족합니다.\n크라우딩 펀딩 메인화면으로 이동합니다.');
+                $('#modal-message2').modal('show');
+                $('#ok_btn_modal').on('click', function () {
+                    UPMusic.goto("/crowd_funding/participation");
+                });
+     		}else{
+     			var form = $('#fundingCompleteForm')[0];
+		        var formData = new FormData(form);
+     			
+     			$.ajax({
+		            type : 'post',
+		            url : '/api/crowdFunding/point_payment.json',
+		            data : formData,
+		            processData : false,
+		            contentType : false,
+		            success : function(data){
+		            	$('#useFundingPoint').val(data.useFundingPoint);
+		            	$('#useUsablePoint').val(data.useUsablePoint);
+		            	$('#crowdFundingJoinId').val(data.result);
+		            	
+		            	$('#fundingCompleteForm').submit();
+		            }
+		        });
+     			//$('#fundingCompleteForm').submit();
+     		}
+     	});
+
+	</script>
+
+  </div>
+
+</html>

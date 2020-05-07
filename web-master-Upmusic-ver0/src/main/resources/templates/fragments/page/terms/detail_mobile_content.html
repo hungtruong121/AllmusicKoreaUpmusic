@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+    	<div class="content terms-content" style="height:450px; overflow: scroll;">
+				<div class="production_section1 section">
+					<div class="page-title-wrap">
+						<h2 class="page-title" th:text="${terms.subject}"></h2>
+					</div>
+					<div class="notice_detail mt10">
+						<div class="nd_info" th:utext="${terms.content}"></div>
+					</div>
+				</div>
+   		</div>
+</body>
+</html>

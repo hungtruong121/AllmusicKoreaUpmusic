@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<div class="p0_panel">
+				<div class="projectNewsView">
+					<div class="btm_gray1 mt_10">
+						<p class="subject clamp2" th:text="${result.subject}"></p>								
+						<!-- <p class="date"><span>2018-04-30</span></p> -->								
+					</div>
+					
+					<!-- <div class="img">
+						<p><img src="./img/project_new01_b.png" alt="" /></p>
+						<p class="source">출처: 워너원 월드투어 포스터 ｜ 사진: CJE&M 제공</p>
+					</div> -->
+					<div class="writing p10" th:utext="${result.content}">
+					</div>
+					
+				</div>
+			</div>
+			
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		
+		</script>
+	</div>
+
+</body>
+</html>

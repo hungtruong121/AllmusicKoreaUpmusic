@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<title th:text="#{common.app.title}"></title>
+</head>
+
+<body>
+	<header th:fragment="header">
+		<h1><a href="/"><img th:src="@{/img/logo.png}" alt="" /></a></h1>
+		<div class="search_input">
+			<img th:src="@{/img/search_input.png}" alt="" />
+			<input id="upm-search-input" type="text" placeholder="Music Search.." />
+		</div>
+		<div class="login_wrap">
+			<dl>
+				<dt><a th:href="@{/auth/logout}"><i><img th:src="@{/img/logout.png}" alt="" /></i><span th:text="#{button.logout}"></span></a></dt>
+			</dl>
+		</div>
+	</header>
+</body>
+
+</html>

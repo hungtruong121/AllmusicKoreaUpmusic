@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+		<form action="#" th:action="@{/admin/upm_news/faq/update}" role="form" enctype="utf8"
+		th:object="${paramData}" method="post">
+		<input type="hidden" name="faqId" th:value="${result.faqId}">
+    	<div class="subpage_wrap section">
+			<h2 class="page-title">FAQ 등록하기</h2>
+			<div class="membership_wrap">
+				<ul>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">질문</label>
+							<input type="text" placeholder="질문을 입력하세요." class="form-control" name="content" th:value="${result.content}">
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">분류</label>
+			                <select class="form-control" name="category" id="category" style="height: 50px;">
+								<option value="1" th:select="${result.category} eq '1'">업로드</option>
+								<option value="2" th:select="${result.category} eq '2'">저작권</option>
+								<option value="3" th:select="${result.category} eq '3'">업 리그 차트</option>
+								<option value="4" th:select="${result.category} eq '4'">뮤직스토어</option>
+								<option value="5" th:select="${result.category} eq '5'">아티스트</option>
+								<option value="6" th:select="${result.category} eq '6'">결제</option>
+								<option value="7" th:select="${result.category} eq '7'">정산</option>
+								<option value="8" th:select="${result.category} eq '8'">리워드</option>
+								<option value="9" th:select="${result.category} eq '9'">포인트</option>
+								<option value="0" th:select="${result.category} eq '0'">기타</option>
+			                </select>
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">노출 여부</label>
+			                <select class="form-control" name="showYn" id="showYn" style="height: 50px;">
+			                	<option value="1" th:select="${result.showYn} eq '1'">ON</option>
+								<option value="0" th:select="${result.showYn} eq '0'">OFF</option>
+			                </select>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="form-group">
+				<label class="input_title">FAQ 답변 내용</label>
+			    <!-- <div class="summernote" id="content"></div> -->
+			    <textarea rows="" cols="" class="summernote" name="answerContent" id="result_content"></textarea>
+			</div>
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom btn-dark h50" type="submit">수정</button>
+					<button class="btn btn_delete btn-dark h50" type="button">삭제</button>
+					<button type="button" class="btn btn-custom2 h50" id="btn_back">취소</button>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</form>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+	    $('#btn_back').click(function(){
+	    	history.back();
+	    });
+
+	    $('.summernote').summernote({
+	    	height: 200
+	    });
+	    /*<![CDATA[*/
+	    var content = /*[[${result.answer.content}]]*/;
+	    $('#result_content').summernote('code', content);
+	    /*]]>*/
+
+	   	$('.btn_delete').click(function(){
+	    	UPMusicAdmin.confirm("정말로  삭제하시겠습니까?", function() {
+	    		UPMusicAdmin.goto("/admin/upm_news/faq/delete?faqId=" + /*[[${result.faqId}]]*/);
+	    	});
+	    });
+
+	</script>
+  </div>
+
+</body>
+</html>

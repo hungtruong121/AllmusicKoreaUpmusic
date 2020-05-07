@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_video(fragmentId, videoList)">
+		<ul th:id="${fragmentId}" class="producing_contnet">
+			<li th:each="video, iter : ${videoList}" th:id="${video.id}">
+				<div class="producing_profile musicvideo_profile videoplay_on2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}" th:style="@{${'background-image: url(' + video.getThumbnailUrl() + ');'}}">
+					<div class="play_iconwrap play_iconwrap2">
+						<ul>
+							<li><a th:href="${video.getUrl()}"><img th:src="@{/img/play_icon.png}" alt="" /></a></li>
+							<li th:text="${video.formattedDuration()}"></li>
+						</ul>
+					</div>
+				</div>
+				<div class="producing_info musicvideo_info video_description">
+					<div th:if="${fragmentId == 'uploaded-video-list'}" class="checkbox">
+						<input th:id="@{${'checkbox_video_' + video.id}}" class="checkbox-checked" type="checkbox" th:value="${video.id}"/>
+						<label th:for="@{${'checkbox_video_' + video.id}}"><span class="checkbox-custom"></span></label>
+					</div>
+					<div class="producing_infowrap video_description">
+						<ul class="hits_wrap fln mb10">
+							<li th:text="${video.formattedTime()}"></li>
+							<li><span th:text="#{common.hits_cnt}" th:remove="tag"></span> <span th:text="${video.hitCnt}" th:remove="tag"></span></li>
+						</ul>
+						<h3 class="producing_title musicvideo_title"><a th:href="@{${video.getUrl()}}"><span th:text="${video.getSubject()}" th:remove="tag"></span></a></h3>
+						<h4 class="artist-title2"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></h4>
+						<p th:if="${fragmentId == 'hot-video-top100-list'}" class="producing_price"><span th:text="${videoList.number * videoList.size + iter.index + 1}" th:remove="tag"></span>위</p>
+						<p class="producing_introduce mt10 video_description" th:text="${video.description}"></p>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</body>
+
+</html>

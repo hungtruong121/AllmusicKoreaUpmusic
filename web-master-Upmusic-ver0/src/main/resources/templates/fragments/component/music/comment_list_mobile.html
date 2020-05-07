@@ -1,0 +1,26 @@
+<dd th:each="comment : ${comments}" th:id="'list-comment-' + ${comment.id}">
+	<div class="user">
+		<a th:href="@{${comment.member.getUrl()}}">
+			<img th:src="@{${comment.member.getProfileImageUrl()}}" title="profileimage"/>
+		</a>
+	</div>
+	<div class="cmt_box">
+		<p class="id" th:text="${comment.member.nick}"></p>
+		<p class="cmt" th:id="'list-comment-' + ${comment.id} + '-content'" th:utext="${#strings.replace( #strings.escapeXml( comment.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+	</div>
+	<div class="date">
+		<p class="comment_day" th:text="${comment.formattedTime()}"></p>
+		<ul th:if="${currentUserId} == ${comment.member.id}" th:id="'list-comment-' + ${comment.id} + '-buttons'">
+			<li>
+				<a id="edit-list-comment" th:onclick="'UPMCommentList.editComment(' + ${comment.id} + ');'">
+					<span th:text="#{button.modify}" th:remove="tag"></span>
+				</a>
+			</li>
+			<li>
+				<a id="delete-list-comment" th:onclick="'UPMCommentList.deleteComment(' + ${comment.id} + ');'">
+					<span th:text="#{button.delete}" th:remove="tag"></span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</dd>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+		<form action="#" th:action="@{/upm_news/upm_band/update}" role="form" enctype="multipart/form-data"
+		th:object="${paramData}" method="post">
+		<input type="hidden" th:value="${result.bandRecruitId}" name="bandRecruitId">
+		<input type="hidden" th:value="${result.filename}" name="filename">
+    	<div class="subpage_wrap section">
+			<h2 class="page-title">함께해요</h2>
+			<p class="content_title2">함께해요 수정 <span>* 뭉치면 더 큰 힘이 됩니다. 함께 할 아티스트를 찾아보세요.</span></p>
+			<div class="membership_wrap">
+				<ul>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">제목</label>
+							<input type="text" placeholder="제목을 입력하세요." class="form-control" name="subject" th:value="${result.subject}" maxlength="200">
+						</div>
+					</li>
+					<li>
+						<div id="form-group-imageFilename" class="form-group inputbox">
+							<div class="input-file" id="imageFilename">
+								<label class="input_title">이미지</label>
+								<input th:type="text" id="img_fileName" placeholder="이미지를 등록하세요" class="form-control imgupload_input" onclick="$('#band_img').trigger('click');return false;" onkeypress="return event.keyCode != 13;"/>
+								<input type="file" name="thumbnailImg" id="band_img" style="display: none;"/>
+								<img th:src="@{/img/inputicon_img.png}" alt="" />
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="form-group">
+				<label class="input_title">소개</label>
+			    <textarea rows="" cols="" class="summernote" name="content"></textarea>
+			</div>
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom btn-dark h50">수정</button>
+					<button class="btn btn-custom2 h50" id="btn_back">취소</button>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</form>
+
+    </div>
+    <script type="text/javascript" th:inline="javascript">
+	    $('#btn_back').click(function(){
+	    	history.back();
+	    });
+	    $('.summernote').summernote({
+	    	height: 200
+	    });
+
+	    /*<![CDATA[*/
+	    var content = /*[[${result.content}]]*/;
+	    /*]]>*/
+	    $('.summernote').summernote('code', content);
+
+	    $('#band_img').change(function(e){
+	    	var temp = $(this).val().split('.');
+            var fileExt = temp[temp.length-1].toLowerCase();
+
+            if(fileExt == "jpg" || fileExt == "jpeg" || fileExt == "png" || fileExt == "gif" || fileExt == "bmp"){
+				$('#img_fileName').val(e.target.files[0].name);
+            }else{
+            	alert('이미지 파일만 등록 가능 합니다.');
+            	$(this).val('');
+            }
+
+	    });
+
+	</script>
+  </div>
+
+</body>
+</html>

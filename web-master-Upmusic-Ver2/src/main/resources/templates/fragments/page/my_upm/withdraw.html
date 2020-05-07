@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap section">
+			<div class="page-title-wrap">
+				<h2 class="page-title">회원탈퇴</h2>
+			</div>
+			<div class="additional_information clear ml0 mb20">
+				<ul>
+					<li>
+						<h3 class="copyright_title additional_title fl mb10">1. 업뮤직 개인정보 및 이용정보 삭제되며, 삭제된 데이터는 복구할 수 없습니다.
+						</h3>
+					</li>
+					<li class="clear">- 업뮤직 전체서비스 이용 정보 삭제<br/>
+						- SNS 연동 해제
+					</li>
+					<li class="mt20">
+						<h3 class="copyright_title additional_title fl mb10">2. 유효기간이 남은 보유 상품 및 업뮤직 포인트는 모두 삭제됩니다.
+						</h3>
+					</li>
+					<li class="clear">-구매하신 라이선스 이용 불가<br/>
+					-보유한 업뮤직 포인트 모두 소멸
+					</li>
+					<li class="mt20">
+						<h3 class="copyright_title additional_title fl mb10">3. 업뮤직에 등록한 모든 창작물은 삭제됩니다.
+						</h3>
+					</li>
+					<li class="clear">- 업로드를 통해 등록한 음원, 동영상 정보 삭제</li>
+					<li class="mt20">
+						<h3 class="copyright_title additional_title fl mb10">4. 판매완료 된 상품의 유효기간을 모두 소진하셔야 회원탈퇴 절차를 진행하실 수 있습니다.
+						</h3>
+					</li>
+					<li class="clear">- 판매완료 된 음원 라이선스</li>
+				</ul>
+			</div>
+			<div class="checkbox">
+				<input type="checkbox" id="checked-agreement" class="checkbox-checked" name="cc">
+				<label for="checked-agreement"><span class="checkbox-custom"></span> 위 회원탈퇴 시 주의사항을 모두 확인하였습니다.</label>
+			</div>
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap">
+					<button class="btn btn-custom btn-dark h50" onclick="UPMWithdraw.withdraw();">회원탈퇴</button>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMWithdraw = {
+				withdraw: function(fragmentId) {
+					UPMLoginModal.showModal();
+				}
+			};
+	    </script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMWithdraw = {
+				_config : {
+					loading: false
+				},
+				withdraw: function() {
+					if (!$('#checked-agreement').is(":checked")) {
+						UPMusic.alert("회원탈퇴 주의사항을 확인하고 동의해주세요.");
+						return;
+					}
+					UPMusic.confirm("정말 회원탈퇴를 진행하시겠습니까?<br>탈퇴 시 삭제된 정보는 복구가 불가능 합니다.", function() {
+						if (UPMWithdraw._config.loading) return;
+						UPMWithdraw._config.loading = true;
+						var params = {};
+						UPMusic.ajaxPost(UPMusic._config._api_withdraw, headers, params, UPMWithdraw.withdrawCallback);
+				    });
+				},
+				withdrawCallback: function(msg, object) {
+					if (msg == 'true') {
+						window.location = '/auth/logout';
+					} else {
+						UPMusic.alert("탈퇴신청을 처리하지 못했습니다. 잠시 후 다시 시도하십시오.");
+					}
+					UPMWithdraw._config.loading = false;
+				}
+			};
+	    </script>
+	    </div>
+	</div>
+
+</body>
+</html>

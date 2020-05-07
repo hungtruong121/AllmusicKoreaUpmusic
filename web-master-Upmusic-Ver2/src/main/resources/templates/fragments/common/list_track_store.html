@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_track(fragmentId, trackList, paginationUrl)" th:id="${fragmentId}" class="musiclist_table musiclist_table_hover2 musicstore_table">
+		<h3 th:if="${fragmentId == 'album-track-list'}" class="content_title mt30"><span th:text="#{model.music.track}" th:remove="tag"></span><span><span th:text="${trackList.size()}" th:remove="tag"></span><span th:text="#{model.music.track_count}" th:remove="tag"></span></span></h3>
+		<h3 th:if="${fragmentId == 'search-all-stores-fragment'}" class="content_title mt30"><a onclick="$('.tab_design ul li#result-store').click();"><span th:text="#{nav.music.store}" th:remove="tag"></span><span><span th:text="${trackList.getTotalElements()}" th:remove="tag"></span></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a></h3>
+		<h3 th:if="${fragmentId == 'search-stores-fragment'}" class="content_title mt30"><span th:text="#{nav.music.store}" th:remove="tag"></span><span><span th:text="${trackList.size()}" th:remove="tag"></span></span></h3>
+		<h3 th:if="${fragmentId == 'search-detail-stores-fragment'}" class="content_title mt30"><span th:text="#{nav.music.store}" th:remove="tag"></span><span><span th:text="${trackList.size()}" th:remove="tag"></span></span></h3>
+		<div class="listcontrols" th:classappend="${fragmentId != 'album-track-list'} ? 'mt30 mb20'">
+			<ul>
+				<li th:if="${fragmentId == 'store-fragment'}"><a onclick="UPMMessageModal.showModal(msgSeeNextVersion);">음원 거래내역</a></li>
+				<li><a th:onclick="@{${'UPMusicCommon.addAllToPlaylist(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.play_all}" th:remove="tag"></span></a></li>
+				<li><a th:onclick="@{${'UPMusicCommon.addTracksToPlaylist(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.play_selected}" th:remove="tag"></span></a></li>
+				<li><a th:onclick="@{${'UPMusicCommon.showCollectionModal(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.add.collection}" th:remove="tag"></span></a></li>
+				<li th:if="${fragmentId == 'recent-track-fragment'}"><a  th:onclick="@{${'UPMListRecentPlay.deleteSelectedTrack(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.delete}"></span></a></li>
+				<li th:if="${fragmentId == 'collection-tracks-fragment'}"><a  th:onclick="@{${'UPMCollectionDetail.deleteSelectedTrack(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.delete}"></span></a></li>
+				<li th:if="${fragmentId == 'like-track-fragment'}"><a  th:onclick="@{${'UPMListHeart.deleteSelectedTrack(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.delete}"></span></a></li>
+			</ul>
+		</div>
+		<table id="album-tracks">
+			<tr>
+				<th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+				<th><span th:text="#{model.track.information}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.duration}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.play}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.put_in}" th:remove="tag"></span></th>
+				<th><span th:text="#{button.share}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.like}" th:remove="tag"></span></th>
+				<th><span th:text="#{model.track.tracktype}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.download}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.license}" th:remove="tag"></span></th>
+			</tr>
+			<tr th:each="track, iter : ${trackList}" th:id="${track.id}" onclick="UPMusic.selectItem(this);">
+				<td th:if="${paginationUrl != null and trackList != null}"><span th:text="${trackList.number * trackList.size + iter.index + 1}" th:remove="tag"></span></td>
+				<td th:unless="${paginationUrl != null and trackList != null}"><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+				<th>
+					<a th:href="@{${track.getUrl()}}"><i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></a>
+					<p>
+						<a th:href="@{${track.getUrl()}}"><span th:text="${track.subject}" th:remove="tag"></span></a><br />
+						<b><a th:href="@{${track.getArtistUrl()}}"><span th:text="${track.getArtistNick()}" th:remove="tag"></span></a></b>
+					</p>
+				</th>
+				<td><span th:text="${track.formattedDuration()}" th:remove="tag"></span></td>
+				<td>
+					<a th:onclick="@{${'UPMusicCommon.addTrackToPlaylist(' + track.id + ', event);'}}"><img th:src="@{/img/listcontrols_icon1.png}" alt="" /></a>
+				</td>
+				<td>
+					<a th:onclick="@{${'UPMusicCommon.showCollectionModalFromList(&quot;#' + fragmentId + '&quot;, ' + track.id + ', event);'}}"><img th:src="@{/img/listcontrols_icon2.png}" alt="" /></a>
+				</td>
+				<td>
+					<a th:onclick="@{${'UPMShareModal.showShareModalFromList(' + track.getMusicAlbumId() + ', ' + track.id + ', event);'}}"><img th:src="@{/img/listcontrols_icon3.png}" alt="" /></a>
+				</td>
+				<td>
+					<a th:onclick="@{${'UPMusicCommon.likeTrack(' + track.id + ', event);'}}"><span id="track-like" class="heart_icon2" th:classappend="${track.liked} ? 'heart_icon_on' : 'heart_icon_off'">&nbsp;</span></a>
+				</td>
+				<td><span th:text="#{${track.getTrackTypeName()}}" th:remove="tag"></span></td>
+				<td id="button-track-download">
+					<a th:if="${track.inStore}" th:onclick="@{${'UPMDownloadModal.showModal(' + track.id + ', event);'}}"><img th:src="@{/img/download.png}" alt="" /></a>
+				</td>
+				<td id="button-buy-license">
+					<div th:if="${track.inStore}" class="state_label state_pass" th:onclick="@{${'UPMLicenseModal.showModalFromList(' + track.id + ', ' + track.rentalFee + ', ' + track.price + ', event);'}}" th:text="#{button.buy}"></div>
+				</td>
+			</tr>
+		</table>
+		
+		<div th:if="${paginationUrl != null and trackList != null and trackList.totalPages gt 0}" class="panel-body text-center clear">
+		    <ul class="pagination">
+		        <li th:class="${trackList.number eq 0} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-left" th:if="${not trackList.first}" th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (trackList.number-1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-left" th:if="${trackList.first}" href="javascript:void(0);"></a>
+		        </li>
+		
+		        <li th:each="pageNo : ${#numbers.sequence(0, trackList.totalPages - 1)}" th:class="${trackList.number eq pageNo}? 'active' : ''">
+		            <a th:if="${trackList.number  eq pageNo}" href="javascript:void(0);">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		            <a th:if="${not (trackList.number  eq pageNo)}" th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + pageNo + ');'}}">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		
+		        </li>
+		        <li th:class="${trackList.number + 1 ge trackList.totalPages} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-right" th:if="${not trackList.last}" th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (trackList.number+1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-right" th:if="${trackList.last}" href="javascript:void(0);"></a>
+		        </li>
+		    </ul>
+		</div>
+		
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+</head>
+
+<body>
+	<dl th:fragment="list_track(fragmentId, trackList, paginationUrl)" th:id="${fragmentId}" th:remove="tag">
+		<dd th:each="leagueTrack, iter : ${trackList}" th:id="${leagueTrack.getMusicTrack().id}" th:onclick="@{${'UPMusic.selectItem(&quot;#' + fragmentId + '&quot;, this);'}}">
+			<div th:if="${fragmentId == 'league-top50-fragment'}" class="num">
+				<span th:text="@{${'0' + leagueTrack.rank}}"></span>
+				<div th:if="${leagueTrack.getLastRank() eq 0}" th:remove="tag">
+					<span class="up_new">New</span>
+				</div>
+				<div th:if="${leagueTrack.getLastRank() != 0 and leagueTrack.getLastRank() - leagueTrack.getRank() gt 0}" th:remove="tag">
+					<span class="up" th:text="${leagueTrack.getLastRank() - leagueTrack.getRank()}"></span>
+				</div>
+				<div th:if="${leagueTrack.getLastRank() != 0 and leagueTrack.getLastRank() - leagueTrack.getRank() lt 0}" th:remove="tag">
+					<span class="down" th:text="${leagueTrack.getLastRank() - leagueTrack.getRank()}"></span>
+				</div>
+				<div th:if="${leagueTrack.getLastRank() != 0 and leagueTrack.getLastRank() - leagueTrack.getRank() eq 0}" th:remove="tag">
+					<span class="same"></span>
+				</div>
+			</div>
+			<div th:if="${fragmentId != 'league-top50-fragment' and paginationUrl != null and trackList != null}"class="num">
+				<span th:if="${trackList.number * trackList.size + iter.index + 1} lt 10" th:remove="tag">0</span><span th:text="${trackList.number * trackList.size + iter.index + 1}" th:remove="tag"></span>
+			</div>
+			<div class="info">
+				<p class="img"><img th:src="@{${leagueTrack.getMusicTrack().getCoverImageUrl()}}" alt="" /></p>
+				<p class="subject">
+					<span class="sj clamp" th:text="${leagueTrack.getMusicTrack().subject}"></span>
+					<span class="arti" th:text="${leagueTrack.getMusicTrack().getArtistNick()}"></span>
+				</p>
+			</div>
+			<div class="btn_play" th:onclick="@{${'UPMusicCommon.addTrackToPlaylist(' + leagueTrack.getMusicTrack().id + ', event);'}}"></div>
+			<div class="btn_more" th:onclick="@{${'UPMTrackMenuModal.showModal(' + leagueTrack.getMusicTrack().getMusicAlbumId() + ', ' + leagueTrack.getMusicTrack().getId() + ', &quot;' + leagueTrack.getMusicTrack().getSubject() + '&quot;, &quot;' + leagueTrack.getMusicTrack().getArtistNick() + '&quot;, &quot;' + leagueTrack.getMusicTrack().getArtistUrl() + '&quot;, &quot;' + leagueTrack.getMusicTrack().getUrl() + '&quot;, event);'}}"></div>
+		</dd>
+	</dl>
+</body>
+
+</html>

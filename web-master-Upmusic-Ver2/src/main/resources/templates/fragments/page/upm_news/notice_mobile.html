@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+					<!-- reward music content -->
+					<div class="reward_wrap">
+						<div class="nl_panel pdb0 btm_gray1n2">
+							<ul class="nav nav-tabs tabType05">
+								<li class="active"><a class="sm">전체</a></li>
+								<li class="making"><a class="sm">안내</a></li>
+								<li class="making"><a class="sm">업데이트</a></li>
+								<li class="making"><a class="sm">시스템 점검</a></li>
+							</ul>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="notice-1">
+								<!-- 전체 -->
+								<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion">
+									<div class="panel" th:each="allNotice, index : ${allNoticeList}">
+										<div class="panel-heading">
+											<p class="panel-title">
+												<a th:href="@{'#demo-acc-faq-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+													<label class="index" th:text="[ + ${allNotice.category} + ]"></label>
+													<span th:text="${allNotice.limitSubject()}"></span>
+													<u th:if="${allNotice.newNoticeCheck()}" class="ico_new"></u><i class="pci-chevron chevron-up"></i>
+													<span class="date"><span th:text="${allNotice.formattedTime()}"></span> 조회수 <span th:text="${allNotice.hitCnt}"></span></span>
+												 </a>
+												
+											</p>
+										</div>
+										<div class="panel-collapse collapse" th:id="demo-acc-faq- + ${index.count}">
+											<div class="panel-body" th:utext="${allNotice.content}">
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- //전체 -->
+							</div>
+							
+							<div class="tab-pane" id="notice-2">
+								<!-- 안내 -->
+								<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion">
+									<div class="panel" th:each="infoNotice, index : ${infoNoticeList}">
+										<div class="panel-heading">
+											<p class="panel-title">
+												<a th:href="@{'#demo-acc-faq2-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+													<label class="index" th:text="[ + ${infoNotice.category} + ]"></label>
+													<span th:text="${infoNotice.limitSubject()}"></span>
+													<u th:if="${infoNotice.newNoticeCheck()}" class="ico_new"></u><i class="pci-chevron chevron-up"></i>
+													<span class="date"><span th:text="${infoNotice.formattedTime()}"></span> 조회수 <span th:text="${infoNotice.hitCnt}"></span></span>
+												 </a>
+												
+											</p>
+										</div>
+										<div class="panel-collapse collapse" th:id="demo-acc-faq2- + ${index.count}">
+											<div class="panel-body" th:utext="${infoNotice.content}">
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- //안내 -->
+							</div>
+							<div class="tab-pane" id="notice-3">
+								<!-- 업데이트 -->
+								<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion">
+									<div class="panel" th:each="updateNotice, index : ${updateNoticeList}">
+										<div class="panel-heading">
+											<p class="panel-title">
+												<a th:href="@{'#demo-acc-faq3-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+													<label class="index" th:text="[ + ${updateNotice.category} + ]"></label>
+													<span th:text="${updateNotice.limitSubject()}"></span>
+													<u th:if="${updateNotice.newNoticeCheck()}" class="ico_new"></u><i class="pci-chevron chevron-up"></i>
+													<span class="date"><span th:text="${updateNotice.formattedTime()}"></span> 조회수 <span th:text="${updateNotice.hitCnt}"></span></span>
+												 </a>
+												
+											</p>
+										</div>
+										<div class="panel-collapse collapse" th:id="demo-acc-faq3- + ${index.count}">
+											<div class="panel-body" th:utext="${updateNotice.content}">
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- //업데이트 -->
+							</div>
+							<div class="tab-pane" id="notice-4">
+								<!-- 서비스점검 -->
+								<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion">
+									<div class="panel" th:each="serviceNotice, index : ${serviceNoticeList}">
+										<div class="panel-heading">
+											<p class="panel-title">
+												<a th:href="@{'#demo-acc-faq4-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+													<label class="index" th:text="[ + ${serviceNotice.category} + ]"></label>
+													<span th:text="${serviceNotice.limitSubject()}"></span>
+													<u th:if="${serviceNotice.newNoticeCheck()}" class="ico_new"></u><i class="pci-chevron chevron-up"></i>
+													<span class="date"><span th:text="${serviceNotice.formattedTime()}"></span> 조회수 <span th:text="${serviceNotice.hitCnt}"></span></span>
+												 </a>
+												
+											</p>
+										</div>
+										<div class="panel-collapse collapse" th:id="demo-acc-faq4- + ${index.count}">
+											<div class="panel-body" th:utext="${#strings.replace( #strings.escapeXml(serviceNotice.content),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}">
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- //서비스점검 -->
+							</div>
+						</div><!-- //end tab-content -->
+					</div>
+					<!-- //end reward music content -->
+				</div>
+				<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+			$('.flag').click(function(e){
+				$('.collapse').each(function(){
+					if($(this).hasClass('in')){
+						$(this).collapse("hide");
+					}
+				});
+			});
+		
+		</script>
+	</div>
+
+</body>
+</html>

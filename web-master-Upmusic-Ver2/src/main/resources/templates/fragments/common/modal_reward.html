@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" >
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_reward">
+		
+		<div class="modal fade" id="streaming_pop" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+			<div class="modal-dialog login_pop player_pop">
+				<div class="modal-content">
+					<div class="modal-header login_header">
+						<h2 class="modal_title">스트리밍 리워드</h2>
+						<img src="img/close.png" class="close" alt="" data-dismiss="modal" />
+					</div>
+					<div class="modal-body login_body">
+						<div class="login_body2">
+							<h2 class="streaming_title">스트리밍 리워드 구성</h2>
+							<div class="streaming_box1">
+								<div class="streaming_content1">
+									<div class="stcontent_profile"><img src="img/streaming_icon1.png" alt=""></div>
+									<div class="stcontent_info">
+										<ul>
+											<li>1단계: <span th:text="${rewardObj.listenFirstStepLimit}" th:remove="tag"></span>분 리워드</li>
+											<li>(<span th:text="${rewardObj.listenFirstStepPoint}" th:remove="tag"></span>p/1s (1초에 <span th:text="${rewardObj.listenFirstStepPoint}" th:remove="tag"></span> 업뮤직 포인트 획득)</li>
+										</ul>
+									</div>
+								</div>
+								<div class="streaming_content1 streaming_content2">
+									<div class="stcontent_profile"><img src="img/streaming_icon2.png" alt=""></div>
+									<div class="stcontent_info">
+										<ul>
+											<li>2단계: <span th:text="${rewardObj.listenSecondStepLimit}" th:remove="tag"></span>분 리워드</li>
+											<li>(<span th:text="${rewardObj.listenSecondStepPoint}" th:remove="tag"></span>p/1s (1초에 <span th:text="${rewardObj.listenSecondStepPoint}" th:remove="tag"></span> 업뮤직 포인트 획득)</li>
+										</ul>
+									</div>
+								</div>
+								<div class="streaming_content1 streaming_content3">
+									<div class="stcontent_profile"><img src="img/streaming_icon3.png" alt=""></div>
+									<div class="stcontent_info">
+										<ul>
+											<li>3단계: <span th:text="${rewardObj.listenThirdStepLimit == 0 ? '무제한' : rewardObj.listenThirdStepLimit + '분 리워드'}" th:remove="tag"></span></li>
+											<li>(<span th:text="${rewardObj.getBigDecimal()}" th:remove="tag"></span>p/1s (1초에 <span th:text="${rewardObj.getBigDecimal()}" th:remove="tag"></span> 업뮤직 포인트 획득)</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<h2 class="streaming_title mt20">유의 사항</h2>
+							<div class="streaming_box1">
+								<ul>
+									<li><i><img src="img/point1.png" alt=""></i><p>스트리밍 리워드 획득은 <span>ID당 하루 1회</span>만 가능합니다.</p></li>
+									<li><i><img src="img/point2.png" alt=""></i><p>접속기록 및 재생시간은 <span>1일 기준</span>으로<br/> 표기되며 매일 00시 초기화됩니다.</p></li>
+									<li><i><img src="img/point3.png" alt=""></i><p>재생시간이 갱신되지 않을 경우<br/>
+										잠시 뒤 <span>다시 시도</span>해주시기 바랍니다.</p></li>
+									<li><i><img src="img/point4.png" alt=""></i><p>1, 2단계 보상은 1일 <span>지정된 시간만큼 획득</span> 가능 합니다.<br/> (1단계 <span th:text="${rewardObj.listenFirstStepLimit}" th:remove="tag"></span>분, 2단계 <span th:text="${rewardObj.listenSecondStepLimit}" th:remove="tag"></span>분)</p></li>
+									<li><i><img src="img/point5.png" alt=""></i><p>3단계 보상은 1, 2단계 보상 획득 후 <span>반복하여<br/> 받을 수 있는 보상</span>입니다.</p></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+		
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			var UPMRewardModal = {
+				showModal : function() {
+					$('#streaming_pop').modal('show');
+				}
+			};
+	    </script>
+	</div>
+</body>
+
+</html>

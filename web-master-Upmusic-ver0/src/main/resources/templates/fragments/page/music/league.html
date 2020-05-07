@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<!--<h2 class="page-title fl" th:text="#{model.music.liegue.chart}"></h2>-->
+				<div class="page-title-wrap">
+					<h2 class="page-title fl" th:inline="text">
+						<!--
+						<i class="upleague_icon"><img th:src="@{/img/up_icon.png}" alt="" /></i>
+						[[#{model.music.liegue.chart}]]
+						-->
+						<span th:text="#{nav.music.league}" th:remove="tag">
+					</h2>
+					<button class="btn btn-custom2 fr" th:onclick="@{${'UPMusic.goto(&quot;/upload/music&quot;);'}}"><i class="upleague_icon"><img th:src="@{/img/up_icon.png}" alt="" /></i><span th:text="#{button.registration.league}" th:remove="tag"></span></button>
+				</div>
+				<div class="tab_design clear">
+					<ul>
+						<li id="league-home"><span th:text="#{nav.music.league.home}" th:remove="tag"></span><div class="tab_line"></div></li>
+						<li id="league-top50"><span th:text="#{nav.music.league.top50}" th:remove="tag"></span></li>
+						<li id="league-genre"><span th:text="#{nav.music.league.genre}" th:remove="tag"></span></li>
+						<li id="league-season"><span th:text="#{nav.music.league.season}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="upleagueleague_bwrap">
+							<div class="upleagueleague_banner1"></div>
+							<div class="upleagueleague_banner2">
+								<ul>
+									<li></li>
+									<li></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div id="top50" class="tab_content">
+						<div class="accordion_btn period-selectbox">
+							<ul class="period-group">
+								<li th:each="periodOption, iter : ${periodMap}" th:text="${periodOption['value']}" th:id="${periodOption['key']}" th:classappend="${iter.index} eq 0 ? 'accordion_btnOn' : ''" th:onclick="@{${'UPMListTrackLeagueAnonymous.selectedPeriod(&quot;' + tracksFragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, &quot;' + periodOption['key'] + '&quot;);'}}"></li>
+							</ul>
+						</div>
+						<div class="genre_listcontent">
+							<h3 id="league_days" class="period-date-day select-date">
+								<input id="league-period-day-datetimepicker" th:type="text" class="form-control league-period-picker" th:onchange="@{${'UPMListTrackLeagueAnonymous.changeDate(&quot;' + tracksFragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, this.value);'}}"/>
+							</h3>
+							<h3 id="league_weeks" class="period-date-day select-date">
+								<input id="league-period-week-datetimepicker" type="text" class="form-control league-period-picker" th:onchange="@{${'UPMListTrackLeagueAnonymous.changeWeek(&quot;' + tracksFragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, this.value);'}}">
+							</h3>
+							<h3 id="league_months" class="period-date-day select-date">
+								<input id="league-period-month-datetimepicker" type="text" class="form-control league-period-picker" th:onchange="@{${'UPMListTrackLeagueAnonymous.changeMonth(&quot;' + tracksFragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, this.value);'}}">
+							</h3>
+							<div class="listcontrols mb20">
+								<ul>
+									<li><a th:onclick="@{${'UPMusicCommon.addAllToPlaylist(&quot;#' + tracksFragmentId + '&quot;);'}}"><span th:text="#{button.play_all}" th:remove="tag"></span></a></li>
+									<li><a th:onclick="@{${'UPMusicCommon.addTracksToPlaylist(&quot;#' + tracksFragmentId + '&quot;);'}}"><span th:text="#{button.play_selected}" th:remove="tag"></span></a></li>
+									<li><a th:onclick="@{${'UPMusicCommon.showCollectionModal(&quot;#' + tracksFragmentId + '&quot;);'}}"><span th:text="#{button.add.collection}" th:remove="tag"></span></a></li>
+								</ul>
+							</div>
+							<div th:replace="fragments/common/list_track_league :: list_track(${tracksFragmentId}, ${tracks}, ${paginationUrl})"></div>
+						</div>
+					</div>
+					<div id="genre" class="tab_content">
+						<div class="accordion_btn period-selectbox">
+							<ul class="genre-period-group">
+								<li th:each="periodOption, iter : ${periodMap}" th:text="${periodOption['value']}" th:id="${periodOption['key']}" th:classappend="${iter.index} eq 0 ? 'accordion_btnOn' : ''" th:onclick="@{${'UPMListTrackLeagueAnonymous.selectedGenrePeriod(&quot;' + genreTracksFragmentId + '&quot;, &quot;' + genrePaginationUrl + '&quot;, &quot;' + periodOption['key'] + '&quot;);'}}"></li>
+							</ul>
+						</div>
+						<!--
+						<div class="swiper-container reword_listwrap">
+							<div class="swiper-wrapper genre-btn-group">
+								<div th:each="genreOption, iter : ${genreMap}" th:id="${genreOption['key']}" class="swiper-slide rewordlist_tab" th:classappend="${iter.index} eq 0 ? 'rewordlist_checked rewordlist_tab' + ${iter.index%3 + 1} : 'rewordlist_tab' + ${iter.index%3 + 1}" th:onclick="@{${'UPMListTrackLeagueAnonymous.selectedGenre(&quot;' + genreTracksFragmentId + '&quot;, &quot;' + genrePaginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"><img th:src="${iter.index} eq 0 ? '/img/reword_tab_on' + ${iter.index%3 + 1} + '.png' : '/img/reword_tab' + ${iter.index%3 + 1} + '.png'" alt=""><p class="mt5" th:text="${genreOption['value']}"></p></div>
+							</div>
+						</div>
+						-->
+						<div class="thema_list">
+							<ul>
+								<li th:each="genreOption, iter : ${genreMap}" th:id="${genreOption['key']}" th:onclick="@{${'UPMListTrackLeagueAnonymous.selectedGenre(&quot;' + genreTracksFragmentId + '&quot;, &quot;' + genrePaginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"><p th:text="${genreOption['value']}"></p></li>
+							</ul>
+						</div>
+						<div class="genre_listcontent">
+							<h3 id="league_days" class="period-date-day select-date">
+								<input id="genre-period-day-datetimepicker" th:type="text" class="form-control league-period-picker" th:onchange="@{${'UPMListTrackLeagueAnonymous.changeDate(&quot;' + genreTracksFragmentId + '&quot;, &quot;' + genrePaginationUrl + '&quot;, this.value);'}}"/>
+							</h3>
+							<h3 id="league_weeks" class="period-date-day select-date">
+								<input id="genre-period-week-datetimepicker" type="text" class="form-control league-period-picker" th:onchange="@{${'UPMListTrackLeagueAnonymous.changeWeek(&quot;' + genreTracksFragmentId + '&quot;, &quot;' + genrePaginationUrl + '&quot;, this.value);'}}">
+							</h3>
+							<h3 id="league_months" class="period-date-day select-date">
+								<input id="genre-period-month-datetimepicker" type="text" class="form-control league-period-picker" th:onchange="@{${'UPMListTrackLeagueAnonymous.changeMonth(&quot;' + genreTracksFragmentId + '&quot;, &quot;' + genrePaginationUrl + '&quot;, this.value);'}}">
+							</h3>
+							<div class="listcontrols mb20 mt30">
+								<ul>
+									<li><a th:onclick="@{${'UPMusicCommon.addAllToPlaylist(&quot;#' + genreTracksFragmentId + '&quot;);'}}"><span th:text="#{button.play_all}" th:remove="tag"></span></a></li>
+									<li><a th:onclick="@{${'UPMusicCommon.addTracksToPlaylist(&quot;#' + genreTracksFragmentId + '&quot;);'}}"><span th:text="#{button.play_selected}" th:remove="tag"></span></a></li>
+									<li><a th:onclick="@{${'UPMusicCommon.showCollectionModal(&quot;#' + genreTracksFragmentId + '&quot;);'}}"><span th:text="#{button.add.collection}" th:remove="tag"></span></a></li>
+								</ul>
+							</div>
+							<div th:replace="fragments/common/list_track_league :: list_track(${genreTracksFragmentId}, ${genreTracks}, ${genrePaginationUrl})"></div>
+						</div>
+					</div>
+					<div id="season" class="tab_content">
+						<div class="clearfix"></div>
+						<div th:unless="${seasonMap}" class="text-center mt20 mb20">
+							<h4 th:text="#{common.league.no_last_season}"></h4>
+						</div>
+						<div th:if="${seasonMap}" class="season_wrap">
+							<ul>
+								<li th:each="season, iter : ${seasonMap}" th:id="${season.id}" th:class="@{${'upseason_' + (iter.index + 1)}}" th:classappend="${season.id == defaultSeason} ? 'active' : ''" th:onclick="@{${'UPMListTrackLeagueAnonymous.selectedSeason(&quot;' + seasonTracksFragmentId + '&quot;, &quot;' + seasonPaginationUrl + '&quot;, &quot;' + season.id + '&quot;);'}}">
+									<div class="upseoson_hover">
+										<h3 th:text="${season.subject}"></h3>
+									</div>
+									<img th:src="@{${season.getImageUrl()}}" alt="" />
+									<h3 class="upseason_title" th:text="${season.subject}"></h3>
+								</li>
+							</ul>
+						</div>
+						<div th:if="${seasonMap}" class="season_period_container">
+							<input id="season-year-datetimepicker" type="text" class="season-year-input"  th:onchange="@{${'UPMListTrackLeagueAnonymous.changeYear(&quot;/component/music/league_seasons_of_year&quot;, this.value);'}}" th:value="${currentYear}">
+							<ul>
+								<li th:each="season : ${seasonMap}" th:id="@{${season.id + '_period'}}" class="season_period" th:classappend="${season.id == defaultSeason} ? 'active' : ''">
+									<h3 class="content_title"><span th:text="${season.subject}" th:remove="tag"></span><span class="season_info">(<span th:text="${season.openDate}" th:remove="tag"></span>~<span th:text="${season.closeDate}" th:remove="tag"></span>)</span></h3>
+								</li>
+							</ul>
+						</div>
+						<div class="genre_listcontent">
+							<div class="listcontrols mb20">
+								<ul>
+									<li><a th:onclick="@{${'UPMusicCommon.addAllToPlaylist(&quot;#' + seasonTracksFragmentId + '&quot;);'}}"><span th:text="#{button.play_all}" th:remove="tag"></span></a></li>
+									<li><a th:onclick="@{${'UPMusicCommon.addTracksToPlaylist(&quot;#' + seasonTracksFragmentId + '&quot;);'}}"><span th:text="#{button.play_selected}" th:remove="tag"></span></a></li>
+									<li><a th:onclick="@{${'UPMusicCommon.showCollectionModal(&quot;#' + seasonTracksFragmentId + '&quot;);'}}"><span th:text="#{button.add.collection}" th:remove="tag"></span></a></li>
+								</ul>
+							</div>
+							<div th:replace="fragments/common/list_track_league :: list_track(${seasonTracksFragmentId}, ${seasonTracks}, ${seasonPaginationUrl})"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentPeriod = /*[[ ${defaultPeriod} ]]*/;
+			var currentGenrePeriod = /*[[ ${defaultPeriod} ]]*/;
+			var currentGenre = /*[[ ${defaultGenre} ]]*/;
+			var currentSeason = /*[[ ${defaultSeason} ]]*/;
+			var currentDate = '';
+			
+			var leagueDays = /*[[ ${league_days} ]]*/;
+			var leagueWeeks = /*[[ ${league_weeks} ]]*/;
+			var leagueMonths = /*[[ ${league_months} ]]*/;
+			var leagueYears = /*[[ ${league_years} ]]*/;
+			
+			var start_date, end_date;
+			
+			var UPMListTrackLeagueAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl;
+					if (elementId == 'league-top50-fragment') {
+						url += '?period=' + currentPeriod;
+					} else if (elementId == 'league-genre-fragment') {
+						url += '?period=' + currentGenrePeriod + '&genre=' + currentGenre + '&page=' + page;
+					} else {
+						url += '?season=' + currentSeason + '&page=' + page;
+					}
+					if (currentDate != '') url += '&date=' + currentDate;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				},
+				selectedPeriod: function(elementId, url, period) {
+					currentPeriod = period;
+					currentDate = '';
+					$('#top50 .period-group li').each(function() {
+						if (this.id == period) {
+							if (!$(this).hasClass("accordion_btnOn")) $(this).addClass('accordion_btnOn');
+						} else {
+							if ($(this).hasClass("accordion_btnOn")) $(this).removeClass('accordion_btnOn');
+						}
+					});
+					$('#top50 #league_days').hide();
+					$('#top50 #league_weeks').hide();
+					$('#top50 #league_months').hide();
+					if (period == 'DAILY') {
+						$('#top50 #league_days').show();
+						$('#league-period-day-datetimepicker').datepicker('update', new Date(leagueDays[0]));
+					} else if (period == 'WEEKLY') {
+						$('#top50 #league_weeks').show();
+						if (leagueWeeks.length) UPMListTrackLeagueAnonymous.setWeekPicker($('#league-period-week-datetimepicker'), new Date(leagueWeeks[0]));
+						$('#league-period-week-datetimepicker').keyup();
+					} else if (period == 'MONTHLY') {
+						UPMusic.log("selectedPeriod : MONTHLY");
+						UPMusic.log("selectedPeriod : MONTHLY date is : " + new Date(leagueMonths[0]));
+						$('#top50 #league_months').show();
+						$('#league-period-month-datetimepicker').val(leagueMonths[0]).change();
+						// $('#league-period-month-datetimepicker').datepicker('update', new Date(leagueMonths[0]));
+					} else {
+						UPMListTrackLeagueAnonymous.loadPage(elementId, url, 0);
+					}
+				},
+				changeDate: function(elementId, url, date) {
+					currentDate = date;
+					UPMListTrackLeagueAnonymous.loadPage(elementId, url, 0);
+				},
+				changeWeek: function(elementId, url, date) {
+					if (date == null || date == '') {
+						UPMListTrackLeagueAnonymous.changeDate(elementId, url, '');
+						return;
+					}
+					var res = date.split(" ~ ");
+					if (1 < res.length)	UPMListTrackLeagueAnonymous.changeDate(elementId, url, res[1]);
+				},
+				changeMonth: function(elementId, url, date) {
+					if (date == null || date == '') {
+						UPMListTrackLeagueAnonymous.changeDate(elementId, url, '');
+						return;
+					}
+					var selectedMonth = new Date(date);
+					if (selectedMonth.getMonth() == 11) {
+						selectedMonth = new Date(selectedMonth.getFullYear() + 1, 0, 1);
+					} else {
+						selectedMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 1);
+					}
+					var month = selectedMonth.getFullYear() + "-" + ((selectedMonth.getMonth()) > 8 ? (selectedMonth.getMonth()+1) : ('0' + (selectedMonth.getMonth()+1))) + "-" + (selectedMonth.getDate() > 9 ? selectedMonth.getDate() : ('0' + selectedMonth.getDate()));
+					UPMListTrackLeagueAnonymous.changeDate(elementId, url, month);
+				},
+				changeYear: function(paginationUrl, year) {
+					var url = paginationUrl + '?year=' + year;
+					$.get(url, function(data) {
+						$('#season').html(data);
+					});
+				},
+				selectedGenrePeriod: function(elementId, url, period) {
+					currentGenrePeriod = period;
+					currentDate = '';
+					$('#genre .genre-period-group li').each(function() {
+						if (this.id == period) {
+							if (!$(this).hasClass("accordion_btnOn")) $(this).addClass('accordion_btnOn');
+						} else {
+							if ($(this).hasClass("accordion_btnOn")) $(this).removeClass('accordion_btnOn');
+						}
+					});
+					$('#genre #league_days').hide();
+					$('#genre #league_weeks').hide();
+					$('#genre #league_months').hide();
+					if (period == 'DAILY') {
+						$('#genre #league_days').show();
+						$('#genre-period-day-datetimepicker').datepicker('update', new Date(leagueDays[0]));
+					} else if (period == 'WEEKLY') {
+						$('#genre #league_weeks').show();
+						UPMListTrackLeagueAnonymous.setWeekPicker($('#genre-period-week-datetimepicker'), new Date(leagueWeeks[0]));
+						$('#genre-period-week-datetimepicker').keyup();
+					} else if (period == 'MONTHLY') {
+						$('#genre #league_months').show();
+						$('#genre-period-month-datetimepicker').val(leagueMonths[0]).change();
+						// $('#genre-period-month-datetimepicker').datepicker('update', new Date(leagueMonths[0]));
+					} else {
+						UPMListTrackLeagueAnonymous.loadPage(elementId, url, 0);
+					}
+				},
+                selectedGenre: function(elementId, url, genre) {
+                    currentGenre = genre;
+                    $('.genre-btn-group .rewordlist_tab').each(function() {
+                        if (this.id == genre) {
+                            if (!$(this).hasClass("rewordlist_checked")) {
+                                $(this).addClass('rewordlist_checked');
+                                var src = $(this).children('img').attr('src');
+                                if (!src.includes("_on")) {
+                                    src = src.replace("tab", "tab_on");
+                                    $(this).children('img').attr('src',src);
+                                }
+                            }
+                        } else {
+                            if ($(this).hasClass("rewordlist_checked")) {
+                                $(this).removeClass('rewordlist_checked');
+                                var src = $(this).children('img').attr('src');
+                                if (src.includes("_on")) {
+                                    src = src.replace("_on", "");
+                                    $(this).children('img').attr('src',src);
+                                }
+                            }
+                        }
+                    });
+                    UPMListTrackLeagueAnonymous.loadPage(elementId, url, 0);
+                },
+				selectedSeason: function(elementId, url, season) {
+					currentSeason = season;
+					$('#season .btn-group button').each(function() {
+						if (this.id == season) {
+							if (!$(this).hasClass("active")) $(this).addClass('active');
+						} else {
+							if ($(this).hasClass("active")) $(this).removeClass('active');
+						}
+					});
+					$('#season .season_period_container li.season_period').each(function() {
+						if (this.id == season + '_period') {
+							if (!$(this).hasClass("active")) $(this).addClass('active');
+						} else {
+							if ($(this).hasClass("active")) $(this).removeClass('active');
+						}
+					});
+					UPMListTrackLeagueAnonymous.loadPage(elementId, url, 0);
+				},
+				setWeekPicker : function(weekpicker, date) {
+					if (date instanceof Date && !isNaN(date)) {
+						if (0 == date.getDay()) {
+							start_date = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 6);
+						    end_date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+						} else {
+							start_date = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
+						    end_date = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 7);
+						}
+					    var startDay = start_date.getFullYear() + "-" + ((start_date.getMonth()) > 8 ? (start_date.getMonth()+1) : ('0' + (start_date.getMonth()+1))) + "-" + (start_date.getDate() > 9 ? start_date.getDate() : ('0' + start_date.getDate()));
+					    var endDay = end_date.getFullYear() + "-" + ((end_date.getMonth()) > 8 ? (end_date.getMonth()+1) : ('0' + (end_date.getMonth()+1))) + "-" + (end_date.getDate() > 9 ? end_date.getDate() : ('0' + end_date.getDate()));
+					    weekpicker.datepicker('update', start_date);
+					    weekpicker.val(startDay + ' ~ ' + endDay);
+					} else {
+						weekpicker.val('');
+					}
+				}
+			};
+			$(function() {
+				$('#top50 #league_days').hide();
+				$('#top50 #league_weeks').hide();
+				$('#top50 #league_months').hide();
+				$('#genre #league_days').hide();
+				$('#genre #league_weeks').hide();
+				$('#genre #league_months').hide();
+				
+				$('#league-period-day-datetimepicker').datepicker({
+	                format: 'yyyy-mm-dd',
+	                beforeShowDay: function(date) {
+	                	var dmy = date.getFullYear() + "-" + ((date.getMonth()) > 8 ? (date.getMonth()+1) : ('0' + (date.getMonth()+1))) + "-" + (date.getDate() > 9 ? date.getDate() : ('0' + date.getDate()));
+					    if ($.inArray(dmy, leagueDays) != -1) {
+					    	return true;
+					    } else {
+					    	return { enabled : false };
+					    }
+	                }
+	            }).on('changeDate', function(e){
+	            	$(this).keyup();
+	                $(this).datepicker('hide');
+	            });
+				
+				$('#league-period-week-datetimepicker').datepicker({
+					format: 'yyyy-mm-dd',
+					weekStart: 1,
+					startDate: new Date(leagueWeeks[leagueWeeks.length-1]),
+					endDate: new Date(leagueWeeks[0]),
+			        autoclose: true,
+			        forceParse: false,
+			        container: '#top50 #league_weeks'
+			    }).on("changeDate", function(e) {
+			    	UPMListTrackLeagueAnonymous.setWeekPicker($('#league-period-week-datetimepicker'), e.date);
+			    });
+				
+				$('#league-period-month-datetimepicker').datepicker({
+	                format: 'yyyy-mm',
+	                changeMonth: true,
+	                changeYear: true,
+	                startView: 1,
+	                minViewMode: 1,
+	                language: "ko",
+	                startDate: new Date(leagueMonths[leagueMonths.length-1]),
+					endDate: new Date(leagueMonths[0])
+	            }).on('changeMonth', function(e){
+	            	$(this).keyup();
+	                $(this).datepicker('hide');
+	            });
+				
+				$('#genre-period-day-datetimepicker').datepicker({
+	                format: 'yyyy-mm-dd',
+	                beforeShowDay: function(date) {
+	                	var dmy = date.getFullYear() + "-" + ((date.getMonth()) > 8 ? (date.getMonth()+1) : ('0' + (date.getMonth()+1))) + "-" + (date.getDate() > 9 ? date.getDate() : ('0' + date.getDate()));
+					    if ($.inArray(dmy, leagueDays) != -1) {
+					    	return true;
+					    } else {
+					    	return { enabled : false };
+					    }
+	                }
+	            }).on('changeDate', function(e){
+	            	$(this).keyup();
+	                $(this).datepicker('hide');
+	            });
+				
+				$('#genre-period-week-datetimepicker').datepicker({
+					format: 'yyyy-mm-dd',
+					weekStart: 1,
+					startDate: new Date(leagueWeeks[leagueWeeks.length-1]),
+					endDate: new Date(leagueWeeks[0]),
+			        autoclose: true,
+			        forceParse: false,
+			        container: '#genre #league_weeks'
+			    }).on("changeDate", function(e) {
+			    	UPMListTrackLeagueAnonymous.setWeekPicker($('#genre-period-week-datetimepicker'), e.date);
+			    });
+				
+				$('#genre-period-month-datetimepicker').datepicker({
+	                format: 'yyyy-mm',
+	                startView: 1,
+	                minViewMode: 1,
+	                language: "ko",
+	                startDate: new Date(leagueMonths[leagueMonths.length-1]),
+					endDate: new Date(leagueMonths[0])
+	            }).on('changeMonth', function(e){
+	            	$(this).keyup();
+	                $(this).datepicker('hide');
+	            });
+				
+				$('#season-year-datetimepicker').datepicker({
+					format: "yyyy",
+				    weekStart: 1,
+// 				    startDate: new Date(leagueYears[0]),
+// 					endDate: new Date(leagueYears[leagueYears.length-1]),
+	                keyboardNavigation: false,
+	                viewMode: "years",
+	                minViewMode: "years",
+	                orientation: "bottom"
+	            }).on('changeYear', function(e){
+	            	$(this).keyup();
+	            	$(this).datepicker('hide');
+	            });
+				//$('#season-year-datetimepicker').datepicker('update', new Date(leagueYears[0]));
+				
+				
+				$(".season_wrap>ul>li").click(function(){
+					$(this).css("z-index","9").stop().animate({"top":"0px"},300).siblings("li").css("z-index","inherit").stop().animate({"top":"25px"},500);
+					$(this).children(".upseason_title").css("color","#5875e5");
+					$(this).siblings("li").children(".upseason_title").css("color","inherit");
+					$(this).children(".upseoson_hover").fadeIn(300);
+					$(this).siblings("li").children(".upseoson_hover").fadeOut(300);
+				});
+				
+				if ($('.season_wrap li').length) {
+					$('.season_wrap li.active').click();
+				}
+
+                //20181218 ngoclh fix bug #23424 &23425
+                $('.thema_list>ul>li:first').addClass("active");
+                $('.thema_list2>ul>li:first').addClass("active");
+
+                //20181204 jm수정 탭디자인 변경
+                $(".thema_list>ul>li").click(function(){
+                    $(this).addClass('active').siblings('li').removeClass('active');
+                });
+			});
+		/*]]>*/
+		</script>
+	</div>
+
+</body>
+</html>

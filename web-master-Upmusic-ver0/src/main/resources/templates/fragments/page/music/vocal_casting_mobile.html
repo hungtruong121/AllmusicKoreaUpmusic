@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="p0_panel">
+			<div class="nl_panel">
+				<div class="ct_title ofh">
+					<h2 class="content_title pdt5">캐스팅 리스트</h2>
+					<p class="benchmark"><button class="btn-write" th:onclick="@{${'UPMusic.goto(&quot;/music/vocal_casting/new/casting&quot;, event);'}}">글쓰기</button></p>
+				</div>
+			</div>
+		</div>
+		<div id="content">
+			<div th:replace="fragments/common/list_vocal_casting_mobile :: list_vocal_casting(${castingsFragmentId}, ${castings}, ${paginationUrl})"></div>
+		</div>
+	</div>
+
+</body>
+</html>

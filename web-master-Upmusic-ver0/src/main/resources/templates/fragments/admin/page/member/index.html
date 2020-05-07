@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+	<div class="subpage_wrap">
+		<div class="production_section1 section">
+			<h2 class="page-title fl">업뮤직 계정 관리</h2>
+			<!-- 20181119 지민추가 -->
+			<div class="FAQ_search_wrap clear">
+				<form th:action="@{/admin/member}" role="form" method="get" id="form">
+					<div class="inputbox w19p fl mr1p">
+						<label class="input_title">검색</label>
+						<select class="selectpicker clear w100p" name="searchColumn" id="searchColumn">
+							<option value="email">아이디</option>
+							<option value="nick">닉네임</option>
+							<option value="phoneNumber">휴대폰 번호</option>
+						</select>
+					</div>
+					<div class="inputbox w80p fl">
+						<label class="input_title db"></label>
+						<input type="text" name="searchValue" placeholder="검색어를 입력하세요." class="form-control w80p fl clear mr1p mt18" value="">
+						<button class="btn btn-custom2 fl h50 w19p p60 mt18" type="submit">검색</button>
+					</div>
+				</form>
+			</div>
+			<div class="tab_contentwrap">
+				<div class="tab_content active">
+					<div class="accordion_btn"></div>
+					<div class="genre_listcontent">
+						<div id="uploaded-member-list" class="musiclist_table musiclist_table_hover2">
+							<table id="memberTable" class="tablesorter">
+							   <thead>
+									<tr>
+										<th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+										<th>이메일 아이디</th>
+										<th>아티스트 닉네임</th>
+										<!-- th>등급</th>
+										<th>아티스트 등급</th>
+										<th>가입형태</th>
+										<th>저작권 단체 가입</th>
+										<th>가입일자</th -->
+										<th>재생시간</th>
+										<th>UPM 포인트</th>
+										<th>사용가능 포인트</th>
+										<th>펀딩 포인트</th>
+									</tr>
+							   </thead>
+							   <tbody>
+									<tr th:each="member, iter : ${members}" th:id="${member.id}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + member.getAdminUrl() + '&quot;);'}}">
+										<td><span th:text="${members.getTotalElements() - (members.number * members.size) - iter.index}" th:remove="tag"></span></td>
+										<td><span th:text="${member.getEmail()}" th:remove="tag"></span></td>
+										<td><span th:text="${member.getNick()}" th:remove="tag"></span></td>
+										<!-- td><span th:text="#{${member.getGrade()}}" th:remove="tag"></span></td>
+										<td><span th:text="#{${member.getArtistGrade()}}" th:remove="tag"></span></td>
+										<td><span th:text="${member.getRegistrationType()}" th:remove="tag"></span></td>
+										<td><span th:text="${member.copyrightMembership ? 'Y' : 'N'}" th:remove="tag"></span></td>
+										<td><span th:text="${member.fomattedDayMin()}" th:remove="tag"></span></td -->
+										<td><span th:text="${member.getPlaytime()}" th:remove="tag"></span></td>
+										<td><span th:text="${member.getUpmPoint()}" th:remove="tag"></span></td>
+										<td><span th:text="${member.getUsablePoint()}" th:remove="tag"></span></td>
+										<td><span th:text="${member.getFundingPoint()}" th:remove="tag"></span></td>
+									</tr>
+							   </tbody>
+							</table>
+						</div>
+					</div>
+					<div th:if="${members != null and members.totalPages gt 0}" class="panel-body text-center">
+						<ul class="pagination">
+							<li th:class="${members.number eq 0} ? 'disabled' : ''">
+								<a class="demo-pli-arrow-left" th:if="${not members.first}" th:href="@{${'/admin/member'}(page=${members.number-1})}"></a>
+								<a class="demo-pli-arrow-left" th:if="${members.first}" href="javascript:void(0);"></a>
+							</li>
+							<li th:each="pageNo : ${#numbers.sequence(0, members.totalPages - 1)}" th:class="${members.number eq pageNo}? 'active' : ''">
+								<a th:if="${members.number eq pageNo}" href="javascript:void(0);">
+									<span th:text="${pageNo + 1}"></span>
+								</a>
+								<a th:if="${not (members.number eq pageNo)}" th:href="@{${'/admin/member'}(page=${pageNo})}">
+									<span th:text="${pageNo + 1}"></span>
+								</a>
+							</li>
+							<li th:class="${members.number + 1 ge members.totalPages} ? 'disabled' : ''">
+								<a class="demo-pli-arrow-right" th:if="${not members.last}" th:href="@{${'/admin/member'}(page=${members.number+1})}"></a>
+								<a class="demo-pli-arrow-right" th:if="${members.last}" href="javascript:void(0);"></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" th:inline="javascript">
+		$(function() {
+			$("#memberTable").tablesorter();
+		});
+	</script>
+</div>
+</body>
+</html>

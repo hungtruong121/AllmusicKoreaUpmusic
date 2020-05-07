@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 포인트결제 -->
+			<div class="nl_panel pdt0">
+				<ul class="rewardSelectTop">
+					<li class="navi01 off">리워드 선택</li>
+					<li class="navi02">포인트 결제</li>
+					<li class="navi03 off">펀딩 완료</li>
+				</ul>
+			</div>
+			<div class="nl_panel">
+				<div class="pointPayment_box1">
+					<p class="title" th:text="${reward} != null ? ${reward.rewardSubject} : ''">리워드 A</p>
+					<ul th:if="${reward} != null">								
+						<li th:each="content : ${reward.getContentStrList()}" th:text="${content}"></li>
+					</ul>
+					<hr />
+					<p class="pay">
+						<span class="l">결제 포인트</span>
+						<span class="r"><span th:text="${reward} != null ? ${reward.point} : ${point}"></span>P</span>
+					</p>
+				</div>
+				<p class="cmt small colBlue">* 프로젝트 목표 달성 성공시 리워드를 지급합니다.</p>
+				<p class="cmt small colBlue">* 프로젝트 목표 달성 실패시 지급된 업뮤직 포인트는 환불 처리 됩니다.</p>
+
+				<div class="pointPayment_box2">
+					<div class="reward_ba_top">
+						<ul>
+							<li class="fundingPoint">
+								<p class="point"><span th:text="${currentUser.fundingPoint}"></span> P</p>
+								<p class="title">펀딩 포인트</p>
+							</li>
+							<li class="usePoint">
+								<p class="point"><span th:text="${currentUser.getUsablePoint()}"></span> P</p>
+								<p class="title">사용가능 포인트</p>
+							</li>
+							<li class="wantingPoint">
+								<p class="point"><span id="tribalPoint" th:text="${tribalPoint}"></span> P</p>
+								<p class="title">부족한 포인트</p>
+							</li>
+						</ul>
+						<p class="cmt small colBlue">* 후원을 진행할 때 펀딩 포인트가 우선적으로 소모 됩니다.<br/>(펀딩 포인트 부족 시 사용가능 포인트 소모)</p>
+					</div>
+				</div>
+			</div>
+			<form class="form-inline" id="fundingCompleteForm" th:action="@{/crowd_funding/participation/funding_complete}" role="form" th:object="${paramData}" method="post">
+				<input type="hidden" name="crowdFundingId" id="crowdFundingId" th:value="${crowdFundingId}">
+				<input type="hidden" name="crowdFundingRewardId" th:value="${crowdFundingRewardId}">
+				<input type="hidden" name="point" id="point" th:value="${reward} != null ? ${reward.point} : ${point}">
+				
+				<input type="hidden" name="useFundingPoint" id="useFundingPoint">
+				<input type="hidden" name="useUsablePoint" id="useUsablePoint">
+				<input type="hidden" name="crowdFundingJoinId" id="crowdFundingJoinId">
+				<div class="nl_panel pdt0">
+					<div class="memberJoin_box pointPayment_box3">
+						<div class="n0_panel pdb15">
+							<div class="ct_title ofh">
+								<h2 class="content_title pdt5">배송<span class="colRed">(필수)</span></h2>
+
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label">이름</label>
+							<input type="text" placeholder="이름을 입력하세요." class="form-control" name="name" required="required">
+						</div>
+						<div class="form-group">
+							<label class="control-label">이메일</label>
+							<input type="email" placeholder="이메일주소를 입력하세요." id="demo-inline-inputmail" class="form-control" name="email" required="required">
+						</div>
+						<div class="form-group">
+							<label class="control-label">전화번호</label>
+							<input type="number" placeholder="전화번호를 입력하세요." class="form-control" name="phoneNumber">
+							<p class="cmt small colBlue">*전화번호를 입력하지 않은 경우 배송이 거부되거나 물품이 반송될 수 있으며,
+							  이 경우 재배송 비용을 추가로 지불해야 합니다.
+							  또한 참여나 발송 정보가 SMS로 전송될 수 있으니 가급적 휴대폰 번호를 
+							  입력해 주시기 바랍니다.
+							</p>
+						</div>
+						<div class="form-group">
+							<label class="control-label">우편 번호</label>						
+							<div class="input-group small-input">
+								<!-- <label><input type="number" placeholder="" class="form-control input1"></label><label>-</label><label><input type="number" placeholder="" class="form-control input2"></label> -->
+								<input type="text" placeholder="우편번호를 검색하세요." class="form-control w80p fl clear mr2p" name="postNumber" id="postNumber">
+								<span class="input-group-btn">
+									<button class="btn btn-blue mt0" type="button" id="btn_find_postNum">검색</button>
+								</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label">주소</label>
+							<input type="text" placeholder="주소를 입력하세요." class="form-control" name="addr" id="addr">
+							<p class="cmt small colBlue">*주소를 정확하게 입력해주세요. 주소가 잘못될 경우 리워드 배송이 지연되거나 반송될 수 있으며, 반송 시 재배송 비용은 프로젝트 참여자가 부담하게 됩니다.</p>
+						</div>
+						<div class="form-group">
+							<label class="control-label">상세주소</label>
+							<input type="text" placeholder="상세주소를 입력하세요." class="form-control" name="detailaddr">									
+						</div>
+						<div class="form-group">
+							<label class="control-label">비고</label>									
+							<textarea placeholder="배송시 유의사항을 입력하세요." rows="5" class="form-control" name="note"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="btn_box">
+					<button class="btn btn-block btn-lg btn-inline btn-gray1" id="btn_back" type="button">이전</button>
+					<button class="btn btn-block btn-lg btn-dark btn-inline" id="btn_complates" type="button">다음</button>
+				</div>
+			</form>
+			<!-- //end 포인트결제 -->
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		$('#btn_back').click(function(){
+	    	history.back();
+	    });
+
+     	// $('#btn_find_postNum').click(function(){
+     	//     new daum.Postcode({
+     	//         oncomplete: function(data) {
+     	//             $('#postNumber').val(data.zonecode);
+     	//         	$('#addr').val(data.roadAddress);
+     	//         }
+     	//     }).open();
+     	// });
+
+        $('#btn_find_postNum').click(function(){
+            daum.postcode.load(function() {
+                new daum.Postcode({
+                    oncomplete: function (data) {
+                        $('#postNumber').val(data.zonecode);
+                        $('#addr').val(data.roadAddress);
+                    }
+                }).open();
+            })
+        });
+
+     	$('#btn_complates').click(function(){
+     		var tribalPoint = $('#tribalPoint').html();
+
+     		if(tribalPoint > 0.0){
+     			alert('결제 포인트가 부족합니다.\n크라우딩 펀딩 메인화면으로 이동합니다.');
+     			//UPMusic.goto("/crowd_funding/participation");
+     			$(location).attr('href', "/crowd_funding/participation");
+     		}else{
+     			var form = $('#fundingCompleteForm')[0];
+		        var formData = new FormData(form);
+     			
+     			$.ajax({
+		            type : 'post',
+		            url : '/api/crowdFunding/point_payment.json',
+		            data : formData,
+		            processData : false,
+		            contentType : false,
+		            success : function(data){
+		            	$('#useFundingPoint').val(data.useFundingPoint);
+		            	$('#useUsablePoint').val(data.useUsablePoint);
+		            	$('#crowdFundingJoinId').val(data.result);
+		            	
+		            	$('#fundingCompleteForm').submit();
+		            }
+		        });
+     			//$('#fundingCompleteForm').submit();
+     		}
+     	});
+		
+		</script>
+	</div>
+
+</body>
+</html>

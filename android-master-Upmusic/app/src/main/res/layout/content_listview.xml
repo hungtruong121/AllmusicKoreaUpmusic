@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <include
+        layout="@layout/content_view_header"
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:visibility="gone"
+        />
+
+    <include
+        layout="@layout/content_view_header2"
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:visibility="gone"
+        />
+
+
+    <ListView
+        android:id="@+id/listView_in_player"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone">
+    </ListView>
+
+    <com.strawberryswing.upmusic.util.swipemenulistview.SwipeMenuListView
+        android:id="@+id/swipe_menu_listview"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone">
+    </com.strawberryswing.upmusic.util.swipemenulistview.SwipeMenuListView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+</LinearLayout>

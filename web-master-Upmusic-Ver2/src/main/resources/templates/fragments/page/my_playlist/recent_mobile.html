@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- reward music content -->
+			<div class="reward_wrap">
+				<div class="nl_panel pdb0 pdt0">
+					<ul class="nav nav-tabs tabType01">
+						<li class="active"><a><span th:text="#{common.source.music}" th:remove="tag"></span></a></li>
+						<li class="making"><a><span th:text="#{common.source.video}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane active" id="musicStore-1">
+						<!-- 음원 -->
+						<div class="album_list_wrap">
+							<div th:if="${tracks != null and 0 < tracks.getTotalElements()}">
+								<div th:replace="fragments/common/list_track_default_mobile :: list_track(${tracksFragmentId}, ${tracks}, ${trackPaginationUrl})"></div>
+							</div>
+							<div th:unless="${tracks != null and 0 < tracks.getTotalElements()}" class="h100p no-music">
+								<p class="ico_nomusic">최근 플레이한 리스트가 없습니다.</p>
+							</div>
+						</div>
+						<!-- //end 음원 -->
+					</div>
+					<!-- 영상 -->
+					<div class="tab-pane" id="musicStore-2">
+						<!-- 일반영상 -->
+						<div class="nl_panel">
+							<div class="ct_title ofh">
+								<h2 class="content_title">최근 본 영상</h2>
+								<p class="benchmark">
+									<label class="ico_delete"><a th:onclick="@{${'UPMListRecentPlay.deleteSelectedVideo(&quot;#' + videosFragmentId + '&quot;);'}}"><span th:text="#{button.delete}"></span></a></label>
+								</p>
+							</div>
+						</div>
+						<div th:if="${videos != null and 0 < videos.getTotalElements()}">
+							<div th:replace="fragments/common/list_video_default_mobile :: list_video(${videosFragmentId}, ${videos}, ${videoPaginationUrl})"></div>
+						</div>
+						<div th:unless="${videos != null and 0 < videos.getTotalElements()}" class="h100p no-music">
+							<p class="ico_novideo">최근 플레이한 리스트가 없습니다.</p>
+						</div>
+						<!-- //end 일반영상 -->
+					</div>
+					<!-- //end 영상 -->							
+				</div><!-- //end tab-content -->
+				
+			</div>
+			<!-- //end reward music content -->
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+			var UPMListTrackAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.track-list').html(data);
+					});
+				},
+				appendPage: function(elementId, paginationUrl, page, totalPages) {
+					var url = paginationUrl + '?page=' + page;
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.track-list').append(data);
+					});
+					if (page + 1 >= totalPages) {
+						$('#' + elementId + ' #list-more-button').remove();
+					} else {
+						var moreButton = '<p><a onclick="UPMListTrackAnonymous.appendPage(\'' + elementId + '\', \'' + paginationUrl + '\', ' + (page + 1) + ', ' + totalPages + ');">SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i></a></p>';
+						$('#' + elementId + ' #list-more-button').html(moreButton);
+					}
+				}
+				
+			};
+			var UPMListVideoAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.video-list').html(data);
+					});
+				},
+				appendPage: function(elementId, paginationUrl, page, totalPages) {
+					var url = paginationUrl + '?page=' + page;
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.video-list').append(data);
+					});
+					if (page + 1 >= totalPages) {
+						$('#' + elementId + ' #list-more-button').remove();
+					} else {
+						var moreButton = '<p><a onclick="UPMListVideoAnonymous.appendPage(\'' + elementId + '\', \'' + paginationUrl + '\', ' + (page + 1) + ', ' + totalPages + ');">SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i></a></p>';
+						$('#' + elementId + ' #list-more-button').html(moreButton);
+					}
+				}
+			};
+		</script>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMListRecentPlay = {
+				deleteSelectedTrack: function(fragmentId) {
+					UPMusic.alert(msgUserAfterLogin);
+				},
+				deleteSelectedVideo: function(fragmentId) {
+					UPMusic.alert(msgUserAfterLogin);
+				}
+			};
+	    </script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMListRecentPlay = {
+				_config : {
+					loading: false
+				},
+				deleteSelectedTrack: function(fragmentId) {
+					var selectedTracks = $(fragmentId + ' dl dd.on').map(function() {
+						if (this.id) return this.id;
+					}).get();
+					if (0 < selectedTracks.length) {
+						UPMusic.confirm("정말 삭제하시겠습니까?", function() {
+							UPMListRecentPlay.deleteTrackConfirm(fragmentId);
+						});
+					} else {
+						UPMusic.alert(msgSelectItem);
+					}
+				},
+				deleteTrackConfirm: function(fragmentId) {
+					if (UPMListRecentPlay._config.loading) return;
+					UPMListRecentPlay._config.loading = true;
+					var selectedTracks = $(fragmentId + ' dl dd.on').map(function() {
+						if (this.id) return this.id;
+					}).get();
+					var params = {ids : selectedTracks};
+		  			UPMusic.ajaxDeleteItems(UPMusic._config._api_my_playlist + '/remove_tracks', headers, params, UPMListRecentPlay.deleteSelectedTrackCallback);
+				},
+				deleteSelectedTrackCallback: function(msg, object) {
+					if (msg == 'true') {
+						UPMListTrackAnonymous.loadPage('recent-track-fragment', '/component/my_playlist/recent_track',  0);
+					} else {
+						UPMusic.alert("리스트를 삭제하지 못했습니다. 잠시 후 다시 시도하십시오.");
+					}
+					UPMListRecentPlay._config.loading = false;
+				},
+				deleteSelectedVideo: function(fragmentId) {
+					var selectedVideos = $(fragmentId + ' input:checkbox:checked').map(function() {
+						if (this.value) return this.value;
+					}).get();
+					if (0 < selectedVideos.length) {
+						UPMusic.confirm("정말 삭제하시겠습니까?", function() {
+							UPMListRecentPlay.deleteVideoConfirm(fragmentId);
+						});
+					} else {
+						UPMusic.alert('영상을 선택해주세요');
+					}
+				},
+				deleteVideoConfirm: function(fragmentId) {
+					if (UPMListRecentPlay._config.loading) return;
+					UPMListRecentPlay._config.loading = true;
+					var selectedVideos = $(fragmentId + ' input:checkbox:checked').map(function() {
+						if (this.value) return this.value;
+					}).get();
+					var params = {ids : selectedVideos};
+		  			UPMusic.ajaxDeleteItems(UPMusic._config._api_my_playlist + '/remove_videos', headers, params, UPMListRecentPlay.deleteSelectedVideoCallback);
+				},
+				deleteSelectedVideoCallback: function(msg, object) {
+					if (msg == 'true') {
+						UPMListVideoAnonymous.loadPage('recent-video-fragment', '/component/my_playlist/recent_video', 0);
+					} else {
+						UPMusic.alert("리스트를 삭제하지 못했습니다. 잠시 후 다시 시도하십시오.");
+					}
+					UPMListRecentPlay._config.loading = false;
+				}
+			};
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<dl th:fragment="list_request(requestsFragmentId, requestList, requestPaginationUrl)" th:id="${requestsFragmentId}" th:remove="tag">
+		<dd th:each="request, iter : ${requestList}" th:id="${request.id}" class="pointer" th:onclick="@{${'UPMusic.goto(&quot;' + request.getUrl() + '&quot;, event);'}}">
+			<div class="img">
+				<img th:src="@{${request.getMember().getProfileImageUrl()}}" alt="" />
+				<p class="comment"><i class="ico_comment"></i><span th:text="#{model.comment}" th:remove="tag"></span> <span th:text="${request.commentCnt}"></span></p>
+			</div>
+			<div class="info">
+				<p class="subject" th:text="${request.getMember().getNick()}"></p>
+				<p class="text clamp2" th:text="${request.getDescription()}"></p>
+				<p class="money" th:text="${request.getFormattedPrice()}"></p>
+			</div>
+		</dd>
+	</dl>
+</body>
+
+</html>

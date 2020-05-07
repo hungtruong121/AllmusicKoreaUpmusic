@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+<div th:fragment="modal_share_upmusic_mobile">
+	<div class="modal fade" id="modal-upmusic-share" tabindex="-1" role="dialog" aria-labelledby="sns-share-modal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header pos-relative">
+					<i><img th:src="@{/img/upmusic.png}" alt=""></i><span> UPMUSIC 피드에 공유하기</span>
+				</div>
+				<div class="modal-body">
+					<form action="#" id="feedShareInsertForm" th:action="@{/feed/share/insert}" method="post">
+						<input type="hidden" name="shareUrl" id="shareUrl">
+						<div class="upmusic_share_content">
+							<div class="share_section1">
+								<input type="text" name="content" class="" placeholder="하고 싶은 말을 남겨주세요."/>
+							</div>
+						</div>
+						<div class="upmusic_share_footer">
+							<ul>
+								<li>
+									<div class="selectbox_design">
+										<input type="hidden" name="publicRangeFormValue" id="publicRangeFormValue" value="ALL">
+										<span id="selectbox_seleted_text">전체 공개</span><i><img src="/img/select_ar.png" alt=""></i>
+										<ul class="selectbox_option selectbox_off">
+											<li class="ALL">전체 공개</li>
+											<li class="LIKE">좋아요 공개</li>
+											<li class="PRIVATE">나만 보기</li>
+										</ul>
+									</div>
+								</li>
+								<li><button class="btn btn-dark btn-custom p60 w100p h40" type="button" data-dismiss="modal">취소</button></li>
+								<li><button class="btn btn-custom3 fl w100p p60 h40" id="btn_feed_share_insert" type="submit">UPMUSIC에 공유</button></li>
+							</ul>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var shareUrl = /*[[ ${shareUrl} ]]*/;
+        var origSelectionStart, origSelectionEnd;
+        var url = "";
+        var UPMShareUpmusicModal = {
+            showShareModal : function(urlToShareFeed) {
+                url = urlToShareFeed;
+                $('#modal-upmusic-share').modal('show');
+            }
+        };
+
+        /*]]>*/
+
+        $('#modal-upmusic-share').on('shown.bs.modal', function(){
+            feedSelectboxOption();
+        });
+
+        $('#btn_feed_share_insert').on('click', function(){
+            $('#shareUrl').val(url);
+        });
+
+        // 공개여부 선택
+        function feedSelectboxOption(){
+            // 공개여부 선택
+            $('.selectbox_option').on('click', function(e){
+                var selectboxText = $(e.target).html();
+                var selectValue = $(e.target).attr('class');
+
+                $(e.target).closest('.selectbox_design').find('#selectbox_seleted_text').html(selectboxText);
+                $(e.target).closest('.selectbox_design').find('#publicRangeFormValue').val(selectValue);
+
+            });
+        }
+
+
+	</script>
+</div>
+</body>
+
+</html>

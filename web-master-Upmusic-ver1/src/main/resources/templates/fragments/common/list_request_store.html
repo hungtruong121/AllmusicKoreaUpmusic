@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_request(requestsFragmentId, requestList, requestPaginationUrl)" th:id="${requestsFragmentId}">
+		<ul class="producing_contnet">
+			<li th:each="request, iter : ${requestList}" th:id="${request.id}" class="pointer" th:onclick="@{${'UPMusic.goto(&quot;' + request.getUrl() + '&quot;, event);'}}">
+				<div class="producing_profile store_profile">
+					<img th:src="@{${request.getMember().getProfileImageUrl()}}" alt="" />
+				</div>
+				<div class="producing_info">
+					<div class="producing_infowrap">
+						<div class="producing_info_head">
+							<h3 class="producing_title ftbr" th:text="${request.getMember().getNick()}"></h3>
+							<p class="producing_day" th:text="${request.formattedTime()}"></p>
+						</div>
+						<p class="producing_price" th:text="${request.getFormattedPrice()}"></p>
+						<p class="producing_introduce producing_introduce2" th:text="${request.getDescription()}"></p>
+						<div class="comment_info mt10 mb0"><i><img th:src="@{/img/comment_icon.png}" alt=""></i><span th:text="#{model.comment}" th:remove="tag"></span><span th:text="${request.commentCnt}"></span><span th:text="#{common.count.collectedTrack}"></span></div>
+					</div>
+				</div>
+			</li>
+		</ul>
+		
+		<div th:if="${requestList != null and requestList.totalPages gt 0}" class="panel-body text-center">
+		    <ul class="pagination">
+		        <li th:class="${requestList.number eq 0} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-left" th:if="${not requestList.first}" th:onclick="@{${'UPMusic.loadPage(&quot;' + requestsFragmentId + '&quot;, &quot;' + requestPaginationUrl + '&quot;, ' + (requestList.number-1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-left" th:if="${requestList.first}" href="javascript:void(0);"></a>
+		        </li>
+		
+		        <li th:each="pageNo : ${#numbers.sequence(0, requestList.totalPages - 1)}" th:class="${requestList.number eq pageNo}? 'active' : ''">
+		            <a th:if="${requestList.number eq pageNo}" href="javascript:void(0);">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		            <a th:if="${not (requestList.number eq pageNo)}" th:onclick="@{${'UPMusic.loadPage(&quot;' + requestsFragmentId + '&quot;, &quot;' + requestPaginationUrl + '&quot;, ' + pageNo + ');'}}">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		
+		        </li>
+		        <li th:class="${requestList.number + 1 ge requestList.totalPages} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-right" th:if="${not requestList.last}" th:onclick="@{${'UPMusic.loadPage(&quot;' + requestsFragmentId + '&quot;, &quot;' + requestPaginationUrl + '&quot;, ' + (requestList.number+1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-right" th:if="${requestList.last}" href="javascript:void(0);"></a>
+		        </li>
+		    </ul>
+		</div>
+		<script th:inline="javascript">
+			$(function () {
+				var leng = $('.producing_introduce2').html().length;
+				if(leng >= 52){
+                    var content = $('.producing_introduce2').html().substring(0,48);
+                    $('.producing_introduce2').html(content + "..");
+				}
+            })
+		</script>
+	</div>
+</body>
+
+</html>

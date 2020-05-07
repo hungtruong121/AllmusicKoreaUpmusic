@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_family_artist(fragmentId, artistList, paginationUrl)" th:id="${fragmentId}">
+		<ul class="artist_contentlist">
+			<li th:each="artist,iter : ${artistList}" th:id="@{${'artist-' + artist.id}}">
+				<div class="artist_profile">
+					<a th:href="@{${artist.getUrl()}}">
+						<img th:src="@{${artist.getProfileImageUrl()}}" src="${artist.getProfileImageUrl()}" title="cover"/>
+					</a>
+				</div>
+				<div class="artist_info">
+					<h3 class="artist-title"><a th:href="@{${artist.getUrl()}}"><span th:text="${artist.nick}" th:remove="tag"></span></a></h3>
+					<table>
+						<tr>
+							<td><i class="mr10"><img th:src="@{/img/artist_music_icon.png}" alt="" /></i><span th:text="#{common.source.music}"></span></td>
+							<td><span th:text="${artist.trackCnt}"></span><span th:text="#{common.count}"></span></td>
+						</tr>
+						<tr>
+							<td><i class="mr3"><img th:src="@{/img/artist_movie_icon.png}" alt="" /></i><span th:text="#{common.source.video}"></span></td>
+							<td><span th:text="${artist.videoCnt}"></span><span th:text="#{common.count}"></span></td>
+						</tr>
+						<tr>
+							<td><i class="mr5"><img th:src="@{/img/artist_rating_icon.png}" alt="" /></i>등급</td>
+							<td>패밀리 아티스트</td>
+						</tr>
+					</table>
+					<!--<div id="artist-like" class="like_btn_round center w100p" th:classappend="${artist.liked} ? 'like_btn_round_on' : 'like_btn_round_off'" th:onclick="@{${'UPMusicCommon.likeArtist(' + artist.id + ');'}}"><i><span class="heart">&nbsp;</span></i><span th:text="#{common.like}" th:remove="tag"></span><span id="artist-like-cnt" th:text="${artist.heartCnt}"></span></div>-->
+					<div>
+						<span id="artist-like" class="like_btn_round" style="width: 120px; float: left; margin-right: 2.5%;" th:classappend="${artist.liked} ? 'like_btn_round_on' : 'like_btn_round_off'" th:onclick="@{${'UPMusicCommon.likeArtist(' + artist.id + ');'}}"><i><span class="heart">&nbsp;</span></i><span th:text="#{common.like}" th:remove="tag"></span><span id="artist-like-cnt" th:text="${artist.heartCnt}"></span></span>
+						<span id="artist-delete" class="like_btn_round" style="width: 120px; float: left;" th:onclick="@{${'UPMArtistDelete.withdraw(' + artist.id + ');'}}"><i><img th:src="@{/img/delete_icon.png}" style="width: 15px;" alt=""></i><span th:text="#{button.delete}" th:remove="tag"></span></span>
+					</div>
+				</div>
+			</li>
+		</ul>
+		
+		<div th:if="${artistList != null and artistList.totalPages gt 0}" class="panel-body text-center clear">
+		    <ul class="pagination">
+		        <li th:class="${artistList.number eq 0} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-left" th:if="${not artistList.first}" th:onclick="@{${'UPMusic.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (artistList.number-1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-left" th:if="${artistList.first}" href="javascript:void(0);"></a>
+		        </li>
+		
+		        <li th:each="pageNo : ${#numbers.sequence(0, artistList.totalPages - 1)}" th:class="${artistList.number eq pageNo}? 'active' : ''">
+		            <a th:if="${artistList.number  eq pageNo}" href="javascript:void(0);">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		            <a th:if="${not (artistList.number eq pageNo)}" th:onclick="@{${'UPMusic.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + pageNo + ');'}}">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		
+		        </li>
+		        <li th:class="${artistList.number + 1 ge artistList.totalPages} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-right" th:if="${not artistList.last}" th:onclick="@{${'UPMusic.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (artistList.number+1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-right" th:if="${artistList.last}" href="javascript:void(0);"></a>
+		        </li>
+		    </ul>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+            var UPMArtistDelete = {
+                _config : {
+                    loading : false
+                },
+                withdraw: function(artistId) {
+                    UPMusic.confirm("해당 패밀리 아티스트 정보를 삭제하시겠습니까?", function() {
+                        if (UPMArtistDelete._config.loading) return;
+                        UPMArtistDelete._config.loading = true;
+                        var params = {
+                            id : artistId
+                        };
+                        UPMusic.ajaxPost(UPMusic._config._api_withdraw, headers, params, UPMArtistDelete.withdrawCallback);
+                    });
+                },
+                withdrawCallback: function(msg, object) {
+                    if (msg == 'true') {
+                        window.location.href = '/admin/member/artist/family';
+                    } else {
+                        UPMusic.alert("삭제하지 못했습니다. 잠시 후 다시 시도하십시오.");
+                    }
+                    UPMArtistDelete._config.loading = false;
+                }
+            }
+		</script>
+		
+	</div>
+</body>
+
+</html>

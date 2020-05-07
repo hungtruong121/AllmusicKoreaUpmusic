@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 캐스팅 등록 -->
+			<form id="update-casting" action="#" th:action="@{${castingform.getUrl()}}" th:object="${castingform}" method="POST" class="form-inline" enctype="multipart/form-data" role="form">
+				<input th:type="file" th:field="*{fileMultipart}" class="hidden" accept=".mp3" />
+				<div class="nl_panel">
+					<div class="memberJoin_box">
+						<div id="form-group-subject" class="form-group" th:classappend="${#fields.hasErrors('subject')} ? 'has-error' : ''">
+							<label class="control-label"><span th:text="#{model.vacal_casting.subject}" th:remove="tag"></span></label>
+							<input th:field="*{subject}" th:type="text" th:placeholder="#{model.vocal_casting.subject.placeholder}" class="form-control"/>
+							<p th:if="${#fields.hasErrors('subject')}" th:id="error-subject" class="help-block" th:errors="*{subject}"></p>
+						</div>
+						<div id="form-group-filename" class="form-group" th:classappend="${#fields.hasErrors('filename')} ? 'has-error' : ''">
+							<label class="control-label"><span th:text="#{common.source.music}" th:remove="tag"></span></label>
+							<div class="input-musicfile">
+								<input th:type="text" th:field="*{filename}" th:placeholder="#{model.vacal_casting.filename.placeholder}" class="form-control imgupload_input" onclick="$('#fileMultipart').trigger('click');return false;" readonly/>
+								<label for="ex_filename" class="music_ico fileinput-button dz-clickable"></label>
+							</div>
+							<p th:if="${#fields.hasErrors('filename')}" th:id="error-filename" class="help-block" th:errors="*{filename}"></p>
+						</div>
+						
+						<div class="form-group" th:classappend="${#fields.hasErrors('description')} ? 'has-error' : ''">
+							<label class="control-label"><span th:text="#{model.vocal_casting.description}" th:remove="tag"></span></label>
+							<textarea class="form-control masage_input" th:field="*{description}" th:placeholder="#{model.vocal_casting.description.placeholder}" rows="13"></textarea>
+							<p th:if="${#fields.hasErrors('description')}" th:id="error-description" class="help-block" th:errors="*{description}"></p>
+						</div>
+					</div><!-- //memberJoin_box -->
+				</div>
+
+				<div class="btn_box">
+					<button class="btn btn-block btn-lg btn-dark" onclick="UPMusic.startLoading();UPMUpdateCasting.submit();return false;">
+						<span th:text="#{button.save}" th:remove="tag"></span>
+					</button>
+				</div>
+			</form>
+			<!-- //end 캐스팅 등록 -->
+			
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+            var UPMUpdateCasting = {
+                _config : {
+                    loading : false
+                },
+                submit : function() {
+                    if (UPMUpdateCasting._config.loading) return;
+                    UPMUpdateCasting._config.loading = true;
+                    document.getElementById("update-casting").submit();
+                }
+            };
+            $(document).ready(function(){
+                $('input#subject').keyup(function(){
+                    if ($(this).val().length > 50) {
+                        UPMusic.alert('50자를 넘을 수 없습니다');
+                        $(this).val($(this).val().substr(0, 50));
+                    }
+                });
+                $("#fileMultipart").change(function() {
+                    if (this.files[0]) {
+                        var fileURL = URL.createObjectURL(this.files[0]);
+                        var filename = $(this).val().split('\\').pop();
+                        $('input#filename').val(filename);
+                    } else {
+                        $('input#filename').val('');
+                    }
+                });
+            });
+		</script>
+	</div>
+
+</body>
+</html>

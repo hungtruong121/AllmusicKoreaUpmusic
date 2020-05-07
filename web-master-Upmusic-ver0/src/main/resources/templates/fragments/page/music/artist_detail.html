@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<div class="page-title-wrap">
+					<h2 class="page-title" th:text="#{nav.my_upm.profile}"></h2>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="artist_list clear">
+							<p class="content_title2 mb15"><span th:text="#{${artist.getGrade()}}" th:remove="tag"></span> <span th:text="#{nav.my_upm.profile}" th:remove="tag"></span></p>
+							<div class="crowd_newproject_wrap">
+								<div class="producing_profile profile_profile" th:style="@{${'background-image: url(' + artist.getProfileImageUrl() + ');'}}"></div>
+								<div class="producing_info crowd_info profile_info">
+									<div class="producing_infowrap">
+										<h3 class="crowd_title crowd_title2" th:text="${artist.nick}"></h3>
+										<div class="profile_info_space">
+											<p class="profile_question mt10"><span th:text="#{model.member.createdAt}" th:remove="tag"></span>: <span class="profile_answer" th:text="${artist.formattedDay()}"></span></p>
+											<p class="profile_question mt10"><span th:text="#{common.upload}" th:remove="tag"></span>:
+											<span class="profile_answer"><span th:text="#{common.source.music}" th:remove="tag"></span> <span th:text="${artist.trackCnt}" th:revmoe="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></span> ㅣ
+											<span class="profile_answer"><span th:text="#{common.source.video}" th:remove="tag"></span> <span th:text="${artist.videoCnt}" th:revmoe="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></span></p>
+											<p class="profile_question mt10"><span th:text="#{common.grade}" th:remove="tag"></span>: <span class="profile_answer" th:text="#{${artist.getGrade()}}"></span></p>
+										</div>
+										<div class="commerce_btn like_event mt15">
+											<ul>
+												<li onclick="UPMShareModal.showShareModal(null);"><i><img th:src="@{/img/share_icon.png}" alt=""></i><span th:text="#{button.share}" th:remove="tag"></span></li>
+												<li th:if="${isOwner}" th:onclick="@{${'UPMusic.goto(&quot;' + artist.getUrl() + '/edit&quot;);'}}"><i><img th:src="@{/img/change_icon.png}" alt=""></i><span th:text="#{button.modify}" th:remove="tag"></span></li>
+												<li th:if="${isAdmin}" onclick="UPMArtistDelete.withdraw()"><i><img th:src="@{/img/delete_icon.png}" alt=""></i><span th:text="#{button.delete}" th:remove="tag"></span></li>
+												<li th:if="${likedArtist}" id="artist-detail-heart" onclick="UPMArtistDetail.likeArtist();" class="feedbtn_on">
+													<i><img th:src="@{/img/afeedbtn_2.png}" class="w19" alt=""></i><span th:text="#{common.like}" th:remove="tag"></span><span id="artist-detail-heart-cnt" th:text="${artist.heartCnt}"></span>
+												</li>
+												<li th:unless="${likedArtist}" id="artist-detail-heart" onclick="UPMArtistDetail.likeArtist();">
+													<i><img th:src="@{/img/feedbtn_2.png}" class="w19" alt=""></i><span th:text="#{common.like}" th:remove="tag"></span><span id="artist-detail-heart-cnt" th:text="${artist.heartCnt}"></span>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="public_project_wrap mt30">
+							<div th:if="${artistTracks != null and 0 < artistTracksCnt}">
+								<h3 class="content_title3 mb15 fl">
+									<a th:href="@{${artist.getUrl() + '/tracks'}}"><span th:text="#{model.member.track}" th:remove="tag"></span><span th:text="${artistTracksCnt}"></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+								</h3>
+								<div th:replace="fragments/common/list_track_default :: list_track('artist-tracks-fragment', ${artistTracks}, null)"></div>
+							</div>
+						</div>
+						<div class="public_project_wrap">
+							<div th:if="${artistAlbums != null and 0 < artistAlbumsCnt}">
+								<h3 class="content_title3 mb15">
+									<a th:href="@{${artist.getUrl() + '/albums'}}"><span th:text="#{model.member.album}" th:remove="tag"></span><span th:text="${artistAlbumsCnt}"></span>
+										<i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+								</h3>
+								<div th:replace="fragments/common/list_album :: list_album('artist-albums-fragment', ${artistAlbums}, null)"></div>
+							</div>
+						</div><!--  public_project_wrap	 -->
+						<div class="public_project_wrap">
+							<div th:if="${artistVideos != null and 0 < artistVideosCnt}" class="producing_list">
+								<h3 class="content_title3 mb15">
+									<a th:href="@{${artist.getUrl() + '/videos'}}"><span th:text="#{model.member.video}" th:remove="tag"></span><span th:text="${artistVideosCnt}"></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+								</h3>
+								<div th:replace="fragments/common/list_video :: list_video('artist-videos-fragment', ${artistVideos})"></div>
+							</div>
+						</div><!--  public_project_wrap	 -->
+						<div class="public_project_wrap mb0">
+							<div th:if="${artistStoreTracks != null and 0 < artistStoreTracksCnt}">
+								<h3 class="content_title3 mb15 fl">
+									<a th:href="@{${artist.getUrl() + '/store_tracks'}}"><span th:text="#{nav.music.store}" th:remove="tag"></span><span th:text="${artistStoreTracksCnt}"></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+								</h3>
+								<div th:replace="fragments/common/list_track_store :: list_track('artist-stores-fragment', ${artistStoreTracks}, null)"></div>
+							</div>
+						</div><!--  public_project_wrap	 -->
+					</div>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMArtistDetail = {
+				likeArtist : function() {
+					UPMLoginModal.showModal();
+				}
+			};
+		</script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var artistId = /*[[ ${artist.id} ]]*/;
+			
+			var UPMArtistDetail = {
+				_config : {
+					loading : false
+				},
+				likeArtist : function() {
+					if (UPMArtistDetail._config.loading) return;
+					UPMArtistDetail._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_artist + '/' + artistId + '/like_from_list', headers, params, UPMArtistDetail.likeArtistCallback);
+				},
+				likeArtistCallback: function(msg, object) {
+					if (msg == 'true') {
+						$('#artist-detail-heart').addClass("feedbtn_on").children("").children("img").attr("src","/img/afeedbtn_2.png");
+						$('#artist-detail-heart-cnt').html(object[1]);
+					} else if (msg == 'false') {
+						$('#artist-detail-heart').removeClass("feedbtn_on").children("").children("img").attr("src","/img/feedbtn_2.png");
+						$('#artist-detail-heart-cnt').html(object[1]);
+					} else {
+						UPMusic.alert(msg);
+					}
+					UPMArtistDetail._config.loading = false;
+				}
+			};
+
+			var UPMArtistDelete = {
+                _config : {
+                    loading : false
+                },
+                withdraw: function() {
+                    UPMusic.confirm("해당 패밀리 아티스트 정보를 삭제하시겠습니까?", function() {
+                        if (UPMArtistDelete._config.loading) return;
+                        UPMArtistDelete._config.loading = true;
+                        var params = {
+                            id : artistId
+						};
+                        UPMusic.ajaxPost(UPMusic._config._api_withdraw, headers, params, UPMArtistDelete.withdrawCallback);
+                    });
+                },
+                withdrawCallback: function(msg, object) {
+                    if (msg == 'true') {
+                        window.location.href = '/admin/member/artist/family';
+                    } else {
+                        UPMusic.alert("삭제하지 못했습니다. 잠시 후 다시 시도하십시오.");
+                    }
+                    UPMArtistDelete._config.loading = false;
+                }
+			}
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

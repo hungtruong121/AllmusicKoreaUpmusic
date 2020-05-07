@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 비디오 -->
+			<div class="tab-content">
+				<div class="tab-pane fade active in" id="video-1">
+					<!-- 홈 -->
+					<!-- 베스트 영상 -->
+					<div class="nl_panel">
+						<div class="ct_title ofh pdt5">
+							<h2 class="content_title" th:text="#{common.video.best}"></h2>
+						</div>
+					</div>
+						
+					<div th:if="${topVideo != null}" class="bestVideo nl_panel pdt0" th:onclick="@{${'UPMusic.goto(&quot;' + topVideo.getUrl() + '&quot;, event)'}}">
+						<p class="video"><img th:src="${topVideo.getThumbnailUrl()}" alt="" /><span class="time" th:text="${topVideo.formattedDuration()}"></span></p>
+						<p class="title"><a th:href="${topVideo.getUrl()}"><span th:text="${topVideo.subject}" th:remove="tag"></span></a></p>
+						<p class="date"><a th:href="${topVideo.getArtistUrl()}"><span th:text="${topVideo.getArtistNick()}" th:remove="tag"></span></a> <span th:text="${topVideo.formattedTime()}" th:remove="tag"></span></p>
+					</div>
+					<!-- //end 베스트 영상 -->
+
+					<!-- 홈 인기영상 -->
+					<div class="nl_panel">
+						<div class="ct_title ofh pdt5">
+							<h2 class="content_title" th:text="#{model.video.hot_gv}"></h2>
+						</div>
+					</div>
+					<div class="videoListType_02 btm_gray2">
+						<dl>
+							<dd th:each="video,iter : ${top5GVideos}">
+								<div class="video" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}"><img th:src="@{${video.getThumbnailUrl()}}" alt=""/><span class="time" th:text="${video.formattedDuration()}"></span></div>
+								<div class="info">
+									<p class="subject clamp1"><a th:href="@{${video.getUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a></p>
+									<p class="atist clamp1"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></p>
+									<p class="date" th:text="${video.formattedTime()}"></p>
+								</div>
+							</dd>
+						</dl>
+					</div>
+					<!-- //end 홈 인기영상 -->
+
+					<!-- 홈 뮤직비디오 -->
+					<div class="nl_panel">
+						<div class="ct_title ofh pdt5">
+							<h2 class="content_title" th:text="#{model.video.hot_mv}"></h2>
+						</div>
+					</div>
+					<div class="videoListType_02">
+						<dl>
+							<dd th:each="video,iter : ${top5MVideos}">
+								<div class="video" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}"><img th:src="@{${video.getThumbnailUrl()}}" alt=""/><span class="time" th:text="${video.formattedDuration()}"></span></div>
+								<div class="info">
+									<p class="subject clamp1"><a th:href="@{${video.getUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a></p>
+									<p class="atist clamp1"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></p>
+									<p class="date" th:text="${video.formattedTime()}"></p>
+								</div>
+							</dd>
+						</dl>
+					</div>
+					<!-- //end 홈 뮤직비디오 -->
+
+					<!-- //end 홈 -->
+				</div>
+			</div>
+			<!-- //end tab-content -->
+			<!-- //end 비디오 -->
+			
+		</div>
+		
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    	<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title">공지사항 상세보기</h2>
+				<div class="notice_detail mt30">
+					<div class="nd_head">
+						<h3 class="list-title mb0 fl">
+							<span class="notice_group" th:text="[ + ${result.category} + ]"></span>
+							<span th:text="${result.subject}"></span>
+						</h3>
+						<p class="fr" th:text="${result.formattedTime()}"></p>
+					</div>
+					<div class="nd_info" id="result_content">
+					</div>
+					<div class="commerce_btn mt30">
+						<ul>
+							<li id="btn_delete"><i><img src="/img/delete_icon.png" alt=""></i>삭제</li>
+							<li id="btn_edit" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/upm_news/notice/editForm?noticeId=' + result.noticeId + '&quot;);'}}"><i><img src="/img/change_icon.png" alt=""></i>수정</li>
+							<li id="btn_back"><i><img src="/img/list_icon.png" alt=""></i>목록</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+
+    <script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+
+		// editor 로 글 등록시 <p> 태그로 시작하기 때문에 아래와 같이 내용을 출력함
+	    var content = /*[[${result.content}]]*/;
+	    $('#result_content').append(content);
+	    /*]]>*/
+	    $('#btn_back').click(function(){
+	    	history.back();
+	    });
+
+	    $('#btn_delete').click(function(){
+	    	UPMusicAdmin.confirm("정말로  삭제하시겠습니까?", function() {
+	    		UPMusicAdmin.goto("/admin/upm_news/notice/delete?noticeId=" + /*[[${result.noticeId}]]*/);
+	    	});
+	    });
+		</script>
+  </div>
+
+</body>
+</html>

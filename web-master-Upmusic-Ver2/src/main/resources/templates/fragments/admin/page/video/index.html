@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl">전체 영상</h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="accordion_btn"></div>
+						<div class="genre_listcontent">
+							<div id="uploaded-video-list" class="musiclist_table musiclist_table_hover2">
+								<table id="videoTable">
+									<tr>
+										<th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+										<th>영상정보</th>
+										<th>종류</th>
+										<th>조회수</th>
+										<th>좋아요</th>
+										<th>생성일시</th>
+										<th>
+											<input id="selectAll" type="checkbox" class="checkbox-checked"/>
+											<label for="selectAll"><span class="checkbox-custom"></span></label>
+										</th>
+									</tr>
+									<tr th:each="video, iter : ${videos}" th:id="${video.id}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + video.getAdminUrl() + '&quot;);'}}">
+										<td><span th:text="${videos.number * videos.size + iter.index + 1}" th:remove="tag"></span></td>
+										<th>
+											<a th:href="@{${video.getAdminUrl()}}"><i><img class="video-list-cover" th:src="@{${video.getThumbnailUrl()}}" alt="" /></i></a>
+											<p>
+												<a th:href="@{${video.getAdminUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a><br />
+												<b><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></b>
+											</p>
+										</th>
+										<td><span th:text="#{${video.getTypeName()}}" th:remove="tag"></span></td>
+										<td><span th:text="${video.getHitCnt()}" th:remove="tag"></span></td>
+										<td><span th:text="${video.getHeartCnt()}" th:remove="tag"></span></td>
+										<td><span th:text="${video.formattedTime()}" th:remove="tag"></span></td>
+										<td onclick="event.cancelBubble=true;" name="cc">
+											<input th:id="@{${video.getId()}}" th:value="@{${video.getId()}}" type="checkbox" class="checkbox-checked"/>
+											<label th:for="@{${video.getId()}}"><span class="checkbox-custom"></span></label>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div th:if="${videos != null and videos.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${videos.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not videos.first}" th:href="@{${'/admin/video'}(page=${videos.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${videos.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, videos.totalPages - 1)}" th:class="${videos.number eq pageNo}? 'active' : ''">
+						            <a th:if="${videos.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (videos.number eq pageNo)}" th:href="@{${'/admin/video'}(page=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${videos.number + 1 ge videos.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not videos.last}" th:href="@{${'/admin/video'}(page=${videos.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${videos.last}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+					</div>
+				</div>
+				<div class="commerce_btn commerce_btn_ver2 mt30 w300">
+					<ul>
+						<li id="deleteButton"><i>V</i>삭제</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+            $(document).ready(function () {
+                $('#selectAll').click(function () {
+                    if($('#selectAll').prop('checked')){
+                        $('[name=cc]').children('input').prop('checked',true);
+                    } else {
+                        $('[name=cc]').children('input').prop('checked',false);
+                    }
+                });
+                $('[name=cc]').click(function () {
+                    if(!$(this).children('input').prop('checked')){
+                        $(this).children('input').prop('checked', true);
+                    } else {
+                        $(this).children('input').prop('checked', false);
+                        if($('#selectAll').prop('checked')){
+                            $('#selectAll').prop('checked', false);
+                        }
+                    }
+                });
+                $('#deleteButton').on('click', function () {
+                    var ids = [];
+                    $('#videoTable :checked').each(function () {
+                        if($.isNumeric($(this).val())) {
+                            ids.push($(this).val());
+                        }
+                    });
+                    UPMusicAdmin.deleteVideos(ids);
+                });
+            });
+		</script>
+		
+	</div>
+
+</body>
+</html>

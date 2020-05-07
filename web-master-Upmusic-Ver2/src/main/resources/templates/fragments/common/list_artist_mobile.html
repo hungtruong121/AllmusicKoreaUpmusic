@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_artist(fragmentId, artistList, paginationUrl)" th:id="${fragmentId}" class="gallery_listType01 nl_panel">
+		<dl class="item-list">
+			<dd th:each="artist,iter : ${artistList}" th:id="@{${'artist-' + artist.id}}">
+				<div class="img">
+					<a th:href="@{${artist.getUrl()}}">
+						<img th:src="@{${artist.getProfileImageUrl()}}" title="cover"/>
+					</a>
+				</div>
+				<p class="name colBlue clamp"><a th:href="@{${artist.getUrl()}}"><span th:text="${artist.nick}" th:remove="tag"></span></a></p>
+				<p class="music"><span class="l colGray"><i></i> <span th:text="#{common.source.music}" th:remove="tag"></span></span><span class="r colDark"><span th:text="${artist.trackCnt}" th:remove="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></span></p>
+				<p class="video"><span class="l colGray"><i></i> <span th:text="#{common.source.video}" th:remove="tag"></span></span><span class="r colDark"><span th:text="${artist.videoCnt}" th:remove="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></span></p>
+				<p class="like"><span id="artist-like" class="like_btn" th:classappend="${artist.liked} ? 'on' : ''" th:onclick="@{${'UPMusicCommon.likeArtist(' + artist.id + ');'}}"><span th:text="#{common.like}" th:remove="tag"></span> <b id="artist-like-cnt" th:text="${artist.heartCnt}"></b></span></p>
+			</dd>
+		</dl>
+		
+		<div th:if="${paginationUrl != null and artistList != null and artistList.totalPages gt pageNo + 1}" id="list-more-button" class="showmore_wrap">
+			<p><a th:onclick="@{${'UPMusic.appendPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (pageNo + 1) + ', ' + artistList.totalPages + ');'}}">SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></a></p>
+		</div>
+	</div>
+</body>
+
+</html>

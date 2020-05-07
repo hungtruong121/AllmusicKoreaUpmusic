@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl">정책</h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="accordion_btn"></div>
+						<div class="genre_listcontent">
+							<div id="uploaded-video-list" class="musiclist_table musiclist_table_hover2">
+								<table>
+									<tr>
+										<th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+										<th>제목</th>
+										<th>조회수</th>
+										<th>수정일시</th>
+									</tr>
+									<tr th:each="terms, iter : ${termsList}" th:id="${terms.id}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/terms/' + terms.id + '/edit&quot;);'}}">
+										<td><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+										<td><span th:text="${terms.getSubject()}" th:remove="tag"></span></td>
+										<td><span th:text="${terms.getHitCnt()}" th:remove="tag"></span></td>
+										<td><span th:text="${terms.formattedUpdateDay()}" th:remove="tag"></span></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+</body>
+</html>

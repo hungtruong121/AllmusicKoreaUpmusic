@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+
+    >
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="17dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="155dp"
+            android:layout_height="85.8dp">
+
+            <ImageView
+                android:layout_alignParentLeft="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView01"
+                android:src="@drawable/album_images"
+                android:layout_centerVertical="true"
+                />
+
+            <RelativeLayout
+                android:layout_width="46dp"
+                android:layout_height="20.3dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBlackTransparent">
+
+                <TextView
+                    android:id="@+id/textView00"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:textColor="#b3fefeff"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:text="10:45"
+                    />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left|center_vertical"
+            android:layout_marginLeft="187.7dp"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/textView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#323244"
+                android:letterSpacing="-0.02"
+                android:text="편한 사람이 생겼어"
+                android:focusableInTouchMode="false"
+                android:clickable="false"
+                android:focusable="false"
+                />
+
+            <TextView
+                android:id="@+id/textView02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:letterSpacing="-0.02"
+                android:layout_marginTop="32dp"
+                android:text="K-Flower"
+                android:textColor="#323244"
+                android:textSize="10.3sp" />
+
+            <TextView
+                android:id="@+id/textView03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="#606a78"
+                android:text="2018-06-02 10:00"
+                />
+
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

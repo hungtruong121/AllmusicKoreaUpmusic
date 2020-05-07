@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_album(fragmentId, albumList, paginationUrl)" th:id="${fragmentId}" class="nl_panel">
+		<div class="h100p">
+			<dl class="album-list galleryType_list01">
+				<dd th:each="album,iter : ${albumList}">
+					<div class="img">
+						<a th:href="@{${album.getUrl()}}">
+							<img th:src="@{${album.getCoverImageUrl()}}" src="${album.getCoverImageUrl()}" title="cover" class="img-responsive"/>
+						</a>
+					</div>
+					<div class="info">
+						<p class="abtitle overflow ellipsis" style="width:85%"><a th:href="@{${album.getUrl()}}"><span th:text="${album.subject}" th:remove="tag"></span></a></p>
+						<p class="atist"><a th:href="@{${album.getArtistUrl()}}"><span th:text="${album.getArtistNick()}" th:remove="tag"></span></a></p>
+						<p class="btn_more" th:onclick="@{${'UPMAlbumMenuModal.showModal(' + album.getId() + ', &quot;' + album.getSubject() + '&quot;, &quot;' + album.getArtistNick() + '&quot;, &quot;' + album.getArtistUrl() + '&quot;, &quot;' + album.getUrl() + '&quot;, event);'}}"></p>
+					</div>
+				</dd>
+			</dl>
+		</div>
+		
+		<div th:if="${paginationUrl != null and albumList != null and albumList.totalPages gt pageNo + 1}" id="list-more-button" class="showmore_wrap">
+			<p><a th:onclick="@{${'UPMListAlbumAnonymous.appendPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (pageNo + 1) + ', ' + albumList.totalPages + ');'}}">SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></a></p>
+		</div>
+	</div>
+</body>
+
+</html>

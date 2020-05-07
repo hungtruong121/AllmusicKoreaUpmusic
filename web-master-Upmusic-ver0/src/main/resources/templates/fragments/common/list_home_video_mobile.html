@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_video(fragmentId, videoList)" class="swiper-container mainSwiper">
+		<div class="swiper-wrapper">
+			<div class="swiper-slide">
+				<div th:if="${videoList.size() gt 0}" class="r_box" th:id="${videoList[0].id}" th:onclick="@{${'UPMusic.goto(&quot;' + videoList[0].getUrl() + '&quot;)'}}" >
+					<div class="video">
+						<p class="ico_play"></p>
+						<p class="time" th:text="${videoList[0].formattedDuration()}"></p>
+						<img th:src="${videoList[0].getThumbnailUrl()}" />
+					</div>
+					<div class="info">
+						<p class="title" th:text="${videoList[0].getSubject()}"></p>
+						<p class="artist" th:text="${videoList[0].getArtistNick()}"></p>
+						<p class="comment clamp2" th:text="${videoList[0].description}"></p>
+					</div>
+				</div>
+				<div th:if="${videoList.size() gt 1}" class="r_box" th:id="${videoList[1].id}" th:onclick="@{${'UPMusic.goto(&quot;' + videoList[1].getUrl() + '&quot;)'}}" >
+					<div class="video">
+						<p class="ico_play"></p>
+						<p class="time" th:text="${videoList[1].formattedDuration()}"></p>
+						<img th:src="${videoList[1].getThumbnailUrl()}" />
+					</div>
+					<div class="info">
+						<p class="title" th:text="${videoList[1].getSubject()}"></p>
+						<p class="artist" th:text="${videoList[1].getArtistNick()}"></p>
+						<p class="comment clamp2" th:text="${videoList[1].description}"></p>
+					</div>
+				</div>
+			</div>
+			<div class="swiper-slide">
+				<div th:if="${videoList.size() gt 2}" class="r_box" th:id="${videoList[2].id}" th:onclick="@{${'UPMusic.goto(&quot;' + videoList[2].getUrl() + '&quot;)'}}" >
+					<div class="video">
+						<p class="ico_play"></p>
+						<p class="time" th:text="${videoList[2].formattedDuration()}"></p>
+						<img th:src="${videoList[2].getThumbnailUrl()}" />
+					</div>
+					<div class="info">
+						<p class="title" th:text="${videoList[2].getSubject()}"></p>
+						<p class="artist" th:text="${videoList[2].getArtistNick()}"></p>
+						<p class="comment clamp2" th:text="${videoList[2].description}"></p>
+					</div>
+				</div>
+				<div th:if="${videoList.size() gt 3}" class="r_box" th:id="${videoList[3].id}" th:onclick="@{${'UPMusic.goto(&quot;' + videoList[3].getUrl() + '&quot;)'}}" >
+					<div class="video">
+						<p class="ico_play"></p>
+						<p class="time" th:text="${videoList[3].formattedDuration()}"></p>
+						<img th:src="${videoList[3].getThumbnailUrl()}" />
+					</div>
+					<div class="info">
+						<p class="title" th:text="${videoList[3].getSubject()}"></p>
+						<p class="artist" th:text="${videoList[3].getArtistNick()}"></p>
+						<p class="comment clamp2" th:text="${videoList[3].description}"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

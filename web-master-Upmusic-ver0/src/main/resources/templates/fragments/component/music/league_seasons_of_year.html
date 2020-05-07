@@ -1,0 +1,71 @@
+<div class="clearfix"></div>
+<div th:unless="${seasonMap}" class="text-center mt20 mb20">
+	<h4 th:text="#{common.league.no_last_season}"></h4>
+</div>
+<div th:if="${!seasonMap.empty}" class="season_wrap">
+	<ul>
+		<li th:each="season, iter : ${seasonMap}" th:id="${season.id}" th:class="@{${'upseason_' + (iter.index + 1)}}" th:classappend="${season.id == defaultSeason} ? 'active' : ''" th:onclick="@{${'UPMListTrackLeagueAnonymous.selectedSeason(&quot;' + seasonTracksFragmentId + '&quot;, &quot;' + seasonPaginationUrl + '&quot;, &quot;' + season.id + '&quot;);'}}">
+			<div class="upseoson_hover">
+				<h3 th:text="${season.subject}"></h3>
+			</div>
+			<img th:src="@{${season.getImageUrl()}}" alt="" />
+			<h3 class="upseason_title" th:text="${season.subject}"></h3>
+		</li>
+	</ul>
+</div>
+<div th:if="${seasonMap.empty}" class="season_wrap">
+	<div class="nodataBox clear">
+		<span>등록된 시즌이 없습니다.</span>
+	</div>
+</div>
+<div th:if="${seasonMap}" class="season_period_container">
+	<input id="season-year-datetimepicker" type="text" class="season-year-input" th:onchange="@{${'UPMListTrackLeagueAnonymous.changeYear(&quot;/component/music/league_seasons_of_year&quot;, this.value);'}}" th:value="${year}">
+	<ul>
+		<li th:each="season : ${seasonMap}" th:id="@{${season.id + '_period'}}" class="season_period" th:classappend="${season.id == defaultSeason} ? 'active' : ''">
+			<h3 class="content_title"><span th:text="${season.subject}" th:remove="tag"></span><span class="season_info">(<span th:text="${season.openDate}" th:remove="tag"></span>~<span th:text="${season.closeDate}" th:remove="tag"></span>)</span></h3>
+		</li>
+	</ul>
+</div>
+<div class="genre_listcontent">
+	<div class="listcontrols mb20">
+		<ul>
+			<li><a th:onclick="@{${'UPMusicCommon.addAllToPlaylist(&quot;#' + seasonTracksFragmentId + '&quot;);'}}"><span th:text="#{button.play_all}" th:remove="tag"></span></a></li>
+			<li><a th:onclick="@{${'UPMusicCommon.addTracksToPlaylist(&quot;#' + seasonTracksFragmentId + '&quot;);'}}"><span th:text="#{button.play_selected}" th:remove="tag"></span></a></li>
+			<li><a th:onclick="@{${'UPMusicCommon.showCollectionModal(&quot;#' + seasonTracksFragmentId + '&quot;);'}}"><span th:text="#{button.add.collection}" th:remove="tag"></span></a></li>
+		</ul>
+	</div>
+	<div th:replace="fragments/common/list_track_league :: list_track(${seasonTracksFragmentId}, ${seasonTracks}, ${seasonPaginationUrl})"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+	currentSeason = /*[[ ${defaultSeason} ]]*/;
+	leagueYears = /*[[ ${league_years} ]]*/;
+	$(function() {
+		$('#season-year-datetimepicker').datepicker({
+			format: "yyyy",
+		    weekStart: 1,
+// 		    startDate: new Date(leagueYears[0]),
+// 			endDate: new Date(leagueYears[leagueYears.length-1]),
+			keyboardNavigation: false,
+			viewMode: "years",
+			minViewMode: "years",
+			orientation: "bottom"
+		}).on('changeYear', function(e){
+			$(this).keyup();
+			$(this).datepicker('hide');
+		});
+		
+		$(".season_wrap>ul>li").click(function(){
+			$(this).css("z-index","9").stop().animate({"top":"0"},300).siblings("li").css("z-index","inherit").stop().animate({"top":"25px"},500);
+			$(this).children(".upseason_title").css("color","#5875e5");
+			$(this).siblings("li").children(".upseason_title").css("color","inherit");
+			$(this).children(".upseoson_hover").fadeIn(300);
+			$(this).siblings("li").children(".upseoson_hover").fadeOut(300);
+		});
+		
+		if ($('.season_wrap li').length) {
+			$('.season_wrap li.active').click();
+		}
+	});
+/*]]>*/
+</script>

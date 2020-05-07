@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<div class="page-title-wrap">
+					<div class="page-title-wrap">
+						<h2 th:if="${selectedSubMenu == '/music/album'}" class="page-title fl" th:text="#{nav.music.album}"></h2>
+						<h2 th:if="${selectedSubMenu == '/music/album_home'}" class="page-title fl" th:text="#{nav.music.album.home}"></h2>
+						<h2 th:if="${selectedSubMenu == '/music/album_abroad'}" class="page-title fl" th:text="#{nav.music.album.abroad}"></h2>
+					</div>
+				</div>
+				<div class="tab_design clear">
+					<ul>
+						<li id="sa"><span th:text="#{enum.albumtype.SA}" th:remove="tag"></span>
+							<div class="tab_line"></div>
+						</li>
+						<li id="ga"><span th:text="#{enum.albumtype.GA}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="tab_contentwrap">
+					<div id="single" class="tab_content active">
+						<!-- 20181204 jm수정 탭디자인 변경 -->
+						<div class="thema_list">
+							<ul>
+								<!--20181218 ngoclh fix bug 23424 & 23425 -->
+								<li th:each="genreOption, iter : ${genreMap}" th:id="${genreOption['key']}" th:onclick="@{${'UPMListAlbumAnonymous.selectedSAGenre(&quot;album-list-sa&quot;, &quot;' + sPaginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"><p th:text="${genreOption['value']}"></p></li>
+							</ul>
+						</div>
+						<div class="slidebtn_clickwrap mt30">
+						</div>
+						<div class="reword_tabwrap">
+							<div th:replace="fragments/common/list_album :: list_album('album-list-sa', ${sAlbums}, ${sPaginationUrl})"></div>
+						</div>
+					</div>
+					<div id="album" class="tab_content">
+						<!-- 20181204 jm수정 탭디자인 변경 -->
+						<div class="thema_list thema_list2">
+							<ul>
+								<!--20181218 ngoclh fix bug 23424 & 23425 -->
+								<li th:each="genreOption, iter : ${genreMap}" th:id="${genreOption['key']}" th:onclick="@{${'UPMListAlbumAnonymous.selectedGAGenre(&quot;album-list-ga&quot;, &quot;' + gPaginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"><p th:text="${genreOption['value']}"></p></li>
+							</ul>
+						</div>
+						<div class="slidebtn_clickwrap">
+						</div>
+						<div th:replace="fragments/common/list_album :: list_album('album-list-ga', ${gAlbums}, ${gPaginationUrl})"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentSAGenre = /*[[ ${defaultGenre} ]]*/;
+			var currentGAGenre = /*[[ ${defaultGenre} ]]*/;
+			var UPMListAlbumAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					if (elementId == 'album-list-sa') url += '&genre=' + currentSAGenre;
+					else url += '&genre=' + currentGAGenre;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				},
+				selectedSAGenre: function(elementId, url, genre) {
+					currentSAGenre = genre;
+					$('.single-btn-group .rewordlist_tab').each(function() {
+						if (this.id == genre) {
+							if (!$(this).hasClass("rewordlist_checked")) {
+								$(this).addClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (!src.includes("_on")) {
+									src = src.replace("tab", "tab_on");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						} else {
+							if ($(this).hasClass("rewordlist_checked")) {
+								$(this).removeClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (src.includes("_on")) {
+									src = src.replace("_on", "");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						}
+					});
+					UPMListAlbumAnonymous.loadPage(elementId, url, 0);
+				},
+				selectedGAGenre: function(elementId, url, genre) {
+					currentGAGenre = genre;
+					$('.album-btn-group .rewordlist_tab').each(function() {
+						if (this.id == genre) {
+							if (!$(this).hasClass("rewordlist_checked")) {
+								$(this).addClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (!src.includes("_on")) {
+									src = src.replace("tab", "tab_on");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						} else {
+							if ($(this).hasClass("rewordlist_checked")) {
+								$(this).removeClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (src.includes("_on")) {
+									src = src.replace("_on", "");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						}
+					});
+					UPMListAlbumAnonymous.loadPage(elementId, url, 0);
+				}
+			};
+			//20181218 ngoclh fix bug 23424 & 23425
+			$(document).ready(function() {
+				$('.thema_list>ul>li:nth-child('+[[${genreId}+1]]+')').addClass("active");
+ 				$('.thema_list2>ul>li:nth-child('+[[${genreId}+1]]+')').addClass("active");
+                $(".thema_list>ul>li").click(function(){
+                    $(this).addClass('active').siblings('li').removeClass('active');
+                });
+			});
+		/*]]>*/
+		</script>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript">
+			var UPMListAlbum = {
+				likeAlbum: function(albumId) {
+					UPMLoginModal.showModal();
+				}
+			};
+	    </script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMListAlbum = {
+				likeAlbum: function(albumId) {
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_album + '/' + albumId + '/like_from_list', headers, params, UPMListAlbum.likeAlbumCallback);
+				},
+				likeAlbumCallback: function(msg, object) {
+					if (msg == 'true') {
+						$('[id="' + object + '"]').each(function(value) {
+							$(this).find("#album-like").toggleClass('glyphicon-heart-empty glyphicon-heart');
+						});
+					} else {
+						$('[id="' + object + '"]').each(function(value) {
+							$(this).find("#album-like").toggleClass('glyphicon-heart glyphicon-heart-empty');
+						});
+					}
+				}
+			};
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

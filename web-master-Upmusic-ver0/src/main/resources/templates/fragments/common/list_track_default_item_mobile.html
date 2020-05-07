@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<dl th:fragment="list_track(fragmentId, trackList, paginationUrl)" th:remove="tag">
+		<dd th:each="track, iter : ${trackList}" th:id="${track.id}" th:onclick="@{${'UPMusic.selectItem(&quot;#' + fragmentId + '&quot;, this);'}}">
+			<div th:if="${paginationUrl != null and trackList != null}" class="num"><span th:if="${trackList.number * trackList.size + iter.index + 1} lt 10" th:remove="tag">0</span><span th:text="${trackList.number * trackList.size + iter.index + 1}" th:remove="tag"></span></div>
+			<div th:unless="${paginationUrl != null and trackList != null}"class="num">
+				<span th:if="${iter.index + 1} lt 10" th:remove="tag">0</span><span th:text="${iter.index + 1}" th:remove="tag"></span>
+			</div>
+			<div class="info">
+				<p class="img"><i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></p>
+				<p class="subject">
+					<span th:if="${fragmentId == 'artist-stores-fragment' or fragmentId == 'store-fragment'}" th:remove="tag">
+						<span th:if="${track.getTrackTypeName() == 'enum.tracktype.MR'}" class="sj clamp" th:classappend="${fragmentId == 'album-track-list' && track.isTitleTrack()} ? 'ico_title ico_mr' : 'ico_mr'" th:text="${track.subject}"></span>
+						<span th:if="${track.getTrackTypeName() == 'enum.tracktype.AR'}" class="sj clamp" th:classappend="${fragmentId == 'album-track-list' && track.isTitleTrack()} ? 'ico_title ico_ar' : 'ico_ar'" th:text="${track.subject}"></span>
+						<span th:if="${track.getTrackTypeName() == 'enum.tracktype.AR_GUIDE'}" class="sj clamp" th:classappend="${fragmentId == 'album-track-list' && track.isTitleTrack()} ? 'ico_title ico_ar_guide' : 'ico_ar_guide'" th:text="${track.subject}"></span>
+					</span>
+					<span th:unless="${fragmentId == 'artist-stores-fragment' or fragmentId == 'store-fragment' }" th:remove="tag">
+						<span class="sj clamp" th:classappend="${fragmentId == 'album-track-list' && track.isTitleTrack()} ? 'ico_title' : ''" th:text="${track.subject}"></span>
+					</span>
+					<span class="arti" th:text="${track.getArtistNick()}"></span>
+				</p>
+			</div>
+			<div class="btn_play" th:onclick="@{${'UPMusicCommon.addTrackToPlaylist(' + track.id + ', event);'}}"></div>
+			<div class="btn_more" th:onclick="@{${'UPMTrackMenuModal.showModal(' + track.getMusicAlbumId() + ', ' + track.getId() + ', &quot;' + track.getSubject() + '&quot;, &quot;' + track.getArtistNick() + '&quot;, &quot;' + track.getArtistUrl() + '&quot;, &quot;' + track.getUrl() + '&quot;, event);'}}"></div>
+		</dd>
+	</dl>
+</body>
+
+</html>

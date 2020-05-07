@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/player_nav"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:gravity="center"
+        android:weightSum="20"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        >
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="20dp"
+            android:background="@null"
+            android:drawableTop="@drawable/music_list"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="8"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="left|center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="29dp"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:letterSpacing="-0.02"
+                android:text="편한 사람이 생겼어"
+                android:gravity="center"
+                android:textColor="@color/colorWhite" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:textSize="10.3sp"
+                android:letterSpacing="-0.02"
+                android:text="바닐라 어쿠스틱"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"/>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="20dp"
+            android:background="@null"
+            android:drawableTop="@drawable/player_play_02"
+            />
+
+        <Button
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:background="@drawable/player_play_01"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="20dp"
+            android:background="@null"
+            android:drawableTop="@drawable/player_play_03"
+            />
+
+    </LinearLayout>

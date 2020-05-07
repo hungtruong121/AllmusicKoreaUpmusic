@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+	<style type="text/css">
+		.sign_blue {
+			background-color: #647bdc !important;
+		}
+		.sign_red {
+			background-color: #ef326b !important;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 내 펀딩내역 -->
+			<div class="nl_panel">
+				<dl class="myfundingList">
+					<dd th:if="${fundingJoinListMobile.size() != 0}" th:each="fundingJoin : ${fundingJoinListMobile}">
+						<div class="top">
+							<p class="fll" th:text="${fundingJoin.getCreateAtFormat()}"></p>
+							<p class="flr" th:text="${fundingJoin.crowdFundingJoinId}"></p>
+						</div>
+						<div class="bottom">
+							<div class="img" th:style="'background:url(' +${fundingJoin.crowdFunding.getThumbnailImgUrl()}+') center center no-repeat; background-size: cover;'" ></div>
+							<div class="info">
+								<p class="state clamp2">
+									<span th:text="${fundingJoin.deliveryStateStr()}"></span>
+									(<span th:text="${fundingJoin.invoiceNumber} != null ? |(, ${fundingJoin.invoiceNumber} ,)| : '-'"></span>)
+								</p>
+								<p class="title clamp1" th:text="${fundingJoin.crowdFunding.subject}"></p>
+								<p class="name clamp2" th:text="${fundingJoin.getRewardSubject()}">리워드C</p>
+							</div>
+							<div class="point">
+								<span class="sign_gray" th:text="${fundingJoin.crowdFunding.getTargetAttainmentYnFlag()}" th:style="'background: ' + ${fundingJoin.getFundingResultColor()} + ' !important;'">진행중</span>
+								<p class="p" th:text="${fundingJoin.usePoint} + P">50,000 P</p>
+							</div>
+						</div>
+					</dd>
+					<dd th:if="${fundingJoinListMobile.size() == 0}">
+						<dl class="pointUseList nodata">
+							<div>
+								<img th:src="@{/img/ico_data.png}" alt="">
+								<p>내역이 없습니다.</p>
+							</div>
+						</dl>
+					</dd>
+				</dl>
+
+				<div class="h80"></div>
+				
+			</div>
+			<!-- //end 내 편딩내역 -->
+
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		$(function () {
+
+		})
+		/*]]>*/
+		</script>
+	</div>
+
+</body>
+</html>

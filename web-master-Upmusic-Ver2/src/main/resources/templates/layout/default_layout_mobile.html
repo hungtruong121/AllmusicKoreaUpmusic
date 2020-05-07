@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0 user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE" th:text="#{common.app.title}"></title>
+<meta name="keywords" content="Music" />
+<meta property="og:url"                data-th-attr="content=${og_url}" />
+<meta property="og:type"               data-th-attr="content=${og_type}" />
+<meta property="og:title"              data-th-attr="content=${og_title}" />
+<meta property="og:description"        data-th-attr="content=${og_description}" />
+<meta property="og:image"              data-th-attr="content=${og_image}" />
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/nifty.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo-icons.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/swiper.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/plugins/pace/pace.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/styles_mobile.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/plugins/unitegallery/css/unitegallery.min.css}"/>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/materialsidebar.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/nifty.min.js}"></script>
+<script th:src="@{/js/swiper.min.js}"></script>
+<script th:src="@{/plugins/pace/pace.min.js}"></script>
+<script th:src="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+<script th:src="@{/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.ko.min.js}"></script>
+<script th:src="@{/js/upmusic_mobile.js}"></script>
+
+
+<!-- include summernote -->
+<link rel="stylesheet" th:href="@{/plugins/summernote/dist/summernote-bs4.css}">
+<script type="text/javascript" th:src="@{/plugins/summernote/dist/summernote-bs4.js}"></script>
+
+<script th:src="@{/plugins/unitegallery/js/unitegallery.min.js}"></script>
+<script th:src="@{/plugins/unitegallery/themes/slider/ug-theme-slider.js}"></script>
+<!-- 우편번호 검색 관련 -->
+<!--<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>-->
+<script src='https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js?autoload=false'></script>
+<!--Form File Upload [ SAMPLE ]-->
+<!-- <script th:src="@{/js/form-file-upload.js}"></script> -->
+<script th:src="@{/plugins/dropzone/dropzone.min.js}"></script>
+</head>
+
+<body class="bg_white">
+	<div id="body-wrap">
+		<a href="#" name="top"></a>
+		<header th:replace="fragments/common/header_mobile :: header_mobile"></header>
+
+		<div id="content-wrap" th:classappend="${topNavibar != null ? 'pd0' : ''}">
+			<div layout:fragment="content"></div>
+		</div>
+
+		<section class="sidebar">
+			<nav id="mainnav" th:replace="fragments/common/sidebar_mobile :: sidebar_mobile"></nav>
+		</section>
+
+
+		<div th:replace="fragments/common/modal_track_menu_mobile :: modal_track_menu"></div>
+
+		<div th:replace="fragments/common/modal_album_menu_mobile :: modal_album_menu"></div>
+
+		<div th:replace="fragments/common/modal_share_mobile :: modal_share"></div>
+
+		<div th:replace="fragments/common/modal_share_upmusic_mobile :: modal_share_upmusic_mobile"></div>
+
+		<div th:replace="fragments/common/modal_download :: modal_download"></div>
+
+		<div th:replace="fragments/common/modal_license :: modal_license"></div>
+
+		<div th:replace="fragments/common/modal_message_mobile :: modal_message"></div>
+
+		<div th:replace="fragments/common/modal_confirm :: modal_confirm"></div>
+		
+		<div th:replace="fragments/common/modal_terms_mobile :: modal_terms"></div>
+
+		<div class="loading_pop">
+			<div class="loading_wrap">
+				<div class="loading">
+					<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="45px" height="45px" viewBox="0 0 128 128" xml:space="preserve"><g><circle cx="16" cy="64" r="16" fill="#8f929a" fill-opacity="1"/><circle cx="16" cy="64" r="16" fill="#b4b6bc" fill-opacity="0.67" transform="rotate(45,64,64)"/><circle cx="16" cy="64" r="16" fill="#d0d1d5" fill-opacity="0.42" transform="rotate(90,64,64)"/><circle cx="16" cy="64" r="16" fill="#e9e9eb" fill-opacity="0.2" transform="rotate(135,64,64)"/><circle cx="16" cy="64" r="16" fill="#f2f2f3" fill-opacity="0.12" transform="rotate(180,64,64)"/><circle cx="16" cy="64" r="16" fill="#f2f2f3" fill-opacity="0.12" transform="rotate(225,64,64)"/><circle cx="16" cy="64" r="16" fill="#f2f2f3" fill-opacity="0.12" transform="rotate(270,64,64)"/><circle cx="16" cy="64" r="16" fill="#f2f2f3" fill-opacity="0.12" transform="rotate(315,64,64)"/><animateTransform attributeName="transform" type="rotate" values="0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64" calcMode="discrete" dur="720ms" repeatCount="indefinite"></animateTransform></g></svg>
+				</div>
+				<p class="loding_title">Loading..</p>
+			</div>
+		</div>
+
+
+
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var msgUserAfterLogin = /*[[ #{common.request.auth} ]]*/;
+			var msgAddedToCollection = /*[[ #{common.track.added_to_collection} ]]*/;
+			var msgSeeNextVersion = /*[[ #{common.see_next_version} ]]*/;
+			var msgSelectItem = /*[[ #{common.select_item} ]]*/;
+		/*]]>*/
+
+		function callJSMethod(msg) {
+			UPMusic.alert(msg);
+		}
+		</script>
+
+		<div sec:authorize="isAnonymous()">
+			<script th:if="${userAgent != null and userAgent eq 'UPMusicAndroid'}" th:src="@{/js/upmusic_common_android_guest.js}" th:inline="javascript"></script>
+			<script th:if="${userAgent != null and userAgent eq 'UPMusicIOS'}" th:src="@{/js/upmusic_common_ios_guest.js}" th:inline="javascript"></script>
+			<script th:if="${userAgent == null}" th:src="@{/js/upmusic_common_guest.js}" th:inline="javascript"></script>
+		</div>
+
+		<div sec:authorize="isAuthenticated()">
+			<div th:replace="fragments/common/modal_collection_list :: modal_collection_list"></div>
+			<script type="text/javascript" th:inline="javascript">
+			/*<![CDATA[*/
+				var headers = { /*[[ ${_csrf.headerName} ]] : [[ ${_csrf.token} ]]*/ };
+			/*]]>*/
+			</script>
+			<script th:if="${userAgent != null and userAgent eq 'UPMusicAndroid'}" th:src="@{/js/upmusic_common_android_member.js}" th:inline="javascript"></script>
+			<script th:if="${userAgent != null and userAgent eq 'UPMusicIOS'}" th:src="@{/js/upmusic_common_ios_member.js}" th:inline="javascript"></script>
+			<script th:if="${userAgent == null}" th:src="@{/js/upmusic_common_member_mobile.js}" th:inline="javascript"></script>
+		</div>
+	</div>
+</body>
+
+</html>

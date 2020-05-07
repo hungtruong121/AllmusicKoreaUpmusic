@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- album info content -->
+			<div class="movieInfo_wrap">
+				<div class="info_top videoListType_01" >
+					<!-- UPM VIDEO PLAYER -->
+					<div th:if="${video.videoService == 'youtube'}" class="video-container">
+					    <span class="embed-youtube" style="text-align:center; display: block;"><span id="youtube-player"></span></span>
+					</div>
+					<div th:unless="${video.videoService == 'youtube'}" class="video-container">
+					    <span class="embed-vimeo" style="text-align:center; display: block;"><iframe id="vimeo-player" class="vimeo-player" type="text/html" th:src="@{${'https://player.vimeo.com/video/' + video.videoServiceObjectId}}" style="border: 0px; display: block; margin: 0px; width: 100%; height: 100%;" data-ratio="0.5625" data-width="100%" data-height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></span>
+					</div>
+				</div>
+	
+				<div class="album_list_top btm_gray2">
+					<ul>
+						<li><p><a href="#video-comment"><i class="ico_reply"></i><span id="album-comment-count-button" th:text="${videoComments.getTotalElements()}"></span></a></p></li>
+						<li onclick="UPMVideoDetail.likeVideo();"><p><i id="video-detail-heart" class="ico_like" th:classappend="${likedVideo} ? 'on' : ''"></i><span><span id="video-detail-heart-cnt" th:text="${video.heartCnt}"></span></span></p></li>
+						<li><p><i class="ico_view"></i><span th:text="${video.hitCnt}"></span></p></li>
+						<li><p><a th:onclick="@{${'UPMShareModal.showShareModal(null);'}}"><i class="ico_share"></i><span th:text="#{button.share}"></span></a></p></li>
+					</ul>
+				</div>
+				
+				<!-- album intro -->
+				<div class="album_introText0">
+					<div class="nl_panel">
+						<div class="ct_title">
+							<h2 class="content_title" th:text="${video.subject}"></h2>
+							<p class="atist"><a th:href="@{${owner.getUrl()}}"><span th:text="${owner.nick}" th:remove="tag"></span></a></p>
+							<p class="date"><span th:text="${video.formattedDay()}" th:remove="tag"></span></p>
+						</div>
+					</div>
+				</div>
+				<div class="album_introText">
+					<div class="nl_panel">
+						<div class="ct_title ofh">
+							<h2 class="content_title" th:text="#{model.video.introduction}"></h2>
+						</div>
+					</div>
+					<div class="intro">
+						<p th:utext="${#strings.replace( #strings.escapeXml( video.description ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+					</div>
+				</div>
+				<!-- //album intro -->
+	
+				<!-- 댓글 -->
+				<div id="video-comment"></div>
+				<div th:replace="fragments/common/list_comment_mobile :: list_comment(${'/api/video/' + video.id}, ${videoComments}, ${currentUserId}, ${paginationUrl})"></div>
+				<!-- //end 댓글 -->
+				
+			</div>
+			<!-- //end album info content -->
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var videoId = /*[[ ${video.id} ]]*/;
+			var videoObjectId = /*[[ ${video.videoServiceObjectId} ]]*/;
+			var heartCnt = /*[[ ${video.heartCnt} ]]*/;
+
+			function timeFormat(time) {
+				var minutes = parseInt(time / 60, 10);
+				var seconds = Math.floor(time % 60);
+				if (seconds < 10) seconds = "0" + seconds;
+				return minutes + ":" + seconds;
+			}
+		/*]]>*/
+		</script>
+		
+		<div th:if="${video.videoService == 'youtube'}" th:remove="tag">
+			<script src="https://www.youtube.com/iframe_api"></script>
+			<script type="text/javascript" th:inline="javascript">
+				// create youtube player
+			    var player, playing = false;
+			    function onYouTubePlayerAPIReady() {
+			        player = new YT.Player('youtube-player', {
+			          videoId: videoObjectId,
+			          events: {
+			            'onReady': onPlayerReady,
+			            'onStateChange': onPlayerStateChange
+			          }
+			        });
+			    }
+	
+			    // autoplay video
+			    function onPlayerReady(event) {
+			    	UPMusic.log("onPlayerReady");
+			    }
+	
+			    // when video ends
+			    function onPlayerStateChange(event) {
+			    	if (!playing && event.data == YT.PlayerState.PLAYING) {
+			    		UPMusicCommon.addVideoToPlaylist(videoId);
+			    		playing = true;
+			    	}
+			    	if (event.data == YT.PlayerState.PLAYING) {
+			    		UPMusicCommon.playVideo();
+			    	} else if (event.data == YT.PlayerState.ENDED) {
+			    		UPMusicCommon.stopVideo();
+			    	} else if (event.data == YT.PlayerState.PAUSED) {
+			    		UPMusicCommon.pauseVideo();
+			    	}
+			    }				
+			</script>
+		</div>
+		<div th:unless="${video.videoService == 'youtube'}" th:remove="tag">
+			<script src="https://player.vimeo.com/api/player.js"></script>
+			<script type="text/javascript" th:inline="javascript">
+				// create youtube player
+			    var playing = false;
+			    var iframe = document.getElementById("vimeo-player");
+			    var player = new Vimeo.Player(iframe);
+			    player.on('play', function() {
+			    	if (!playing) {
+			    		UPMusicCommon.addVideoToPlaylist(videoId);
+			    		playing = true;
+			    	}
+			    	UPMusicCommon.playVideo();
+			    });
+			    player.on('finish', function() {
+			    	UPMusicCommon.stopVideo();
+			    });
+			    player.on('pause', function() {
+			    	UPMusicCommon.pauseVideo();
+			    });
+			</script>
+		</div>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMVideoDetail = {
+				likeVideo: function() {
+					UPMusic.alert(msgUserAfterLogin);
+				}
+			};
+		</script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		
+			var UPMVideoDetail = {
+				_config : {
+					loading : false
+				},
+				likeVideo: function() {
+					if (UPMVideoDetail._config.loading) return;
+					UPMVideoDetail._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_video + '/' + videoId + '/like', headers, params, UPMVideoDetail.likeVideoCallback);
+				},
+				likeVideoCallback: function(msg, object) {
+					if (msg == 'true') {
+						if (!$('#video-detail-heart').hasClass('on')) $('#video-detail-heart').addClass('on');
+					} else {
+						if ($('#video-detail-heart').hasClass('on')) $('#video-detail-heart').removeClass('on');
+					}
+					$('#video-detail-heart-cnt').html(object);
+					UPMVideoDetail._config.loading = false;
+				}
+			};
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

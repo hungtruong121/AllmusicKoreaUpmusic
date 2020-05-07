@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- album info content -->
+			<div class="albumInfo_wrap">
+				<div class="info_top">
+					<p class="info_top_bg"></p>
+					<img th:src="@{${album.getCoverImageUrl()}}"/>
+					<div class="album_infoTitle">
+						<p class="subject" th:text="${album.subject}"></p>
+						<p class="artist"><a th:href="${owner.getUrl()}"><span th:text="${owner.nick}" th:remove="tag"></span></a></p>
+						<p class="date"><span th:text="${album.formattedDay()}" th:remove="tag"></span> | <a th:href="@{${'/music/album?genre=' + album.genre.id}}"><span th:text="#{${album.getGenreName()}}" th:remove="tag"></span></a></p>
+					</div>
+				</div>
+
+				<div class="album_list_top btm_gray2">
+					<ul>
+						<li><p><a href="#album-comment"><i class="ico_reply"></i><span id="album-comment-count-button" th:text="${albumComments.getTotalElements()}"></span></a></p></li>
+						<li onclick="UPMAlbumDetail.likeAlbum();"><p><i id="album-detail-heart" class="ico_like" th:classappend="${likedAlbum} ? 'on' : ''"></i><span><span id="album-detail-heart-cnt" th:text="${album.heartCnt}"></span></span></p></li>
+						<li th:onclick="@{${'UPMusic.goto(&quot;/music/store&quot;);'}}"><p><i class="ico_cart"></i><span th:text="#{button.buy}"></span></p></li>
+						<li><p><a th:onclick="@{${'UPMShareModal.showShareModal(null);'}}"><i class="ico_share"></i><span th:text="#{button.share}"></span></a></p></li>
+					</ul>
+				</div>
+
+				<!-- album list -->
+				<div class="album_list_wrap">
+					<div th:replace="fragments/common/list_track_default_mobile :: list_track('album-track-list', ${album.getAcceptedTracks()}, null)" class="p0_panel btm_gray1"></div>
+					<div th:if="${album.hasUnacceptedTrack()}" class="list_none">
+						<ul>
+							<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+							<li>심사에 통과한 음원만 수록곡 리스트에 보여집니다.</li>
+						</ul>
+					</div>
+				</div>
+				<!--// album list -->
+				
+				<!-- album intro -->
+				<div class="album_introText">
+					<div class="nl_panel">
+						<div class="ct_title ofh">
+							<h2 class="content_title" th:text="#{model.music.introduction}"></h2>
+						</div>
+					</div>
+					<div class="intro">
+						<p th:utext="${#strings.replace( #strings.escapeXml( album.description ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+					</div>
+				</div>
+				<!-- //album intro -->
+
+				<!-- 댓글 -->
+				<div id="album-comment"></div>
+				<div th:replace="fragments/common/list_comment_mobile :: list_comment(${'/api/album/' + album.id}, ${albumComments}, ${currentUserId}, ${paginationUrl})"></div>
+				<!-- //end 댓글 -->
+
+				<!--<div class="quickMenu">-->
+					<!--<dl>-->
+						<!--<dd class="play" th:onclick="@{${'UPMusicCommon.addAllToPlaylist(&quot;#album-track-list&quot;);'}}">-->
+							<!--<p class="ico"></p>-->
+							<!--<p class="txt" th:text="#{common.play}"></p>-->
+						<!--</dd>-->
+						<!--<dd class="like" onclick="UPMAlbumDetail.likeAlbum();">-->
+							<!--<p id="album-detail-bottom-heart" class="ico" th:classappend="${likedAlbum} ? 'on' : ''"></p>-->
+							<!--<p class="txt" th:text="#{common.like}"></p>-->
+						<!--</dd>-->
+						<!--<dd class="save" th:onclick="@{${'UPMusicCommon.showCollectionModalWithAll(&quot;#album-track-list&quot;);'}}">-->
+							<!--<p class="ico"></p>-->
+							<!--<p class="txt" th:text="#{common.put_in}"></p>-->
+						<!--</dd>-->
+					<!--</dl>-->
+
+				<!--</div>-->
+				
+			</div>
+			<!-- //end album info content -->
+		</div>
+		
+		<!-- header color -->
+		<script type="text/javascript" th:inline="javascript">
+			// Hide Header on on scroll down
+			var didScroll; var lastScrollTop = 0; 
+			var delta = 5; var navbarHeight = $('header').outerHeight(); 
+			$(window).scroll(function(event){ 
+				didScroll = true; 
+				});
+
+			setInterval(function() { 
+				if (didScroll) { 
+					hasScrolled(); 
+					didScroll = false; 
+				}
+			}, 250); 
+
+			/*
+			function hasScrolled() { 
+				var st = $(this).scrollTop(); 
+				
+				// Make sure they scroll more than delta 
+				if(Math.abs(lastScrollTop - st) <= delta) return; 
+				
+				// If they scrolled down and are past the navbar, add class .nav-up. 
+				// This is necessary so you never see what is "behind" the navbar. 
+				if (st > lastScrollTop && st > navbarHeight){ 
+					// Scroll Down 
+					$('.topNavibar').removeClass('nav-down').addClass('nav-up'); 
+				} else { 
+					// Scroll Up 
+					if(st + $(window).height() < $(document).height()) { 
+						$('.topNavibar').removeClass('nav-up').addClass('nav-down'); } 
+					} 
+				lastScrollTop = st; 
+			}
+			*/
+            //jm 헤더수정
+            $(document).ready(function () {
+                var numHeight = $(".album_list_top").offset().top;
+                $(window).resize(function () {
+                    numHeight = $(".album_list_top").offset().top;
+                })
+                $(window).scroll(function(){
+                    ws = $(window).scrollTop();
+                    if( ws > numHeight ){
+                        $('.topNavibar').removeClass('nav-down');
+                    }else if( ws < numHeight ){
+                        $('.topNavibar').addClass('nav-down');
+                    }
+                });
+            });
+		</script>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMAlbumDetail = {
+				likeAlbum: function() {
+					UPMusic.alert(msgUserAfterLogin);
+				},
+				likeTrack: function(trackId) {
+					UPMusic.alert(msgUserAfterLogin);
+				},
+				buy: function() {
+					UPMusic.alert(msgUserAfterLogin);
+				},
+			};
+	    </script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var albumId = /*[[ ${album.id} ]]*/;
+			var heartCnt = /*[[ ${album.heartCnt} ]]*/;
+			var UPMAlbumDetail = {
+				_config : {
+					loading : false
+				},
+				likeAlbum: function() {
+					if (UPMAlbumDetail._config.loading) return;
+					UPMAlbumDetail._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_album + '/' + albumId + '/like', headers, params, UPMAlbumDetail.likeCallback);
+				},
+				likeCallback: function(msg, object) {
+					if (msg == 'true') {
+						if (!$('#album-detail-heart').hasClass('on')) $('#album-detail-heart').addClass('on');
+						if (!$('#album-detail-bottom-heart').hasClass('on')) $('#album-detail-bottom-heart').addClass('on');
+					} else {
+						if ($('#album-detail-heart').hasClass('on')) $('#album-detail-heart').removeClass('on');
+						if ($('#album-detail-bottom-heart').hasClass('on')) $('#album-detail-bottom-heart').removeClass('on');
+					}
+					$('#album-detail-heart-cnt').html(object);
+					UPMAlbumDetail._config.loading = false;
+				},
+				buy : function() {
+					UPMusic.alert(msgSeeNextVersion);
+				}
+			};
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

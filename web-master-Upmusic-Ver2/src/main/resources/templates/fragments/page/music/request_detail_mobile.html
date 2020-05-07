@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- requestView -->
+			<div class="movieInfo_wrap">						
+				<!-- album intro -->
+				<div class="requestView">
+					<div class="ofh">
+						<div class="user">
+							<a th:href="@{${request.getMember().getUrl()}}">
+								<img th:src="@{${request.getMember().getProfileImageUrl()}}" alt="" />
+							</a>
+						</div>
+						<div class="info">
+							<p class="name">
+								<a th:href="@{${request.getMember().getUrl()}}">
+									<span th:text="${request.getMember().nick}" th:remove="tag"></span>
+								</a>
+							</p>
+							<p class="date"><span th:text="${request.formattedTime()}"></span><span><span th:text="#{common.hits}" th:remove="tag"></span> <span th:text="${request.hitCnt}" th:remove="tag"></span><span th:text="#{common.times}" th:remove="tag"></span></span></p>
+						</div>
+					</div>
+
+					<table class="tableType01 mt_10 mb_10">
+						<col width="30%" />
+						<col width="70%" />
+						<tr>
+							<th><span th:text="#{model.member.email}" th:remove="tag"></span></th>
+							<td><span th:text="${request.getMember().getEmail()}" th:remove="tag"></span></td>
+						</tr>
+						<tr>
+							<th><span th:text="#{model.member.phoneNumber}" th:remove="tag"></span></th>
+							<td><span th:text="${request.getMember().getPhoneNumber()}" th:remove="tag"></span></td>
+						</tr>
+						<tr>
+							<th><span th:text="#{model.request.price}" th:remove="tag"></span></th>
+							<td><span th:text="${request.getFormattedPrice()}" th:remove="tag"></span></td>
+						</tr>
+					</table>
+					
+					<div class="writing p10" th:utext="${#strings.replace( #strings.escapeXml( request.getDescription() ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></div>
+					
+				</div>
+				<!-- //requestView -->
+
+				<!-- 댓글 -->
+				<div th:replace="fragments/common/list_comment_mobile :: list_comment(${'/api/store/request/' + request.id}, ${requestComments}, ${currentUserId}, ${paginationUrl})"></div>
+				<!-- //end 댓글 -->
+			</div>
+			<!-- //end album info content -->
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var requestId = /*[[ ${request.id} ]]*/;
+			var UPMRequestDetail = {
+				deleteRequest: function() {
+					UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+						UPMusic.ajaxDelete(UPMusic._config._api_request + '/' + requestId, headers, UPMRequestDetail.deleteRequestCallback);
+				    });
+				},
+				deleteRequestCallback: function(msg, object) {
+					if (msg == 'true') {
+						window.location.href = '/music/store#store-request';
+					} else {
+						UPMusic.alert("삭제하지 못했습니다");
+					}
+				}
+			};
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

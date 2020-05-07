@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+
+			<!-- 피드 이미지 -->
+			<div class="nl_panel pdt0">
+				<div class="feed">
+					<div class="feedBox bdn">
+						<div class="feedTop btm_gray1">
+							<!-- <div class="blackImg"></div> -->
+							<div class="userImg"><img th:src="${feed.member.getProfileImageUrl()}" /></div>
+							<div class="userInfo">
+								<p class="userNicname" th:text="${feed.member.nick}"></p>
+								<p class="date" th:text="${feed.getCreateAtFormat()}"></p>
+							</div>											
+						</div>
+						<div class="nl_panel" th:uText="${#strings.replace(feed.content, T(System).getProperty('line.separator'), '<br />')}">
+						</div>
+						<div class="feedPhoto">
+							<img th:each="img : ${result}" th:src="${img.getImgUrl()}" class="mt_5" />
+						</div>
+					</div>							
+					<div class="commentBox off">
+						<!-- 댓글 -->
+						<div class="comment_list_wrap">
+							<div class="nl_panel btm_gray1">
+								<div class="ct_title ofh">
+									<!-- <button class="btn_reload">새로고침</button> -->
+									<p class="benchmark"><a th:href="@{${'/feed/feedCommentInsertForm'}(feedId=${feed.feedId})}"><button class="btn-write">댓글쓰기</button></a></p>
+								</div>
+								
+							</div>
+							<dl class="comment_list">
+								<dd th:each="comment : ${feed.feedCommentListDateMobile}">
+									<div class="user"><img th:src="${comment.member.getProfileImageUrl()}" /></div>
+									<div class="cmt_box">
+										<p class="id" th:text="${comment.member.nick}"></p>
+										<p class="cmt" th:uText="${#strings.replace(comment.content, T(System).getProperty('line.separator'), '<br />')}"></p>
+									</div>
+									<div class="date" th:if="${comment.registrantFlag}">
+										<form action="#" role="form" enctype="utf-8" method="post" class="comment_delete_form">
+											<input type="hidden" name="feedCommentId" th:value="${comment.feedCommentId}">
+											<input type="hidden" name="feedId" th:value="${feed.feedId}">
+											<p th:text="${comment.getCreateAtFormat()}"></p>
+											<p class="edit comment_update_form">
+												<span><a th:href="@{${'/feed/feedCommentUpdateForm'}(feedCommentId=${comment.feedCommentId})}">수정</a></span>
+												<span><a class="btn_delete">삭제</a></span>
+											</p>
+										</form>
+									</div>
+								</dd>
+							</dl>
+						</div>
+						<!-- //end 댓글 -->
+					</div>
+				</div><!-- //end feed -->
+				
+				<ul class="feedMenu dp_fixed top_gray2">
+					<li class="comment off">댓글 <span th:text="${feed.commentCnt}"></span></li>
+					<li class="share off" th:onclick="@{${'UPMShareModal.showShareFeed(' + feed.feedId + ');'}}">공유</li>
+					<li class="like" th:classappend="${feed.feedLikeClass}">좋아요 <span th:text="${feed.likeCnt}" class="feed_cnt"></span>
+						<input type="hidden" class="like_feed_id" th:value="${feed.feedId}">
+					</li>
+				</ul>
+				
+			</div>
+			<!-- //end 피드 홈 -->
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		//feed comment
+		$(".feedMenu .comment").click(function(){
+			//alert($('.commentBox').attr('class'));
+			if($('.commentBox').attr('class') == 'commentBox off'){
+				$(".feedMenu .comment").removeClass("off").addClass("on");
+				$('.commentBox').removeClass("off").addClass("on");
+				
+			}else{
+				$(".feedMenu .comment").removeClass("on").addClass("off");
+				$('.commentBox').removeClass("on").addClass("off");
+				
+			}					
+		});
+		
+		feedLikeToggle();
+		
+		function feedLikeToggle(){
+	    	//$(".feedMenu .like").unbind();
+	    	$(".feedMenu .like").click(function(e){
+				//alert($('.commentBox').attr('class'));
+				var feedId = $(e.target).closest('.like').find('.like_feed_id').val();
+
+		    	$.ajax({
+		            type : 'post',
+		            url : '/api/feed/feedLike.json',
+		            data : {
+		            	"feedId" : feedId
+		            },
+		            success : function(data){
+		            	$(e.target).find('.feed_cnt').html(data);
+
+		            	// 같은 feedId의 피드 좋아요 동기화
+		            	if($(e.target).attr('class') == 'like off'){
+							$(e.target).removeClass("off").addClass("on");
+						}else{
+							$(e.target).removeClass("on").addClass("off");
+							
+						}
+		            }
+		        });
+				
+			});
+	    }
+		
+		</script>
+	</div>
+
+</body>
+</html>

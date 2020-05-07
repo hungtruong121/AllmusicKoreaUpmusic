@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl" th:text="#{nav.music.vocal_casting}"></h2>
+				<a th:onclick="@{${'UPMusic.goto(&quot;/music/vocal_casting/new/casting&quot;, event);'}}" class="btn btn-custom btn-dark fr"><i><img th:src="@{/img/change_icon2.png}" alt="" /></i> <span th:text="#{button.registration.voice}" th:remove="tag"></span></a>
+				<div class="producing_listhead clear">
+					<p class="content_title2 fl mt20"><span th:text="#{common.vocal_casting.description_1}" th:remove="tag"></span> <span th:text="#{common.vocal_casting.description_2}"></span></p>
+				</div>
+				
+				<div th:replace="fragments/common/list_vocal_casting :: list_vocal_casting(${castingsFragmentId}, ${castings}, ${paginationUrl})"></div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

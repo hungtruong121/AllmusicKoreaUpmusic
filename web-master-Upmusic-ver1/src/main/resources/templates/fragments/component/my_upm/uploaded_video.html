@@ -1,0 +1,33 @@
+<div id="uploaded-videos" class="musiclist_table musiclist_table_hover2">
+	<h3 class="date-day">&nbsp;</h3>
+	<div class="listcontrols">
+		<ul>
+			<li class="list_deleteform"><a onclick="UPMListUpload.deleteSelectedVideo();"><span th:text="#{button.delete}"></span></a></li>
+		</ul>
+	</div>
+	<div class="producing_list musicvideo_list clear">
+		<div th:replace="fragments/common/list_video :: list_video('uploaded-video-list', ${videos})"></div>
+	</div>
+	<div th:if="${videos != null and videos.totalPages gt 0}" class="panel-body text-center clear">
+	    <ul class="pagination">
+	        <li th:class="${videos.number eq 0} ? 'disabled' : ''">
+	            <a class="demo-pli-arrow-left" th:if="${not videos.first}" th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;uploaded-videos&quot;, &quot;' + paginationVideoUrl + '&quot;, ' + (videos.number-1) + ');'}}"></a>
+	            <a class="demo-pli-arrow-left" th:if="${videos.first}" href="javascript:void(0);"></a>
+	        </li>
+	
+	        <li th:each="pageNo : ${#numbers.sequence(0, videos.totalPages - 1)}" th:class="${videos.number eq pageNo}? 'active' : ''">
+	            <a th:if="${videos.number eq pageNo}" href="javascript:void(0);">
+	                <span th:text="${pageNo + 1}"></span>
+	            </a>
+	            <a th:if="${not (videos.number  eq pageNo)}" th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;uploaded-videos&quot;, &quot;' + paginationVideoUrl + '&quot;, ' + pageNo + ');'}}">
+	                <span th:text="${pageNo + 1}"></span>
+	            </a>
+	
+	        </li>
+	        <li th:class="${videos.number + 1 ge videos.totalPages} ? 'disabled' : ''">
+	            <a class="demo-pli-arrow-right" th:if="${not videos.last}" th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;uploaded-videos&quot;, &quot;' + paginationVideoUrl + '&quot;, ' + (videos.number+1) + ');'}}"></a>
+	            <a class="demo-pli-arrow-right" th:if="${videos.last}" href="javascript:void(0);"></a>
+	        </li>
+	    </ul>
+	</div>
+</div>

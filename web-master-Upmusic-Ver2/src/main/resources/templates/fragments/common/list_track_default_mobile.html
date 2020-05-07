@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_track(fragmentId, trackList, paginationUrl)" th:id="${fragmentId}">
+		<div th:if="${fragmentId != 'reward-realtime-fragment'}" class="p0_panel btm_gray1">
+			<div class="nl_panel">
+				<div class="ct_title ofh">
+					<h2 th:if="${fragmentId == 'album-track-list'}" class="content_title"><span th:text="#{model.music.track}" th:remove="tag"></span></h2>
+					<h2 th:if="${fragmentId == 'artist-tracks-fragment'}" class="content_title">음원 리스트</h2>
+					<h2 th:if="${fragmentId == 'artist-stores-fragment'}" class="content_title"><span th:text="#{nav.music.store}" th:remove="tag"></span></h2>
+					<h2 th:if="${fragmentId == 'artist-all-stores-mobile-fragment'}" class="content_title more"><a onclick="$('#search_store').click();"><span th:text="#{nav.music.store}" th:remove="tag"></span><span><span th:text="'('+${storeTracks.getTotalElements()}+')'" th:remove="tag"></span></span></a></h2>
+					<h2 th:if="${fragmentId == 'artist-stores-mobile-fragment'}" class="content_title"><a onclick="$('#search_store').click();"><span th:text="#{nav.music.store}" th:remove="tag"></span><span><span th:text="'('+${storeTracks.getTotalElements()}+')'" th:remove="tag"></span></span></a></h2>
+					<h2 th:if="${fragmentId == 'recent-track-fragment'}" class="content_title">최근 들은 음원</h2>
+					<h2 th:if="${fragmentId == 'like-track-fragment'}" class="content_title">좋아요 음원</h2>
+					<h2 th:if="${fragmentId == 'store-fragment'}" class="content_title"><span th:text="#{nav.music.store}"></span> <i class="ico_question" data-target="#question-modal" data-toggle="modal"><img th:src="@{/img/mobile/ico_question.png}" alt=""></i></h2>
+					<h2 th:if="${fragmentId == 'search-all-tracks-fragment'}" class="content_title"><a onclick="$('.tab_design ul li#result-track').click();"><span th:text="#{common.source.music}" th:remove="tag"></span><span><span th:text="${trackList.getTotalElements()}" th:remove="tag"></span></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a></h2>
+					<h2 th:if="${fragmentId == 'search-all-tracks-mobile-fragment'}" class="content_title more"><a onclick="$('#search_music').click();"><span th:text="#{common.source.music}" th:remove="tag"></span><span><span th:text="'('+${tracks.getTotalElements()}+')'" th:remove="tag"></span></span></a></h2>
+					<h2 th:if="${fragmentId == 'search-tracks-fragment'}" class="content_title"><span th:text="#{common.source.music}" th:remove="tag"></span><span><span th:text="${trackList.size()}" th:remove="tag"></span></span></h2>
+					<h2 th:if="${fragmentId == 'search-tracks-mobile-fragment'}" class="content_title"><span th:text="#{common.source.music}" th:remove="tag"></span><span><span th:text="'('+${trackList.size()+')'}" th:remove="tag"></span></span></h2>
+					<h2 th:if="${fragmentId == 'search-detail-tracks-fragment'}" class="content_title"><span th:text="#{common.source.music}" th:remove="tag"></span><span><span th:text="${trackList.size()}" th:remove="tag"></span></span></h2>
+					<p class="benchmark">
+						<label class="ico_allSelect"><a th:onclick="@{${'UPMusic.selectAllTracks(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.select_all}" th:remove="tag"></span></a></label>
+						<label class="ico_allPlay"><a th:onclick="@{${'UPMusicCommon.addAllToPlaylist(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.play_all}" th:remove="tag"></span></a></label>
+						<label th:if="${fragmentId == 'recent-track-fragment'}" class="ico_allSelect"><a  th:onclick="@{${'UPMListRecentPlay.deleteSelectedTrack(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.delete}"></span></a></label>
+						<label th:if="${fragmentId == 'collection-tracks-fragment'}" class="ico_allSelect"><a  th:onclick="@{${'UPMCollectionDetail.deleteSelectedTrack(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.delete}"></span></a></label>
+						<label th:if="${fragmentId == 'like-track-fragment'}" class="ico_allSelect"><a  th:onclick="@{${'UPMListHeart.deleteSelectedTrack(&quot;#' + fragmentId + '&quot;);'}}"><span th:text="#{button.delete}"></span></a></label>
+					</p>
+				</div>
+			</div>
+		</div>
+		<dl class="track-list lanking_list01 album store_list">
+			<dd th:each="track, iter : ${trackList}" th:id="${track.id}" th:onclick="@{${'UPMusic.selectItem(&quot;#' + fragmentId + '&quot;, this);'}}">
+				<div th:if="${paginationUrl != null and trackList != null}" class="num"><span th:if="${trackList.number * trackList.size + iter.index + 1} lt 10" th:remove="tag">0</span><span th:text="${trackList.number * trackList.size + iter.index + 1}" th:remove="tag"></span></div>
+				<div th:unless="${paginationUrl != null and trackList != null}" class="num">
+					<span th:if="${iter.index + 1} lt 10" th:remove="tag">0</span><span th:text="${iter.index + 1}" th:remove="tag"></span>
+				</div>
+				<div class="info">
+					<p class="img"><i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></p>
+					<p class="subject">
+						<span th:if="${fragmentId == 'artist-stores-fragment' or fragmentId == 'store-fragment' or fragmentId == 'artist-stores-mobile-fragment'}" th:remove="tag">
+							<span th:if="${track.getTrackTypeName() == 'enum.tracktype.MR'}" class="sj clamp" th:classappend="${fragmentId == 'album-track-list' && track.isTitleTrack()} ? 'ico_title ico_mr' : 'ico_mr'" th:text="${track.subject}"></span>
+							<span th:if="${track.getTrackTypeName() == 'enum.tracktype.AR'}" class="sj clamp" th:classappend="${fragmentId == 'album-track-list' && track.isTitleTrack()} ? 'ico_title ico_ar' : 'ico_ar'" th:text="${track.subject}"></span>
+							<span th:if="${track.getTrackTypeName() == 'enum.tracktype.AR_GUIDE'}" class="sj clamp" th:classappend="${fragmentId == 'album-track-list' && track.isTitleTrack()} ? 'ico_title ico_ar_guide' : 'ico_ar_guide'" th:text="${track.subject}"></span>
+						</span>
+						<span th:unless="${fragmentId == 'artist-stores-fragment' or fragmentId == 'store-fragment' or fragmentId == 'artist-stores-mobile-fragment'}" th:remove="tag">
+							<span class="sj clamp" th:classappend="${fragmentId == 'album-track-list' && track.isTitleTrack()} ? 'ico_title' : ''" th:text="${track.subject}"></span>
+						</span>
+
+						<!--<span class="sj clamp" th:classappend="${fragmentId == 'album-track-list' && track.isTitleTrack()} ? 'ico_title ico_mr' : 'ico_mr'" th:text="${track.getTrackTypeName()}"></span>-->
+						<span class="arti" th:text="${track.getArtistNick()}"></span>
+					</p>
+				</div>
+
+				<!-- mr처리방식 변경 -->
+
+				<!--<div class="hide trackType"> <span th:text="${track.trackType}" th:remove="tag"></span> </div>-->
+
+				<div class="btn_play" th:onclick="@{${'UPMusicCommon.addTrackToPlaylist(' + track.id + ', event);'}}"></div>
+				<div th:if="${fragmentId == 'artist-stores-fragment' or fragmentId == 'store-fragment' or fragmentId == 'artist-stores-mobile-fragment'}" class="btn_more" th:onclick="@{${'UPMTrackMenuModal.showStoreModal(' + track.getMusicAlbumId() + ', ' + track.getId() + ', &quot;' + track.getSubject() + '&quot;, &quot;' + track.getArtistNick() + '&quot;, &quot;' + track.getArtistUrl() + '&quot;, &quot;' + track.getUrl() + '&quot;, event);'}}"></div>
+				<div th:unless="${fragmentId == 'artist-stores-fragment' or fragmentId == 'store-fragment' or fragmentId == 'artist-stores-mobile-fragment'}" class="btn_more" th:onclick="@{${'UPMTrackMenuModal.showModal(' + track.getMusicAlbumId() + ', ' + track.getId() + ', &quot;' + track.getSubject() + '&quot;, &quot;' + track.getArtistNick() + '&quot;, &quot;' + track.getArtistUrl() + '&quot;, &quot;' + track.getUrl() + '&quot;, event);'}}"></div>
+			</dd>
+		</dl>
+		<!--<div th:if="${paginationUrl != null and trackList != null and trackList.totalPages gt pageNo + 1}" id="list-more-button" class="showmore_wrap"  th:onclick="@{${'UPMListTrackAnonymous.appendPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (pageNo + 1) + ', ' + trackList.totalPages + ');'}}">-->
+			<!--<p>SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></p>-->
+		<!--</div>-->
+
+		<div th:if="${paginationUrl != null and trackList != null and trackList.totalPages gt pageNo + 1}" id="list-more-button" class="showmore_wrap">
+			<p><a th:onclick="@{${'UPMListTrackAnonymous.appendPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (pageNo + 1) + ', ' + trackList.totalPages + ');'}}">SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></a></p>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+            $(document).ready(function () {
+                var currentUrl = window.location.href;
+                if(currentUrl.includes('store')){
+                    $('.trackType').removeClass('hide');
+                } else {
+                    $('.trackType').addClass('hide');
+                }
+            })
+		</script>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+    	<div class="nl_panel pdt0 mb_80">
+			<div class="feed">
+				<div class="feedBox bdn">
+					<div class="feedWrite">
+						<div class="form-group">
+							<label class="control-label">댓글쓰기<label class="flr"><span id="comment-word-count" class="colBlue">0</span> / 200</label></label>									
+							<div class="input-group mar-btm">
+								<textarea id="list-comment-content" class="form-control" name="content" th:placeholder="#{model.comment.placeholder}" rows="13" maxlength="200"></textarea>
+							</div>
+						</div>
+					</div>								
+				</div>
+			</div><!-- //end feed -->
+			
+			<div class="btn_box fixedBox">
+				<button class="btn btn-block btn-lg btn-dark" onclick="UPMComment.sendComment()">등록</button>
+			</div>
+		</div>
+    </div>
+    
+    <script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		var apiUrl = /*[[ ${apiUrl} ]]*/;
+		var origUrl = /*[[ ${origUrl} ]]*/;
+		var UPMComment = {
+			_config : {
+				loading : false
+			},
+			sendComment: function() {
+				var content = $('#list-comment-content').val();
+				if (content) {
+					if (UPMComment._config.loading) return;
+					UPMComment._config.loading = true;
+					var params = {
+						content : content
+					};
+		  			UPMusic.ajaxPostResObj(apiUrl, headers, params, UPMComment.sendCommentCallback);
+				}
+			},
+			sendCommentCallback: function(commentObj) {
+				window.location.href = origUrl;
+			},
+			cancelComment :function(commentId) {
+				window.location.href = origUrl;
+			}
+		};
+		
+		$(document).ready(function(){
+		    $('#list-comment-content').keyup(function() {
+		        if ($(this).val().length > 200) {
+		            UPMusic.alert('댓글은 200자를 넘을 수 없습니다');
+		            $(this).val($(this).val().substr(0, 200));
+		        }
+		        $('#comment-word-count').html($(this).val().length);
+		        $('#list-comment-content').focus();
+		    });
+		});
+	/*]]>*/
+	</script>
+  </div>
+
+</body>
+</html>

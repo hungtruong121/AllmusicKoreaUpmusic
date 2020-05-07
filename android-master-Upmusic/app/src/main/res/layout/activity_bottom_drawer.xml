@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- The main content view -->
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/player_nav"
+                android:layout_above="@id/main_nav"
+                android:background="@color/colorPrimaryDark"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:weightSum="20"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                >
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="50dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:drawableTop="@drawable/icon_playlist"
+                    />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="8"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:text="title"
+                        android:textColor="@color/colorWhite"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:text="artist"
+                        android:textColor="@color/colorWhite"/>
+
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="50dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:drawableTop="@drawable/icon_rewind"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="50dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:drawableTop="@drawable/icon_play"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="50dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:drawableTop="@drawable/icon_forward"
+                    />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/main_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/player_nav"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
+
+
+
+
+                <WebView
+                    android:id="@+id/webView"
+                    android:background="@color/colorWhiteTransparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="0dp">
+
+
+                </WebView>
+
+                <ProgressBar
+                    android:id="@+id/progressbar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_centerInParent="true"
+                    />
+            </FrameLayout>
+
+        </RelativeLayout>
+    </FrameLayout>
+    <!-- The navigation drawer -->
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#111"/>
+</android.support.v4.widget.DrawerLayout>
+
+
+
+
+

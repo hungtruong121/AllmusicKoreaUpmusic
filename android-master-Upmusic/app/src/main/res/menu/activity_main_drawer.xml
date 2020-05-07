@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <!--tools:showIn="navigation_view"-->
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_00"
+            android:icon="@drawable/list_upmusic"
+            android:title="UPMUSIC" />
+        <item
+            android:id="@+id/nav_01"
+            android:icon="@drawable/list_music_ov"
+            android:title="뮤직" />
+
+
+        <item
+            android:id="@+id/nav_01_01"
+            android:title="리워드 뮤직" />
+        <item
+            android:id="@+id/nav_01_02"
+            android:title="업 리그 뮤직" />
+        <item
+            android:id="@+id/nav_01_03"
+            android:title="뮤직 스토어" />
+        <item
+            android:id="@+id/nav_01_04"
+            android:title="싱글/앨범" />
+        <item
+            android:id="@+id/nav_01_05"
+            android:title="아티스트" />
+
+
+        <item
+            android:id="@+id/nav_02"
+            android:icon="@drawable/list_viedo"
+            android:title="비디오" />
+        <item
+            android:id="@+id/nav_03"
+            android:icon="@drawable/list_feeds"
+            android:title="피드" />
+        <item
+            android:id="@+id/nav_04"
+            android:icon="@drawable/list_musiclist"
+            android:title="플레이리스트" />
+        <item
+            android:id="@+id/nav_05"
+            android:icon="@drawable/list_profile"
+            android:title="MY UPM" />
+        <item
+            android:id="@+id/nav_06"
+            android:icon="@drawable/list_cloud"
+            android:title="크라우드펀딩" />
+        <item
+            android:id="@+id/nav_07"
+            android:icon="@drawable/list_news"
+            android:title="UPM소식" />
+
+
+
+    </group>
+
+
+</menu>

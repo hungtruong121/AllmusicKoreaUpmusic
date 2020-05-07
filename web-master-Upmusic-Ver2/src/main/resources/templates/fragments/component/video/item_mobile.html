@@ -1,0 +1,8 @@
+<dd th:each="video, iter : ${videos}">
+	<div class="video" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}"><img th:src="@{${video.getThumbnailUrl()}}" alt=""/><span class="time" th:text="${video.formattedDuration()}"></span></div>
+	<div class="info">
+		<p class="subject clamp1"><a th:href="@{${video.getUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a></p>
+		<p class="atist clamp1"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></p>
+		<p class="date" th:text="${video.formattedTime()}"></p>
+	</div>
+</dd>

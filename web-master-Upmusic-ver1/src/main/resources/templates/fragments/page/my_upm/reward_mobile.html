@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 리워드 정산내역 -->
+			<div class="nl_panel">
+				<div class="reward_ba_top">
+					<ul>
+						<li class="upPoint">
+							<p class="point"><span th:text="${member.getUpmPointString()}" th:remove="tag"></span> P</p>
+							<p class="title">업뮤직 포인트</p>
+						</li>
+						<li class="usePoint">
+							<p class="point"><span th:text="${member.getUsablePointString()}" th:remove="tag"></span> P</p>
+							<p class="title">사용 가능 포인트</p>
+						</li>
+						<li class="fundingPoint">
+							<p class="point"><span th:text="${member.getFundingPointString()}" th:remove="tag"></span> P</p>
+							<p class="title">펀딩 포인트</p>
+						</li>
+					</ul>
+					<p class="colBlue mt_5 lts-8">* 업뮤직 포인트 중 10%는 크라우드 펀딩에만 사용할 수 있습니다.</p>
+				</div>
+
+				<div class="calendarBox">
+					<p>
+						<span onclick="$('#reward-datetimepicker').datepicker('show');" class="ico_calendar"></span>
+						<span class="date"><input id="reward-datetimepicker" th:type="text" class="form-control reward-datepicker" th:onchange="@{${'UPMReward.changeDate(this.value);'}}" data-date-orientation="left" readonly /></span>
+						<span onclick="$('#reward-datetimepicker').datepicker('show');" class="ico_circle_arrowDown"></span>
+					</p>
+				</div>
+
+
+				<div class="group_panel">
+					<p class="title">스트리밍 리워드</p>
+					<p class="cmt"><span>*음원 스트리밍 청취시간에 대한 리워드 정산정보 (1초당 <span th:text="${rewardCondition.getBigDecimal()}" th:remove="tag"></span>~<span th:text="${rewardCondition.listenFirstStepPoint}" th:remove="tag"></span>P 적립)</span></p>
+					<table class="tableType03">
+						<col />
+						<col />
+						<tr>
+							<th>청취시간</th>
+							<th>업뮤직 포인트</th>
+						</tr>
+						<tr>
+							<td id="transaction-listenTime"></td>
+							<td><span id="transaction-listenPoint"></span>P</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div class="group_panel">
+					<p class="title">업로드 리워드</p>
+					<p class="cmt"><span>*음원 업로드 건수에 대한 리워드 정산정보 (1건당 <span th:text="${rewardCondition.getUploadPointString()}" th:remove="tag"></span>P 적립)</span></p>
+					<table class="tableType03">
+						<col />
+						<col />
+						<tr>
+							<th>업로드건수</th>
+							<th>업뮤직 포인트</th>
+						</tr>
+						<tr>
+							<td><span id="transaction-uploadCount"></span>건</td>
+							<td><span id="transaction-uploadPoint"></span>P</td>
+						</tr>
+					</table>
+				</div>
+
+				<div class="group_panel">
+					<p class="title">공유에 대한 정산</p>
+					<p class="cmt"><span>*음원 공유에 대한 리워드 정산정보 (1건당 <span th:text="${rewardCondition.getSharePointString()}" th:remove="tag"></span>P 적립)</span></p>
+					<table class="tableType03">
+						<col />
+						<col />
+						<tr>
+							<th>공유건수</th>
+							<th>업뮤직 포인트</th>
+						</tr>
+						<tr>
+							<td><span id="transaction-shareCount"></span>건</td>
+							<td><span id="transaction-sharePoint"></span>P</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div class="group_panel">
+					<p class="title">내 스트리밍에 대한 정산</p>
+					<p class="cmt"><span>*내가 등록한 음원 스트리밍에 대한 정산정보 (1초당 <span th:text="${rewardCondition.listenArtistPoint}" th:remove="tag"></span>P 적립)</span></p>
+					<table class="tableType03">
+						<col />
+						<col />
+						<tr>
+							<th>청취시간</th>
+							<th>업뮤직 포인트</th>
+						</tr>
+						<tr>
+							<td id="transaction-copyrightTime"></td>
+							<td><span id="transaction-copyrightPoint"></span>P</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div class="group_panel">
+					<p class="title">이벤트 리워드에 대한 정산</p>
+					<p class="cmt"><span>*이벤트에 당첨된 리워드 정산정보</span></p>
+					<table class="tableType03">
+						<col />
+						<col />
+						<tr>
+							<th>당첨건수</th>
+							<th>업뮤직 포인트</th>
+						</tr>
+						<tr>
+							<td><span id="transaction-eventCount"></span>건</td>
+							<td><span id="transaction-eventPoint"></span>P</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div class="h80"></div>
+
+			</div>
+			<!-- //end 리워드 정산내역 -->
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		var UPMReward = {
+			changeDate: function(date) {
+				UPMReward.loadTransaction(date);
+			},
+			loadTransaction : function(date) {
+				// UPMusic.log("UPMReward.loadTransaction : date is " + date);
+				$.get(UPMusic._config._api_transaction + '/daily/' + date, function(data) {
+					var jsonArr = JSON.parse(data.object);
+					for (var key in jsonArr) {
+						// UPMusic.log("UPMReward.loadTransaction : key is " + key + " and value is " + jsonArr[key]);
+						if (jsonArr.hasOwnProperty(key)) {
+							$('#transaction-' + key).html(jsonArr[key]);
+						}
+					}
+				});
+			}
+		};
+		$(function() {
+			$('#reward-datetimepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                /* beforeShowDay: function(date) {
+                	var dmy = date.getFullYear() + "-" + ((date.getMonth()) > 8 ? (date.getMonth()+1) : ('0' + (date.getMonth()+1))) + "-" + (date.getDate() > 9 ? date.getDate() : ('0' + date.getDate()));
+				    if ($.inArray(dmy, leagueDays) != -1) {
+				    	return true;
+				    } else {
+				    	return { enabled : false };
+				    }
+                } */
+            }).on('changeDate', function(e){
+            	$(this).keyup();
+                $(this).datepicker('hide');
+            });
+			$('#reward-datetimepicker').datepicker('update', new Date());
+		});
+		</script>
+		
+	</div>
+
+</body>
+</html>

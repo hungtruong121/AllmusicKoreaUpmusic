@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_album(fragmentTitle, fragmentId, albumList)" th:id="${fragmentId}">
+		<h3 th:if="${fragmentId == 'search-detail-albums-fragment' or fragmentId == 'search-albums-fragment'}" class="content_title mt30"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${albumList.size()}" th:remove="tag"></span></span></h3>
+		<h3 th:unless="${fragmentId == 'search-detail-albums-fragment' or fragmentId == 'search-albums-fragment'}" class="content_title mt30"><a onclick="$('.tab_design ul li#result-album').click();"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${albumList.getTotalElements()}" th:remove="tag"></span></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a></h3>
+		<div class="listcontrols"></div>
+		<div class="clearfix"></div>
+		<div class="reword_tabwrap">
+			<div class="genre_listcontent single_list">
+				<ul>
+					<li th:each="album, iter : ${albumList}" th:id="${album.id}">
+						<div class="single_profile">
+							<a th:href="@{${album.getUrl()}}" href="${album.getUrl()}">
+								<img th:src="@{${album.getCoverImageUrl()}}" src="${album.getCoverImageUrl()}" title="cover" class="img-responsive"/>
+							</a>
+						</div>
+						<div class="single_info">
+							<div class="single_titlewrap">
+								<ul class="public_video_title">
+									<li><a th:href="@{${album.getUrl()}}"><span th:text="${album.subject}" th:remove="tag"></span></a></li>
+									<li><a th:href="@{${album.member.getUrl()}}"><span th:text="${album.member.nick}" th:remove="tag"></span></a></li>
+								</ul>
+							</div>
+							<div class="single_likewrap">
+								<div class="single_btnwrap">
+									<a th:onclick="@{${'UPMShareModal.showShareModalFromSearchList(&quot;/music/album/&quot;, ' + album.id + ', null);'}}"><i><img th:src="@{/img/listcontrols_icon3.png}" alt="" /></i></a>
+									<a th:onclick="@{${'UPMusicCommon.likeAlbum(' + album.id + ');'}}">
+										<span id="album-like" class="heart_icon2" th:classappend="${album.liked} ? 'heart_icon_on' : 'heart_icon_off'"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

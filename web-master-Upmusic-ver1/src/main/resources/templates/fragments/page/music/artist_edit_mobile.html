@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap section">
+			<input id="cropit-image-input" type="file" accept="image/*" class="cropit-image-input hidden" value="">
+			<form id="artist-edit" th:action="@{${artistform.getUrl()}}" th:object="${artistform}" method="POST" enctype="multipart/form-data" role="form">
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+				<input type="hidden" th:field="*{birthday}" id="birthday" name="birthday"/>
+				<input type="hidden" th:field="*{genderNo}" id="genderNo" name="genderNo"/>
+				<input type="hidden" th:field="*{phoneNumber}" id="phoneNumber" name="phoneNumber"/>
+				<div class="profileTop profileEditTop">
+					<p class="info_top_bg"><img class="img_profile" th:src="${artistform.getProfileImageUrl()}" alt="" /></p>
+					<p class="userImg"><a data-target="#imgupload_pop" data-toggle="modal"><img class="img_profile" th:src="${artistform.getProfileImageUrl()}" alt="" /></a></p>
+				</div>
+				<div class="nl_panel">
+					<div class="memberJoin_box">
+						<div id="form-group-profileImage" class="form-group">
+							<div class="input-file" id="profileImage">
+									<label class="input_title" th:text="#{model.member.image}"></label>
+									<input id="imageFilename" th:type="text" th:field="*{profileImage}" th:placeholder="#{model.member.image.placeholder}" class="form-control imgupload_input" data-target="#imgupload_pop" data-toggle="modal" readonly/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label"><span th:text="#{model.member.id}" th:remove="tag"></span></label>
+							<input th:value="${artistform.email}" disabled="disabled"  class="form-control"/>
+						</div>
+						<div id="form-group-nick" class="form-group">
+							<label class="control-label"><span th:text="#{model.member.artist_nick}" th:remove="tag"></span></label>
+							<input th:field="*{nick}" th:type="text" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label class="control-label"><span th:text="#{common.grade}" th:remove="tag"></span></label>
+							<input th:value="#{${artistform.getGrade()}}" disabled="disabled" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label class="control-label"><span th:text="#{model.member.phoneNumber}" th:remove="tag"></span></label>
+							<input th:value="${artistform.getPhoneNumber()}" disabled="disabled" class="form-control" id="phoneNumberP" name="phoneNumber"/>
+						</div>
+						<div class="form-group">
+							<label class="control-label"><span th:text="#{button.cellphone.authentication}" th:remove="tag"></span></label>
+							<button th:field="*{phoneNumber}" class="btn btn-gray btn-block" type="button" onclick="fnPopup();"><span th:text="#{button.cellphone.authentication}" th:remove="tag"></span></button>
+							<p th:if="${#fields.hasErrors('phoneNumber')}" th:id="errorPhoneNumber" class="help-block" th:errors="*{phoneNumber}"></p>
+							<p th:unless="${#fields.hasErrors('phoneNumber')}" th:id="errorPhoneNumber" class="help-block" style="display: none;"></p>
+							<p id="completePhoneNumberAuthentication" class="help-block-blue" style="display: none;" th:text="#{common.complete.phone_authentification}"></p>
+						</div>
+						<!--
+						<div class="form-group">
+							<label class="control-label"><span th:text="#{model.member.gender}" th:remove="tag"></span></label>
+							<select th:field="*{gender}" class="form-control">
+								<option th:value="MALE" th:text="남성"></option>
+								<option th:value="FEMALE" th:text="여성"></option>
+							</select>
+						</div>
+						-->
+						<!--
+						<div id="form-group-password" class="form-group">
+							<label class="control-label"><span th:text="#{model.member.password}" th:remove="tag"></span></label>
+							<input th:field="*{password}" th:type="password" class="form-control"/>
+						</div>
+						-->
+					</div>
+				</div>
+				<div class="btn_box">
+					<button class="btn btn-block btn-lg btn-dark" onclick="UPMArtistEdit.submitAction();return false; ">
+						<span  th:text="#{button.save_it}" th:remove="tag"></span>
+					</button>
+				</div>
+			</form>
+			<!-- 본인인증 서비스 팝업을 호출하기 위해서는 다음과 같은 form이 필요합니다. -->
+			<form name="form_chk" method="post">
+				<input type="hidden" name="m" value="checkplusSerivce">				<!-- 필수 데이타로, 누락하시면 안됩니다. -->
+				<input type="hidden" name="EncodeData" th:value="${sEncData}">		<!-- 위에서 업체정보를 암호화 한 데이타입니다. -->
+			</form>
+		</div>
+		<!--이미지 업로드 팝업-->
+	    <div class="modal fade" id="imgupload_pop" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop upload_pop" style="width: -webkit-fill-available">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">이미지 업로드</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal"/>
+	                </div>
+	                <div class="modal-body login_body" style="padding-top:45px;">
+						<div class="login_body1">
+							<ul class="uploadpop_btn">
+								<li onclick="UPMArtistEdit.showDefaultImagePopup();">기본 이미지</li>
+								<li onclick="$('.cropit-image-input').trigger('click');return false;">이미지 업로드</li>
+							</ul>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <!--기본 이미지 팝업-->
+	     <div class="modal fade" id="default_profile_image_pop" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog modal_social_sharewrap" style="background: #FFF">
+	            <div class="modal-content">
+	                <div class="modal-header social_sharehead">
+	                    <h2 class="modal_title">기본 이미지 팝업</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal"/>
+	                </div>
+	                <div class="modal-body profilebody" style="padding-top:10px !important">
+						<ul>
+							<li>
+								<a class="resp-sharing-button__link" onclick="UPMArtistEdit.selectDefaultProfileImage(1);" aria-label="">
+									<img th:src="@{/img/basic_img1.png}" alt="" />
+								</a>
+							</li>
+							<li>
+								<a class="resp-sharing-button__link" onclick="UPMArtistEdit.selectDefaultProfileImage(2);" aria-label="">
+									<img th:src="@{/img/basic_img2.png}" alt="" />
+								</a>
+							</li>
+							<li>
+								<a class="resp-sharing-button__link" onclick="UPMArtistEdit.selectDefaultProfileImage(3);" aria-label="">
+									<img th:src="@{/img/basic_img3.png}" alt="" />
+								</a>
+							</li>
+							<li>
+								<a class="resp-sharing-button__link" onclick="UPMArtistEdit.selectDefaultProfileImage(4);" aria-label="">
+									<img th:src="@{/img/basic_img4.png}" alt="" />
+								</a>
+							</li>
+						</ul>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<div th:replace="fragments/common/modal_crop_image_mobile"></div>
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMArtistEdit = {
+				readURL : function() {
+					UPMLoginModal.showModal();
+				}
+			};
+		</script>
+		</div>
+	    <div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var artistId = /*[[ ${artistform.id} ]]*/;
+			
+			var UPMArtistEdit = {
+				_config : {
+					loading : false
+				},
+				readURL: function(input) {
+					UPMArtistEdit._config.loading = false;
+					if (input.files && input.files[0]) {
+						var reader = new FileReader();
+						reader.onload = function(e) {
+							$('#imgupload_pop').modal('hide');
+							UPMCropImageModal.showModal(e, 1/1, '');
+						}
+					    reader.readAsDataURL(input.files[0]);
+					}
+				},
+				submitAction: function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    if (UPMArtistEdit._config.loading) return;
+				    UPMArtistEdit._config.loading = true;
+					UPMusic.startLoading();
+					$('#artist-edit ul li').each(function() {
+						  $(this).children().removeClass("has-error");
+						  if ($(this).children().children("p.help-block").length) $(this).children().children("p.help-block").remove();
+					});
+				    var form = document.getElementById('artist-edit');
+				    var formData = new FormData(form);
+				    if (UPMCropImageModal._config.imageBlob) formData.append('profileImageMultipart', UPMCropImageModal._config.imageBlob, $('input#imageFilename').val());
+				    UPMusic.ajaxPostFormData(UPMusic._config._api_artist + '/' + artistId, headers, formData, UPMArtistEdit.submitCallback);
+				},
+				submitCallback : function(message, object) {
+					if (message == 'true') {
+						window.location.href="/music/artist/" + object;
+					} else {
+						UPMusic.log(object);
+						var jsonArr = JSON.parse(object);
+						for (var key in jsonArr) {
+							if (jsonArr.hasOwnProperty(key)) {
+								$('#error-' + jsonArr[key].field).remove();
+								$('#form-group-' + jsonArr[key].field).addClass('has-error');
+								var errInfo = '<p id="error-' + jsonArr[key].field + '" class="help-block">' + jsonArr[key].codes[jsonArr[key].codes.length - 1] + '</p>';
+								$('#form-group-' + jsonArr[key].field).append(errInfo);
+							}
+						}
+					}
+					UPMArtistEdit._config.loading = false;
+					UPMusic.stopLoading();
+				},
+				showDefaultImagePopup : function() {
+					$('#imgupload_pop').modal('hide');
+					$('#default_profile_image_pop').modal('show');
+				},
+				selectDefaultProfileImage : function(no) {
+					$('#imageFilename').val(no);
+					$('#default_profile_image_pop').modal('hide');
+					if(no == 1){
+						$("img.img_profile").attr('src', '/img/basic_img1.png');
+					}else if(no == 2){
+						$("img.img_profile").attr('src', '/img/basic_img2.png');
+					}else if(no == 3){
+						$("img.img_profile").attr('src', '/img/basic_img3.png');
+					}else $("img.img_profile").attr('src', '/img/basic_img4.png');
+				}
+			};
+			$("#cropit-image-input").change(function() {
+				if (UPMArtistEdit._config.loading) return;
+				UPMArtistEdit._config.loading = true;
+				UPMArtistEdit.readURL(this);
+			});
+
+			$('#phoneNumber').change(function () {
+				$('#phoneNumberP').val($(this).val());
+			})
+		/*]]>*/
+		</script>
+		<script type="text/javascript" th:inline="javascript">
+			window.name ="Parent_window";
+			function fnPopup(){
+				window.open('', 'popupChk', 'width=500, height=550, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, location=no, scrollbar=no');
+				document.form_chk.action = "https://nice.checkplus.co.kr/CheckPlusSafeModel/checkplus.cb";
+				document.form_chk.target = "popupChk";
+				document.form_chk.submit();
+			}
+		</script>
+	</div>
+</div>
+</body>
+</html>

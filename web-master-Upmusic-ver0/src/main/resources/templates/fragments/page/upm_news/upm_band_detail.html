@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+    	<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title">함께해요</h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="producing_listhead">
+							<p class="content_title2 fl">함께해요 상세보기 <span>* 뭉치면 더 큰 힘이 됩니다. 함께 할 아티스트를 찾아보세요.</span></p>
+							<ul class="hits_wrap hits_wrap_ver1 mt30">
+								<li th:text="'등록 : ' + ${result.getCreateAtFormat()}"></li>
+							</ul>
+						</div>
+						<div class="album_infomation">
+							<div class="album_img producing_price_profile">
+								<!-- <img th:src="${result.getThumbnailImgUrl() ne ''}? ${result.getThumbnailImgUrl()} : '/img/artist_profile.png'" alt="" style="width: 295px; height: 220px;"/> -->
+								<a th:href="@{${result.member.getUrl()}}">
+								<img th:src="${result.member.getProfileImageUrl()}" alt="" />
+								</a>
+							</div>
+							<div class="album_infotext producing_price_infotext">
+								<table>
+									<colgroup>
+										<col width="10%"/>
+										<col width="15%"/>
+										<col width="10%"/>
+										<col width="65%"/>
+									</colgroup>
+									<tr>
+										<td>닉네임</td>
+										<td >
+											<a th:href="@{${result.member.getUrl()}}" th:text="${result.member.nick}"></a>
+										</td>
+										<td>제목</td>
+										<td th:text="${result.subject}"></td>
+									</tr>
+								</table>
+								<div class="casting_coment_field">
+									<p class="prpducing_price_info" id="result_content"></p>
+								</div>
+								<div class="commerce_btn like_event fl mt30 w444">
+									<ul>
+										<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/upm_band&quot;);'}}"><i><img src="/img/list_icon.png" alt="" ></i>목록</li>
+										<li onclick="UPMShareModal.showShareModal(null);"><i><img src="/img/share_icon.png" alt=""></i>공유</li>
+									</ul>
+								</div>
+								<div class="commerce_btn commerce_btn_ver2 mt30 w300">
+									<ul>
+										<li th:if="${result.RegistrantFlag}"><a th:href="${result.getUpdateUrl()}"><i><img src="/img/change_icon.png" alt=""></i>수정</a></li>
+										<li th:if="${result.RegistrantFlag}" id="btn_upm_band_delete"><i><img src="/img/delete_icon.png" alt=""></i>삭제</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="sub_line"></div>
+					<div class="comment_wrap section">
+						<h3 class="content_title">댓글<span th:text="${result.commentCnt} + 개"></span></h3>
+						<form action="#" th:action="@{/upm_news/upm_band/comment_insert}" role="form" enctype="utf-8" th:object="${paramData}" method="post" id="comment_insert" sec:authorize="isAuthenticated()">
+							<input type="hidden" name="bandRecruitId" th:filed="*{bandRecruitId}" th:value="${result.bandRecruitId}">
+							<div class="inputbox">
+								<input type="text" class="form-control comment_input" name="content">
+								<button type="button" class="btn btn-dark btn-custom comment_btn" id="comment_btn">등록</button>
+							</div>
+						</form>
+						<form action="#" role="form" enctype="utf-8" th:object="${paramData}" method="post" id="comment_insert" sec:authorize="isAnonymous()">
+							<input type="hidden" name="bandRecruitId" th:filed="*{bandRecruitId}" th:value="${result.bandRecruitId}">
+							<div class="inputbox">
+								<input type="text" class="form-control comment_input" name="content">
+								<button type="button" class="btn btn-dark btn-custom comment_btn" id="comment_btn">등록</button>
+							</div>
+						</form>
+						<div class="comment_list_wrap" id="comment_list_result">
+							<div class="comment_list" th:each="comment : ${commentList.content}">
+								<div class="comment_profile">
+									<a th:href="@{${comment.member.getUrl()}}">
+									<img th:src="@{${comment.member.getProfileImageUrl()}}" title="profile" style="width: 60px; height: 60px;"/>
+									</a>
+								</div>
+								<div class="comment_content" >
+									<h3 class="comment_id" th:text="${comment.member.nick}"></h3>
+									<p class="comment_memo comment_update_form" th:text="${comment.content}" id="comment_content"></p>
+									<form action="#" th:action="@{/upm_news/upm_band/comment_update}" role="form" enctype="utf-8" method="post" id="comment_update_form" sec:authorize="isAuthenticated()">
+										<input type="hidden" id="bandRecruitCommentId" name="bandRecruitCommentId" th:value="${comment.bandRecruitCommentId}">
+										<input type="hidden" id="bandRecruitId" name="bandRecruitId" th:value="${result.bandRecruitId}">
+										<div class="inputbox w677 comment_change_form" style="display: none;">
+											<input type="text" class="form-control comment_input_ver2" name="content" th:value="${comment.content}">
+											<button class="btn btn-dark btn-custom comment_btn comment_btn_ver2" id="btn_comment_update" type="button">저장</button>
+										</div>
+									</form>
+									<form action="#" role="form" enctype="utf-8" method="post" sec:authorize="isAnonymous()">
+										<input type="hidden" id="bandRecruitCommentId" name="bandRecruitCommentId" th:value="${comment.bandRecruitCommentId}">
+										<input type="hidden" id="bandRecruitId" name="bandRecruitId" th:value="${result.bandRecruitId}">
+										<div class="inputbox w677 comment_change_form" style="display: none;">
+											<input type="text" class="form-control comment_input_ver2" name="content" th:value="${comment.content}">
+											<button class="btn btn-dark btn-custom comment_btn comment_btn_ver2" id="btn_comment_update">저장</button>
+										</div>
+									</form>
+								</div>
+								<div class="comment_day_wrap">
+									<p class="comment_day" id="comment_createAt" th:text="${comment.formattedTime()}"></p>
+									<form action="#" th:action="@{/upm_news/upm_band/comment_delete}" role="form" enctype="utf-8" method="post" class="comment_delete_form" sec:authorize="isAuthenticated()">
+										<input type="hidden" id="bandRecruitCommentId" name="bandRecruitCommentId" th:value="${comment.bandRecruitCommentId}">
+										<input type="hidden" id="bandRecruitId" name="bandRecruitId_sub" th:value="${result.bandRecruitId}">
+										<ul class="comment_update_form" th:if="${comment.registrantFlag}">
+											<li id="btn_updateForm" name="btn_updateForm">수정</li>
+											<li class="btn_delete">삭제</li>
+										</ul>
+									</form>
+									<form action="#" role="form" enctype="utf-8" method="post" class="comment_delete_form" sec:authorize="isAnonymous()">
+										<input type="hidden" id="bandRecruitCommentId" name="bandRecruitCommentId" th:value="${comment.bandRecruitCommentId}">
+										<input type="hidden" id="bandRecruitId" name="bandRecruitId_sub" th:value="${result.bandRecruitId}">
+										<ul class="comment_update_form" th:if="${comment.registrantFlag}">
+											<li id="btn_updateForm" name="btn_updateForm">수정</li>
+											<li class="btn_delete">삭제</li>
+										</ul>
+									</form>
+									<ul class="comment_change comment_change_form" style="display: none;">
+										<li id="btn_update_cancel">취소</li>
+									</ul>
+								</div>
+							</div>
+							<div class="showmore_wrap" th:if="${commentList.hasNext()}">
+								<p><a th:href="@{${result.getDetailUrl()}(page=${commentList.numberOfElements})}">SHOW MORE
+									<i><img src="/img/show_ar.png" alt="" /></i></a>
+								</p>
+							</div>
+						</div>
+					</div>
+					</div>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+    </div>
+
+	<div sec:authorize="isAnonymous()">
+		<script type="text/javascript">
+			$("#comment_btn").click(function(){
+				UPMLoginModal.showModal();
+			});
+	   </script>
+	</div>
+
+	<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript">
+			$("#comment_btn").click(function(e){
+				var content = $(e.target).closest('#comment_insert').find('.comment_input').val();
+				if(content.length < 1){
+					alert('댓글 내용을 입력하세요');
+					return false;
+				}
+				
+				var byteCnt = UPMusic.byteCheck(content);
+				
+				if(byteCnt > 200){
+					alert('댓글 글자수는 한글기준 최대 100자를 초과할 수 없습니다.');
+					return false;
+				}
+				
+				$("#comment_insert").submit();
+			});
+		</script>
+	</div>
+
+    <script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+
+		// editor 로 글 등록시 <p> 태그로 시작하기 때문에 아래와 같이 내용을 출력함
+	    var content = /*[[${result.content}]]*/;
+	    $('#result_content').append(content);
+	    /*]]>*/
+
+	    $('.btn_delete').click(function(e){
+	    	UPMusic.confirm("댓글을 삭제하시겠습니까?", function() {
+	    		$(e.target).closest('.comment_delete_form').submit();
+		    });
+	    });
+
+	    $("li[name=btn_updateForm]").click(function(e){
+	    /* $('#btn_updateForm').click(function(e){ */
+	    	$(e.target).closest('.comment_list').find('.comment_update_form').hide();
+	    	$(e.target).closest('.comment_list').find('.comment_change_form').show();
+	    });
+
+	    $('#btn_update_cancel').click(function(e){
+	    	$(e.target).closest('.comment_list').find('.comment_update_form').show();
+	    	$(e.target).closest('.comment_list').find('.comment_change_form').hide();
+	    });
+
+	    $('#btn_upm_band_delete').click(function(){
+	    	UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+	    		location.href=/*[[${result.getDeleteUrl()}]]*/;
+		    });
+	    });
+	    
+	    $('#btn_comment_update').click(function(e){
+	    	var content = $(e.target).closest('#comment_update_form').find('.comment_input_ver2').val();
+			if(content.length < 1){
+				alert('댓글 내용을 입력하세요');
+				return false;
+			}
+			
+			if(content.length > 200){
+				alert('댓글 글자수는 최대 200자를 초과할 수 없습니다.');
+				return false;
+			}
+			
+			var byteCnt = UPMusic.byteCheck(content);
+			
+			if(byteCnt > 200){
+				alert('댓글 글자수는 한글기준 최대 100자를 초과할 수 없습니다.');
+				return false;
+			}
+			
+			$("#comment_update_form").submit();
+    	});
+	    
+	    
+	</script>
+
+  </div>
+
+</body>
+</html>

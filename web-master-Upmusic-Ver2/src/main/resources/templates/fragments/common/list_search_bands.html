@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_bands(fragmentTitle, fragmentId, bands)" th:id="${fragmentId}">
+		<h3 th:if="${fragmentId == 'search-bands-fragment'}" class="content_title mt30"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${bands.size()}" th:remove="tag"></span></span></h3>
+		<h3 th:unless="${fragmentId == 'search-bands-fragment'}" class="content_title mt30"><a onclick="$('.tab_design ul li#result-band').click();"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${bands.getTotalElements()}" th:remove="tag"></span></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a></h3>
+		<div class="listcontrols"></div>
+		<div class="clearfix"></div>
+		<ul class="artist_contentlist">
+			<li th:each="bandRecruit : ${bands}">
+				<!-- <a th:href=""> -->
+				<a th:href="${bandRecruit.getDetailUrl()}">
+				<div class="artist_profile band_profile">
+
+					<img th:src="${bandRecruit.getThumbnailImgUrl() ne ''}? ${bandRecruit.getThumbnailImgUrl()} : '/img/artist_profile.png'" alt="" style="width: inherit; height: 220px;"/>
+					<div class="bandsmall_profile" th:style="'background: url('+ @{${bandRecruit.member.getProfileImageUrl()}} +') center center no-repeat;'">
+					</div>
+				</div>
+				<div class="artist_info band_info">
+					<h3 class="band_title" th:text="${bandRecruit.subject}">
+						<span th:text="${bandRecruit.getCreateAtFormat()}"></span>
+					</h3>
+					<p class="band_introduce" th:text="${bandRecruit.member.nick}"></p>
+				</div>
+				
+				<div class="feedcontent_footer band_comment">
+					<ul>
+						<li>
+						<i><img src="img/feedbtn_0.png" alt="" /></i>댓글<span th:text="${bandRecruit.bandCommentCnt}">개</span>
+						</li>
+					</ul>
+				</div>
+				</a>
+			</li>
+		</ul>
+	</div>
+</body>
+
+</html>

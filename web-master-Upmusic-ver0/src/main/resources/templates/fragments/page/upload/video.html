@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap section video-upload">
+			<div class="page-title-wrap">
+				<h2 class="page-title fl" th:text="#{model.video.upload}"></h2>
+				<div class="producing_listhead fr">
+					<a onclick="UPMVideoAddModal.showVideoAddModal();" class="btn btn-custom2 fr"><span th:text="#{button.video.add}" th:remove="tag"></span></a>
+				</div>
+			</div>
+			<div class="tabcontent_wrap clear">
+				<div class="tabcontent_0">
+					<p class="content_title2 mt20">나의 영상 등록 <span>업로드 완료 시 [나의 업뮤직] 계정에서 창작물 확인 및 관리가 가능합니다.</span></p>
+					<input id="cropit-image-input" type="file" accept="image/*" class="cropit-image-input hidden" value="">
+					<form id="upload-video" action="#" th:action="@{/upload/video}" th:object="${videoform}" method="POST" class="form-video mt20" enctype="multipart/form-data" role="form">
+						<input th:field="*{videoService}" name="videoService" type="hidden" value="">
+						<input th:field="*{videoServiceObjectId}" type="hidden" value=""/>
+						<input th:field="*{duration}" type="hidden"/>
+						<input th:field="*{thumbnail}" type="hidden"/>
+						<div class="inputbox_wrap">
+							<ul>
+								<li class="w100p">
+									<div id="form-group-videoServiceObjectId" class="form-group" th:classappend="${#fields.hasErrors('videoServiceObjectId')} ? 'has-error' : ''">
+										<div class="input-videofile">
+											<label class="input_title" th:text="#{common.video.upload.description_1}"></label>
+										</div>
+										<div id="video-information" onclick="UPMVideoAddModal.showVideoAddModal();" class="video-info-container w100p">여기를 클릭하시거나 비디오 등록 버튼을 클릭하여 URL 정보를 입력하세요.</div>
+										<p th:if="${#fields.hasErrors('videoServiceObjectId')}" th:id="error-videoServiceObjectId" class="help-block" th:errors="*{videoServiceObjectId}"></p>
+									</div>
+								</li>
+								<li></li>
+								<li>
+									<div class="inputbox">
+										<label class="input_title db" th:text="#{model.video.type}"></label>
+										<select class="form-control selectpicker clear w100p" th:field="*{videoType}" onchange="UPMUploadVideo.changeVideoType(this.value);">
+											<option th:each="videoTypeOption : ${videoTypeMap}" th:value="${videoTypeOption['key']}" th:text="${videoTypeOption['value']}"></option>
+										</select>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-subject" class="form-group inputbox" th:classappend="${#fields.hasErrors('subject')} ? 'has-error' : ''">
+										<label class="input_title" th:text="#{model.video.subject}"></label>
+										<input th:field="*{subject}" th:type="text" th:placeholder="#{model.video.subject.placeholder}" onkeypress="return event.keyCode != 13;" class="form-control" />
+										<p th:if="${#fields.hasErrors('subject')}" th:id="error-subject" class="help-block" th:errors="*{subject}"></p>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="inputbox">
+							<label class="input_title" th:text="#{model.video.label.description}"></label>
+						    <textarea class="form-control masage_input" th:field="*{description}" th:placeholder="#{model.video.description.placeholder}" rows="3"></textarea>
+						</div>
+						<div class="membership_btn mt50">
+							<div class="btn_centerwrap btn_centerwrap2">
+								<button class="btn btn-custom btn-dark h50" type="button" onclick="UPMUploadVideo.submitAction(); return false;"><span th:text="#{button.registration}" th:remove="tag"></span></button>
+								<button class="btn btn-custom2 h50" onclick="UPMusic.goBack(); return false;"><span th:text="#{button.cancel}" th:remove="tag"></span></button>
+							</div>
+						</div>
+					</form>
+	
+					<div th:replace="fragments/page/upload/upload_introduction"></div>
+					
+				</div>
+			</div>
+		</div>
+		
+		<div th:replace="fragments/common/modal_video_add"></div>
+		<div th:replace="fragments/common/modal_crop_image"></div>
+		
+		<script type="text/javascript" th:inline="javascript">
+			var UPMUploadVideo = {
+				_config : {
+					loading : false
+				},
+				readURL: function(input) {
+					UPMUploadVideo._config.loading = false;
+					if (input.files && input.files[0]) {
+						var reader = new FileReader();
+						reader.onload = function(e) {
+							UPMCropImageModal.showModal(e, 16/9, '');
+						}
+					    reader.readAsDataURL(input.files[0]);
+					}
+				},
+				submitAction: function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    if (UPMUploadVideo._config.loading) return;
+					UPMUploadVideo._config.loading = true;
+					UPMusic.startLoading();
+					$('#upload-video ul li').each(function() {
+						  $(this).children().removeClass("has-error");
+						  if ($(this).children().children("p").length) $(this).children().children("p").remove();
+					});
+				    var form = document.getElementById('upload-video');
+				    var formData = new FormData(form);
+				    if (UPMCropImageModal._config.imageBlob) formData.append('thumbnailMultipart', UPMCropImageModal._config.imageBlob, $('input#imageFilename').val());
+					UPMusic.ajaxPostFormData(UPMusic._config._api_video + "/create", headers, formData, UPMUploadVideo.submitCallback);
+				},
+				submitCallback : function(message, object) {
+					if (message == 'true') {
+						//fix bug upload video on ie 10
+						window.location.replace("/my_upm/upload#uploaded-video");
+// 						UPMusic.goto('/my_upm/upload#uploaded-video');
+					} else {
+						UPMusic.log(object);
+						var jsonArr = JSON.parse(object);
+						for (var key in jsonArr) {
+							if (jsonArr.hasOwnProperty(key)) {
+								if (!$('#form-group-' + jsonArr[key].field).hasClass('has-error')) {
+									$('#form-group-' + jsonArr[key].field).addClass('has-error');
+									var errInfo = '<p id="error-' + jsonArr[key].field + '" class="help-block">' + jsonArr[key].codes[jsonArr[key].codes.length - 1] + '</p>';
+									$('#form-group-' + jsonArr[key].field).append(errInfo);
+								}
+							}
+						}
+					}
+					UPMUploadVideo._config.loading = false;
+					UPMusic.stopLoading();
+				},
+				changeVideoType : function(value) {
+					if ('MV' == value) {
+						$('#form-group-genre').show();
+					} else {
+						$('#form-group-genre').hide();
+					}
+				},
+				setVideoObject : function(videoObj) {
+					$('#videoService').val(videoObj.type);
+					$('#videoServiceObjectId').val(videoObj.id);
+				},
+				setThumbnail : function(src) {
+					$('#thumbnail').val(src);
+					var img = '<img src="' + src + '"/>';
+					$('#video-information').html(img);
+				},
+				setVideoDuration : function(duration) {
+					$('#duration').val(duration);
+				},
+				setSubject : function(subject) {
+					if (subject.length > 50) {
+			            UPMusic.alert('영상 제목은 50자를 넘을 수 없습니다');
+			            subject = subject.substr(0, 50);
+			        }
+					$('#subject').val(subject);
+				},
+				setDescription : function(description) {
+					$('#description').val(description);
+				}
+			};
+			$("#cropit-image-input").change(function() {
+				if (UPMUploadVideo._config.loading) return;
+				UPMUploadVideo._config.loading = true;
+				UPMUploadVideo.readURL(this);
+			});
+			$(function() {
+				if($('#videoType').val() == 'GV') $('#form-group-genre').hide();
+			});
+			$(document).ready(function(){
+			    $('input#subject').keyup(function(){
+			        if ($(this).val().length > 50) {
+			            UPMusic.alert('50자를 넘을 수 없습니다');
+			            $(this).val($(this).val().substr(0, 50));
+			        }
+			    });
+			});
+		</script>
+	</div>
+
+</body>
+</html>

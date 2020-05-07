@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+		<form action="#" th:action="@{/admin/upm_news/notice/insert}" role="form" enctype="utf8"
+		th:object="${paramData}" method="post">
+    	<div class="subpage_wrap section">
+			<h2 class="page-title">공지사항 등록하기</h2>
+			<div class="membership_wrap">
+				<ul>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">제목</label>
+							<input type="text" placeholder="제목을 입력하세요." class="form-control" name="subject" required="required">
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">분류</label>
+			                <select class="form-control" name="category" id="category" style="height: 50px;">
+			                	<option>안내</option>
+			                	<option>업데이트</option>
+			                	<option>시스템 점검</option>
+			                </select>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="form-group">
+				<label class="input_title">내용</label>
+			    <!-- <div class="summernote" id="content"></div> -->
+			    <textarea rows="" cols="" class="summernote" name="content" id="content"></textarea>
+			</div>
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom btn-dark h50" id="btn_notice_insert" type="submit">등록</button>
+					<button type="button" class="btn btn-custom2 h50" id="btn_back">취소</button>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</form>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+	    $('#btn_back').click(function(){
+	    	history.back();
+	    });
+
+	    $('.summernote').summernote({
+	    	height: 200
+	    });
+
+	    $('#btn_notice_insert').click(function(){
+	    	var content = $('#content').summernote('code').replace(/<p>/gi, '');
+	    	content = content.replace(/<br>/gi, '');
+	    	content = content.replace(/<\/p>/gi, '');
+
+	    	if(content == ""){
+	    		alert('내용을 입력해 주세요');
+	    		return false;
+	    	}
+	    });
+
+	</script>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_media(fragmentId, trackList, videoList, hasList)" th:id="${fragmentId}" class="mainContent05">
+		<div class="mainContent05 nl_panel">
+			<div class="ct_title">
+				<h2 th:if="${fragmentId == 'home-recent-play-fragment' and hasList}" class="content_title more" onclick="UPMusic.goto('/my_playlist/recent');">
+					<span th:text="#{nav.my_playlist.recent}" th:remove="tag"></span>
+				</h2>
+				<h2 th:if="${fragmentId == 'home-recent-play-fragment' and not hasList}" class="content_title">
+					<span th:text="#{nav.my_playlist.recent.empty}" th:remove="tag"></span>
+				</h2>
+				<h2 th:if="${fragmentId == 'home-likes-fragment' and hasList}" class="content_title more" onclick="UPMusic.goto('/my_playlist/like');">
+					<span th:text="#{nav.my_playlist.like}" th:remove="tag"></span>
+				</h2>
+				<h2 th:if="${fragmentId == 'home-likes-fragment' and not hasList}" class="content_title">
+					<span th:text="#{nav.my_playlist.like.empty}" th:remove="tag"></span>
+				</h2>
+				<div class="nav-tabs">
+					<ul>
+						<li class="active"><a><span th:href="@{${'#' + fragmentId + '-1'}}" th:text="#{common.source.music}"></span></a></li>
+						<li><a><span id="home-video-tab" th:href="@{${'#' + fragmentId + '-2'}}" th:text="#{common.source.video}"></span></a></li>
+					</ul>
+				</div>
+			</div>
+	
+			<!-- 최근플레이 리스트 tab content -->
+			<div class="tab-content">
+				<div class="tab-pane active" th:id="@{${fragmentId + '-1'}}">
+					<!-- Swiper -->
+					<div class="swiper-container mainSwiper">
+						<div class="swiper-wrapper">
+							<div th:each="track, iter : ${trackList}" th:id="${track.id}" class="swiper-slide album_list">
+								<div class="video">
+									<p class="ico_play" th:onclick="@{${'UPMusicCommon.addTrackToPlaylist(' + track.id + ', event);'}}"></p>
+									<p id="track-like" class="ico_heart" th:classappend="${track.liked} ? 'on' : ''" th:onclick="@{${'UPMusicCommon.likeTrack(' + track.id + ', event);'}}"></p>
+									<img th:src="${track.getCoverImageUrl()}" />
+								</div>
+								<p class="subject colDark"><a th:href="@{${track.getUrl()}}"><span th:text="${track.subject}" th:remove="tag"></span></a></p>
+								<p class="atist colGray"><a th:href="@{${track.getArtistUrl()}}"><span th:text="${track.getArtistNick()}" th:remove="tag"></span></a></p>
+							</div>
+						</div>
+					</div>
+				</div><!--  content  -->
+				<div class="tab-pane" th:id="@{${fragmentId + '-2'}}">
+					<!-- Swiper -->
+					<div class="swiper-container mainSwiper">
+						<div class="swiper-wrapper">
+							<div th:each="video,iter : ${videoList}" class="swiper-slide videoListType_01">
+								<div class="video" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;)'}}">
+									<p class="ico_play"></p>
+									<p class="time" th:text="${video.formattedDuration()}"></p>
+									<img th:src="${video.getThumbnailUrl()}"/>
+								</div>
+								<p class="subject colDark"><a th:href="@{${video.getUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a></p>
+								<p class="atist colGray"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- //end 최근플레이 리스트 tab content -->
+		</div>
+		<!-- //end 최근플레이 리스트 -->
+	</div>
+</body>
+
+</html>

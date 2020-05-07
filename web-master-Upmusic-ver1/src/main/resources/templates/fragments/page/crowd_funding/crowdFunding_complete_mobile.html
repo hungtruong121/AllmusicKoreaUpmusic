@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 펀딩완료 -->
+			<div class="nl_panel pdt0">
+				<ul class="rewardSelectTop">
+					<li class="navi01 off">리워드 선택</li>
+					<li class="navi02 off">포인트 결제</li>
+					<li class="navi03">펀딩 완료</li>
+				</ul>
+			</div>
+			<div class="nl_panel">
+				<div class="fundingCompletion">
+					<p class="ico"></p>
+					<p class="cmt">"펀딩이 완료되었습니다."</p>
+				</div>
+
+				<table class="tableType04">
+					<col />
+					<col />
+					<tr>
+						<th>펀딩 프로젝트</th>
+						<td th:text="${result.crowdFunding.subject}"></td>
+					</tr>
+					<tr>
+						<th>펀딩 날짜</th>
+						<td th:text="${result.getCreateAtFormat()}"></td>
+					</tr>
+					<tr>
+						<th>펀딩 번호</th>
+						<td th:text="${result.crowdFundingJoinId}"></td>
+					</tr>
+				</table>
+				
+				<div class="pointPayment_box2">
+					<div class="reward_ba_top">
+						<ul>
+							<li class="fundingPoint">
+								<p class="point"><span th:text="${useFundingPoint}"></span> P</p>
+								<p class="title">펀딩 포인트</p>
+							</li>
+							<li class="usePoint">
+								<p class="point"><span th:text="${useUsablePoint}"></span> P</p>
+								<p class="title">사용가능 포인트</p>
+							</li>
+							<li class="lastPoint">
+								<p class="point"><span th:text="${point}"></span> P</p>
+								<p class="title">최종 펀딩 포인트</p>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="h80"></div>
+			
+				
+			<div class="btn_box fixedBox">
+				<form action="#" th:action="@{/crowd_funding/participation/funding_result}" role="form" method="get">
+				<button class="btn btn-block btn-lg btn-inline btn-gray1" type="button" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/participation&quot;);'}}">홈</button>
+				<button class="btn btn-block btn-lg btn-dark btn-inline" type="submit">내 펀딩 내역</button>
+				</form>
+			</div>
+			
+			
+			<!-- //end 편딩완료 -->
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+
+		
+		</script>
+	</div>
+
+</body>
+</html>

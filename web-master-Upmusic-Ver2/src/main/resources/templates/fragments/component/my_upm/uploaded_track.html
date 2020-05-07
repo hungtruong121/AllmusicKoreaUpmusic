@@ -1,0 +1,78 @@
+<div id="uploaded-track-list" class="musiclist_table musiclist_table_hover2">
+	<h3 class="date-day">&nbsp;</h3>
+	<div class="listcontrols">
+		<ul>
+			<!-- li><a th:onclick="@{${'UPMusicCommon.addAllToPlaylist(&quot;#uploaded-track-list&quot;);'}}"><span th:text="#{button.play_all}"></span></a></li>
+			<li><a th:onclick="@{${'UPMusicCommon.addTracksToPlaylist(&quot;#uploaded-track-list&quot;);'}}"><span th:text="#{button.play_selected}"></span></a></li>
+			<li><a th:onclick="@{${'UPMusicCommon.showCollectionModal(&quot;#uploaded-track-list&quot;);'}}"><span th:text="#{button.add.collection}"></span></a></li -->
+			<li><a th:onclick="@{${'UPMListUpload.deleteSelectedTrack(&quot;#uploaded-track-list&quot;);'}}"><span th:text="#{button.delete}"></span></a></li>
+		</ul>
+	</div>
+	<table>
+		<tr>
+			<th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+			<th><span th:text="#{model.track.information}" th:remove="tag"></span></th>
+			<th><span th:text="#{common.duration}" th:remove="tag"></span></th>
+			<th><span th:text="#{common.play}" th:remove="tag"></span></th>
+			<th><span th:text="#{common.put_in}" th:remove="tag"></span></th>
+			<th><span th:text="#{button.share}" th:remove="tag"></span></th>
+			<th><span th:text="#{common.like}" th:remove="tag"></span></th>
+			<th><span th:text="#{common.status}" th:remove="tag"></span></th>
+		</tr>
+		<tr th:each="track, iter : ${tracks}" th:id="${track.id}" th:onclick="@{${'UPMListUpload.selectOrNot(&quot;' + track.trackStatus.name() + '&quot;, this);'}}">
+			<td><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+			<th>
+				<a th:href="@{${track.getUrl()}}"><i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></a>
+				<p>
+					<a th:href="@{${track.getUrl()}}"><span th:text="${track.subject}" th:remove="tag"></span></a><br />
+					<b><a th:href="@{${track.getArtistUrl()}}"><span th:text="${track.getArtistNick()}" th:remove="tag"></span></a></b>
+				</p>
+			</th>
+			<td><span th:text="${track.formattedDuration()}" th:remove="tag"></span></td>
+			<td>
+				<a th:if="${track.trackStatus.name()} eq 'ACCEPTED'" th:onclick="@{${'UPMusicCommon.addTrackToPlaylist(' + track.id + ');'}}"><img th:src="@{/img/listcontrols_icon1.png}" alt="" /></a>
+				<a th:unless="${track.trackStatus.name()} eq 'ACCEPTED'" onclick="UPMListUpload.notAcceptedTrack(event);"><img th:src="@{/img/listcontrols_icon1.png}" alt="" /></a>
+			</td>
+			<td>
+				<a th:if="${track.trackStatus.name()} eq 'ACCEPTED'" th:onclick="@{${'UPMusicCommon.showCollectionModalFromList(&quot;#uploaded-track-list&quot;, ' + track.id + ');'}}"><img th:src="@{/img/listcontrols_icon2.png}" alt="" /></a>
+				<a th:unless="${track.trackStatus.name()} eq 'ACCEPTED'" onclick="UPMListUpload.notAcceptedTrack(event);"><img th:src="@{/img/listcontrols_icon2.png}" alt="" /></a>
+			</td>
+			<td>
+				<a th:if="${track.trackStatus.name()} eq 'ACCEPTED'" th:onclick="@{${'UPMShareModal.showShareModalFromList(' + track.getMusicAlbumId() + ', ' + track.id + ');'}}"><img th:src="@{/img/listcontrols_icon3.png}" alt="" /></a>
+				<a th:unless="${track.trackStatus.name()} eq 'ACCEPTED'" onclick="UPMListUpload.notAcceptedTrack(event);"><img th:src="@{/img/listcontrols_icon3.png}" alt="" /></a>
+			</td>
+			<td>
+				<a th:if="${track.trackStatus.name()} eq 'ACCEPTED'" th:onclick="@{${'UPMusicCommon.likeTrack(' + track.id + ');'}}"><span id="track-like" class="heart_icon2" th:classappend="${track.liked} ? 'heart_icon_on' : 'heart_icon_off'">&nbsp;</span></a>
+				<a th:unless="${track.trackStatus.name()} eq 'ACCEPTED'" onclick="UPMListUpload.notAcceptedTrack(event);"><span id="track-like" class="heart_icon2" th:classappend="${track.liked} ? 'heart_icon_on' : 'heart_icon_off'">&nbsp;</span></a>
+			</td>
+			<td>
+				<div th:if="${track.trackStatus.name()} eq 'BEFORE_EXAM'" class="state_label" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_ing&quot;, null, event);'}}">심사 중</div>
+				<div th:if="${track.trackStatus.name()} eq 'UNDER_EXAM'" class="state_label" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_ing&quot;, null, event);'}}">심사 중</div>
+				<div th:if="${track.trackStatus.name()} eq 'ACCEPTED'" class="state_label state_pass" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_pass&quot;, null, event);'}}">심사 통과</div>
+				<div th:if="${track.trackStatus.name()} eq 'REJECTED'" class="state_label state_back" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_rejection&quot;, &quot;' + track.rejectedReason + '&quot;, event);'}}">심사 반려</div>
+			</td>
+		</tr>
+	</table>
+	<div th:if="${tracks != null and tracks.totalPages gt 0}" class="panel-body text-center clear">
+	    <ul class="pagination">
+	        <li th:class="${tracks.number eq 0} ? 'disabled' : ''">
+	            <a class="demo-pli-arrow-left" th:if="${not tracks.first}" th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;uploaded-track-list&quot;, &quot;' + paginationTrackUrl + '&quot;, ' + (tracks.number-1) + ');'}}"></a>
+	            <a class="demo-pli-arrow-left" th:if="${tracks.first}" href="javascript:void(0);"></a>
+	        </li>
+	
+	        <li th:each="pageNo : ${#numbers.sequence(0, tracks.totalPages - 1)}" th:class="${tracks.number eq pageNo}? 'active' : ''">
+	            <a th:if="${tracks.number eq pageNo}" href="javascript:void(0);">
+	                <span th:text="${pageNo + 1}"></span>
+	            </a>
+	            <a th:if="${not (tracks.number  eq pageNo)}" th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;uploaded-track-list&quot;, &quot;' + paginationTrackUrl + '&quot;, ' + pageNo + ');'}}">
+	                <span th:text="${pageNo + 1}"></span>
+	            </a>
+	
+	        </li>
+	        <li th:class="${tracks.number + 1 ge tracks.totalPages} ? 'disabled' : ''">
+	            <a class="demo-pli-arrow-right" th:if="${not tracks.last}" th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;uploaded-track-list&quot;, &quot;' + paginationTrackUrl + '&quot;, ' + (tracks.number+1) + ');'}}"></a>
+	            <a class="demo-pli-arrow-right" th:if="${tracks.last}" href="javascript:void(0);"></a>
+	        </li>
+	    </ul>
+	</div>
+</div>

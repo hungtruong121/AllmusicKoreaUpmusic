@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_track(fragmentId, trackList, paginationUrl)" th:id="${fragmentId}" class="musiclist_table musiclist_table_hover2 musicstore_table">
+		<h3 th:if="${fragmentId == 'search-tracks-fragment'}" class="content_title fl"><span th:text="#{common.source.music}" th:remove="tag"></span><span><span th:text="${trackList.size()}" th:remove="tag"></span></span></h3>
+		<table id="album-tracks">
+			<tr>
+				<th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+				<th><span th:text="#{model.track.information}" th:remove="tag"></span></th>
+				<th>재생</th>
+				<th>좋아요</th>
+				<th>생성일시</th>
+			</tr>
+			<tr th:each="track, iter : ${trackList}" th:id="${track.id}">
+				<td th:if="${paginationUrl != null and trackList != null}"><span th:text="${trackList.number * trackList.size + iter.index + 1}" th:remove="tag"></span></td>
+				<td th:unless="${paginationUrl != null and trackList != null}"><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+				<th>
+					<a th:href="@{${track.getAdminUrl()}}"><i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></a>
+					<p>
+						<a th:href="@{${track.getAdminUrl()}}"><span th:text="${track.subject}" th:remove="tag"></span></a><br />
+						<b><a th:href="@{${track.getArtistUrl()}}"><span th:text="${track.getArtistNick()}" th:remove="tag"></span></a></b>
+					</p>
+				</th>
+				<td><span th:text="${track.getPlayCnt()}" th:remove="tag"></span></td>
+				<td><span th:text="${track.getHeartCnt()}" th:remove="tag"></span></td>
+				<td><span th:text="${track.formattedTime()}" th:remove="tag"></span></td>
+			</tr>
+		</table>
+	</div>
+</body>
+
+</html>

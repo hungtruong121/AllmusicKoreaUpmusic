@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- reward music content -->
+			<div class="reward_wrap">
+				<div class="nl_panel pdb0 pdt0">
+					<ul class="nav nav-tabs tabType03">
+						<li class="active"><a>홈</a></li>
+						<li><a>패밀리</a></li>
+						<li><a>신규</a></li>
+						<li><a>가이드보컬</a></li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane active" id="atist-1">
+						<!-- 홈 -->
+						<div th:replace="fragments/common/list_artist_mobile :: list_artist(${artistsFragmentId}, ${artists}, ${paginationUrl})"></div>
+						<!-- //end 홈 -->
+					</div>							
+					<div class="tab-pane" id="atist-2">
+						<!-- 패밀리 -->
+						<div th:replace="fragments/common/list_artist_mobile :: list_artist(${familyArtistsFragmentId}, ${familyArtists}, ${familyPaginationUrl})"></div>
+						<!-- //end 패밀리 -->
+					</div>
+					<div class="tab-pane" id="atist-3">
+						<!-- 신규 -->
+						<div th:replace="fragments/common/list_artist_mobile :: list_artist(${newArtistsFragmentId}, ${newArtists}, ${newPaginationUrl})"></div>
+						<!-- //end 신규 -->
+					</div>
+					<div class="tab-pane" id="atist-4">
+						<!-- 가이드 보컬 -->
+						<div class="nl_panel btm_gray2">
+							<div class="ct_title ofh">
+								<h2 class="content_title pdt5" th:text="#{nav.music.artist.guide}"></h2>
+								<p class="benchmark">
+									<button th:if="${guideVocalId != null}" class="btn-gray2" th:onclick="@{${'UPMusic.goto(&quot;/music/guide_vocal/' + guideVocalId + '&quot;, event);'}}">가이드 보컬 신청 정보</button>
+									<button th:unless="${guideVocalId != null}" class="btn-gray2" th:onclick="@{${'UPMusic.goto(&quot;/music/guide_vocal/new&quot;, event);'}}"><span th:text="#{common.registration.guide_vocal}" th:remove="tag"></span></button>
+								</p>
+							</div>
+						</div>
+						<div th:replace="fragments/common/list_artist_mobile :: list_artist(${guideVocalsFragmentId}, ${guideVocals}, ${guidePaginationUrl})"></div>
+						<!-- //end 가이드 보컬 -->
+					</div>
+				</div><!-- //end tab-content -->
+			</div>
+			<!-- //end reward music content -->
+			
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<div class="page-title-wrap">
+					<h2 class="page-title"><span th:text="#{nav.music.store}" th:remove="tag"></span>
+						<p class="music_tooltip"><img th:src="@{/img/tooltip.png}" alt="" />
+							<div class="tooltip_box">
+								<ul>
+									<li>1. 당신도 프로듀서가 되어 자신만의 곡으로 음반을 발매할 수 있습니다.</li>
+									<li>2. 당신이 원하는 멋진 곡을 선택하세요.</li>
+									<li>3. 해당 아티스트와 바로 연결되어 직접 거래가 가능합니다.</li>
+									<li>4. 거래를 위해 아티스트의 정보를 확인하세요.</li>
+								</ul>
+							</div>
+						</p>
+					</h2>
+				</div>
+				<div class="tab_design">
+					<ul>
+						<li id="store-home"><span th:text="#{nav.music.store}" th:remove="tag"></span>
+							<div class="tab_line"></div>
+						</li>
+						<li id="store-request"><span th:text="#{nav.music.store.request}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<!-- 20181204 jm수정 탭디자인 변경 -->
+						<div class="thema_list">
+							<ul>
+								<li th:each="genreOption, iter : ${genreMap}" th:id="${genreOption['key']}" th:onclick="@{${'UPMListTrackAnonymous.selectedGenre(&quot;' + tracksFragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"><p th:text="${genreOption['value']}"></p></li>
+							</ul>
+						</div>
+						<div class="genre_listcontent">
+							<div th:replace="fragments/common/list_track_store :: list_track(${tracksFragmentId}, ${tracks}, ${paginationUrl})" class="musiclist_table musiclist_table_hover2 musicstore_table"></div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="producing_list store_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl"><span th:text="#{common.request.music.description_1}" th:remove="tag"></span> <span th:text="#{common.request.music.description_2}"></span></p>
+								<a th:onclick="@{${'UPMusic.goto(&quot;/music/store/request&quot;);'}}" class="btn btn-dark btn-custom fr mt30"><span th:text="#{button.request.music}" th:remove="tag"></span></a>
+							</div>	
+							<div th:replace="fragments/common/list_request_store :: list_request(${requestsFragmentId}, ${requests}, ${requestPaginationUrl})"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentGenre = /*[[ ${defaultGenre} ]]*/;
+			var currentTheme = /*[[ ${defaultTheme} ]]*/;
+			var UPMListTrackAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					if (elementId == 'store-fragment') url += '&genre=' + currentGenre;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				},
+				selectedGenre: function(elementId, url, genre) {
+					currentGenre = genre;
+					$('.genre-btn-group .rewordlist_tab').each(function() {
+						if (this.id == genre) {
+							if (!$(this).hasClass("rewordlist_checked")) {
+								$(this).addClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (!src.includes("_on")) {
+									src = src.replace("tab", "tab_on");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						} else {
+							if ($(this).hasClass("rewordlist_checked")) {
+								$(this).removeClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (src.includes("_on")) {
+									src = src.replace("_on", "");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						}
+					});
+					UPMListTrackAnonymous.loadPage(elementId, url, 0);
+				}
+			};
+			
+			$(".music_tooltip").mouseenter(function(){
+				$(".tooltip_box").fadeIn(300);
+			});
+			$(".music_tooltip").mouseleave(function(){
+				$(".tooltip_box").fadeOut(300);
+			});
+			//20181218 ngoclh fix bug #23424 &23425
+			$(document).ready(function() {
+				$('.thema_list>ul>li:first').addClass("active");
+                $(".thema_list>ul>li").click(function(){
+                    $(this).addClass('active').siblings('li').removeClass('active');
+                });
+			});
+		/*]]>*/
+		</script>
+		
+	</div>
+
+</body>
+</html>

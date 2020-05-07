@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+<body>
+    <div th:fragment="list_banner(banners)">
+        <div class="subpage_wrap section">
+            <div class="membership_wrap">
+                <div>
+                    <!--<form action="#" th:action="@{/admin/main/banner/insert}" role="form" enctype="multipart/form-data" th:object="${paramData}" method="post">-->
+                        <div class="inputbox_wrap" style="margin-bottom: 0px">
+                            <div class="input-videofile">
+                                <label class="input_title">이미지 미리보기</label>
+                            </div>
+                            <div id="video-information" class="video-info-container w100p">
+                                <img th:src="${banners.getImgUrl()}">
+                            </div>
+                            <ul>
+                                <li>
+                                    <div class="form-group inputbox">
+                                        <label class="input_title">노출 여부</label>
+                                        <div>
+                                            <select class="form-control selectpicker clear w100p" id="shown" disabled="disabled" name="shown" style="height: 50px;">
+                                                <option value="1" th:attr="selected=${banners.shown ? null : 'selected'}">노출</option>
+                                                <option value="0" th:attr="selected=${banners.shown ? null : 'selected'}">비노출</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="form-group inputbox">
+                                        <label class="input_title">노출순서</label>
+                                        <input th:value="${banners.orderNo}" type="text" placeholder="입력하세요." class="form-control" name="orderNo" readonly="readonly">
+                                        <input type="hidden" name="bannerType" id="bannerType" th:value="${banners.bannerType}">
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="form-group-imageFilename" class="form-group inputbox" style="margin-top: 0px;">
+                            <div class="input-file">
+                                <label class="input_title" id="title">이미지</label>
+                                <input th:value="${banners.filename}" th:type="text" id="imageFilename2" readonly="readonly" placeholder="여기를 눌러 이미지를 등록해 주세요" class="form-control imgupload_input" onclick="$('.cropit-image-input2').trigger('click');return false;" onkeypress="return event.keyCode != 13;"/>
+                                <input type="file" name="thumbnailImg" id="cropit-image-input2" class="cropit-image-input2" readonly="readonly" style="display: none;"/>
+                                <img th:src="@{/img/inputicon_img.png}" alt="" />
+                            </div>
+                        </div>
+                        <div class="inputbox">
+                            <label class="input_title">링크</label>
+                            <input type="text" placeholder="입력하세요." readonly="readonly" class="form-control" name="link" required="required" th:value="${banners.link}">
+                        </div>
+                    <!--</form>-->
+                    <div class="clearfix"></div>
+                    <div class="mt20" style="text-align: right;">
+                        <div>
+                            <!--<button type="button" class="btn btn-custom btn-dark mr1p" id="btn_edit">수정</button>-->
+                            <button type="button" class="btn btn-custom2 btn-pink" id="btn_delete" th:onclick="@{${'UPMusicAdmin.deleteBanner(' + banners.mainBannerId + ');'}}">삭제</button>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- subpage_wrap	 -->
+        </div><!-- section wrap	 -->
+        <script th:inline="javascript" type="text/javascript">
+            /*<![CDATA[*/
+            var bannerId = /*[[ ${banners.mainBannerId} ]]*/;
+            $('#btn_delete').on('click', function () {
+                console.log(bannerId);
+            });
+            /*]]>*/
+        </script>
+    </div>
+</body>
+</html>

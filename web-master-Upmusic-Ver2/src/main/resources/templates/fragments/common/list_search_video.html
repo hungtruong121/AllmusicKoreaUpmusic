@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_video(fragmentTitle, fragmentId, videoList)" th:id="${fragmentId}">
+		<h3 th:if="${fragmentId == 'search-detail-videos-fragment' or fragmentId == 'search-videos-fragment'}" class="content_title mt30"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${videoList.size()}" th:remove="tag"></span></span></h3>
+		<h3 th:unless="${fragmentId == 'search-detail-videos-fragment' or fragmentId == 'search-videos-fragment'}" class="content_title mt30"><a onclick="$('.tab_design ul li#result-video').click();"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${videoList.getTotalElements()}" th:remove="tag"></span></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a></h3>
+		<div class="listcontrols"></div>
+		<div class="clearfix"></div>
+		<ul>
+			<li th:each="video,iter : ${videoList}">
+				<div class="artist_profile videoplay_on2">
+					<img th:src="${video.getThumbnailUrl()}" alt="" />
+					<div class="play_iconwrap play_iconwrap2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;)'}}">
+						<ul>
+							<li><img th:src="@{/img/play_icon.png}" alt=""></li>
+							<li th:text="${video.formattedDuration()}"></li>
+						</ul>
+					</div>
+				</div>
+				<div class="like_plinfo">
+					<ul class="list_title">
+						<li><a th:href="@{${video.getUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a></li>
+						<li><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+			</li>
+		</ul>
+	</div>
+</body>
+
+</html>

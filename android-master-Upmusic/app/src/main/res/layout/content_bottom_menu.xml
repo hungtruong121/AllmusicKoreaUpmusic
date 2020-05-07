@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_peeked_bottom_menu"
+    android:layout_width="match_parent"
+    android:layout_height="51dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentStart="true"
+    android:background="@color/colorAccent"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/peeked_bottom_menu_grid_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center"
+
+                >
+
+                <Button
+                    android:id="@+id/btn_tab_down"
+                    android:layout_width="18.7dp"
+                    android:layout_height="18.7dp"
+                    android:background="@drawable/tab_down"/>
+                
+                <TextView
+                    android:id="@+id/btn_tab_down_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4.3dp"
+                    android:text="담기"
+                    android:textSize="10sp"
+                    android:textColor="#FFFFFF"/>
+                
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+
+            <LinearLayout
+                android:id="@+id/peeked_bottom_menu_grid_2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center"
+                >
+
+                <Button
+                    android:id="@+id/btn_tab_delete"
+                    android:layout_width="18.7dp"
+                    android:layout_height="18.7dp"
+                    android:background="@drawable/tab_delete"/>
+
+                <TextView
+                    android:id="@+id/btn_tab_delete_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4.3dp"
+                    android:text="삭제"
+                    android:textSize="10sp"
+                    android:textColor="#FFFFFF"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
+

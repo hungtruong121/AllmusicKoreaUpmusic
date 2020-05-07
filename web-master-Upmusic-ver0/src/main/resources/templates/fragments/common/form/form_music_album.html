@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+</head>
+
+<body>
+
+	<div th:fragment="form_music_album">
+		<form id="upload-album" action="#" th:action="@{/upload/music}" th:object="${musicform}" method="POST" class="form-music" enctype="multipart/form-data" role="form">
+			<div class="inputbox_wrap">
+				<ul>
+					<li class="mb20">
+						<div id="form-group-albumType" class="form-group inputbox" th:classappend="${#fields.hasErrors('albumType')} ? 'has-error' : ''">
+							<label class="input_title db" th:text="#{model.music.type}"></label>
+							<select class="form-control selectpicker clear w100p" th:field="*{albumType}">
+								<option th:each="albumTypeOption : ${albumTypeMap}" th:value="${albumTypeOption['key']}" th:text="${albumTypeOption['value']}"></option>
+							</select>
+							<p th:if="${#fields.hasErrors('albumType')}" th:id="error-albumType" class="help-block" th:errors="*{albumType}"></p>
+						</div>
+					</li>
+					<li class="mb20">
+						<div id="form-group-genre" class="form-group inputbox" th:classappend="${#fields.hasErrors('genre')} ? 'has-error' : ''">
+							<label class="input_title db" th:text="#{model.music.genre}"></label>
+							<select class="form-control selectpicker clear w100p" th:field="*{genre.id}">
+								<option th:each="genreOption : ${genreMap}" th:value="${genreOption['key']}" th:text="${genreOption['value']}"></option>
+							</select>
+							<p th:if="${#fields.hasErrors('genre')}" th:id="error-genre" class="help-block" th:errors="*{genre}"></p>
+						</div>
+					</li>
+					<li>
+						<div id="form-group-subject" class="form-group inputbox" th:classappend="${#fields.hasErrors('subject')} ? 'has-error' : ''">
+							<label class="input_title" th:text="#{model.music.subject}"></label>
+							<input th:field="*{subject}" th:type="text" th:placeholder="#{model.music.subject.placeholder}" class="form-control" />
+							<p th:if="${#fields.hasErrors('subject')}" th:id="error-subject" class="help-block" th:errors="*{subject}"></p>
+						</div>
+					</li>
+					<li>
+						<div id="form-group-coverImageMultipart" class="form-group inputbox" th:classappend="${#fields.hasErrors('imageFilename')} ? 'has-error' : ''">
+							<div class="input-file" id="imageFilename">
+								<label class="input_title" th:text="#{model.music.cover_image}"></label>
+								<input th:type="text" th:field="*{imageFilename}" th:placeholder="#{model.music.cover_image.placeholder}" class="form-control imgupload_input" onclick="$('.cropit-image-input').trigger('click');return false;"/>
+								<img th:src="@{/img/inputicon_img.png}" alt="" />
+							</div>
+							<p th:if="${#fields.hasErrors('imageFilename')}" th:id="error-thumbnail" class="help-block" th:errors="*{imageFilename}"></p>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="inputbox">
+				<label class="input_title" th:text="#{model.music.label.description}"></label>
+				<textarea class="form-control masage_input" th:field="*{description}" th:placeholder="#{model.music.description.placeholder}" rows="3"></textarea>
+			</div>
+			
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom btn-dark h50"  type="button" onclick="UPMAlbumUpload.submitAction(); return false;"><span th:text="#{button.next}" th:remove="tag"></span></button>
+					<button class="btn btn-custom2 h50" onclick="UPMusic.goBack(); return false;"><span th:text="#{button.cancel}" th:remove="tag"></span></button>
+				</div>
+			</div>
+		</form>
+		<script type="text/javascript" th:inline="javascript">
+		$('.selectpicker').selectpicker();
+		</script>
+	</div>
+
+</body>
+</html>

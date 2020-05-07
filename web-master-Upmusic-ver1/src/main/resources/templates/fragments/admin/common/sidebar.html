@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>UPMusic</title>
+</head>
+
+<body>
+	<aside th:fragment="sidebar" th:classappend="${selectedSubMenu == '/' ? 'boxshadow_aside' : ''}">
+		<div class="aside_menu">
+			<ul>
+				<li class="menu_first" th:classappend="${selectedSubMenu == '/admin' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin&quot;);'}}">관리자페이지 <i><img th:src="@{/img/profile_ar2.png}" alt="" /></i></li>
+			</ul>
+			<ul>
+				<li class="menu_first menu_first_ver2 menu-main"><span th:text="#{nav.admin.main}" th:remove="tag"></span></li>
+				<li th:classappend="${selectedSubMenu == '/admin/main' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/main/banner&quot;);'}}"><span th:remove="tag">배너 관리</span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+			</ul>
+			<ul>
+				<li class="menu_first menu_first_ver2 menu-member"><span th:text="#{nav.admin.member}" th:remove="tag"></span></li>
+				<li th:classappend="${selectedSubMenu == '/admin/member' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/member&quot;);'}}"><span th:text="#{nav.admin.member.upmusic}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/member/artist/family' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/member/artist/family&quot;);'}}"><span th:text="#{nav.admin.artist.family}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+			</ul>
+			<ul>
+				<li class="menu_first menu_first_ver2 menu-music"><span th:text="#{nav.music}" th:remove="tag"></span></li>
+				<li th:classappend="${selectedSubMenu == '/admin/music' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/music&quot;);'}}">전체 음원 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/music_admin' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/music/music_admin&quot;);'}}">관리자 전체 음원 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/music/judging' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/music/judging&quot;);'}}">음원 심사 대기 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/music/judging_admin' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/music/judging_admin&quot;);'}}">관리자 음원 심사 대기 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/music/season' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/music/season&quot;);'}}">업리그 시즌 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/music/guide_vocal_judging' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/music/guide_vocal_judging&quot;);'}}">가이드 보컬 심사 대기 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/music/upload_admin' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/music/upload_admin&quot;);'}}">관리자 업로드 관리 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<!--<li th:classappend="${selectedSubMenu == '/admin/music/upload_admin' ? 'lnb_on' : ''}" onclick="UPMMessageModal.showModal(msgSeeNextVersion);">관리자 업로드 관리 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+			</ul>
+			<ul>
+				<li class="menu_first menu_first_ver2 menu-video"><span th:text="#{nav.video}" th:remove="tag"></span></li>
+				<li th:classappend="${selectedSubMenu == '/admin/video' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/video&quot;);'}}">전체 영상 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+			</ul>
+			<ul>
+				<li class="menu_first menu_first_ver2 menu-reward">정책 관리</li>
+				<li th:classappend="${selectedSubMenu == '/admin/reward/properties' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/reward/properties&quot;);'}}">리워드 설정 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/terms' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/terms&quot;);'}}">약관 및 정책 설정 <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+			</ul>
+			<ul>
+				<li class="menu_first menu_first_ver2 menu-cloud"><span th:text="#{nav.crowd_funding}" th:remove="tag"></span></li>
+				<li th:classappend="${selectedSubMenu == '/crowd_funding/participation' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/crowd_funding/project&quot;);'}}"><span th:remove="tag">프로젝트 관리</span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/crowd_funding/new_project' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/crowd_funding/projectNews&quot;);'}}"><span th:remove="tag">프로젝트 소식 관리</span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/crowd_funding/hot_project' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/crowd_funding/banner&quot;);'}}"><span th:remove="tag">배너 관리</span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/crowd_funding/information' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/crowd_funding/reward&quot;);'}}"><span th:remove="tag">리워드 관리</span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/crowd_funding/balance' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/crowd_funding/balance&quot;);'}}"><span th:remove="tag">프로젝트 정산</span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+			</ul>
+			<ul>
+				<li class="menu_first menu_first_ver2 menu-ump"><span th:text="#{nav.upm_news}" th:remove="tag"></span></li>
+				<li th:classappend="${selectedSubMenu == '/admin/upm_news/notice' ? 'lnb_on' : ''}"       th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/upm_news/notice&quot;);'}}"><span th:text="#{nav.upm_news.notice}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/upm_news/event' ? 'lnb_on' : ''}"        th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/upm_news/event&quot;);'}}"><span th:text="#{nav.upm_news.event}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/upm_news/event_banner' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/upm_news/event_banner&quot;);'}}"><span th:text="#{nav.upm_news.event_banner}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				<li th:classappend="${selectedSubMenu == '/admin/upm_news/faq' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/upm_news/faq&quot;);'}}"><span th:text="#{nav.upm_news.faq}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+			</ul>
+		</div>
+	</aside>
+</body>
+
+</html>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UPMusic</string>
+
+    <string name="description">Media Controls</string>
+    <string name="logout">Logout</string>
+    <string name="profile_picture">Profile Picture:</string>
+    <string name="display_name">Display Name:</string>
+    <string name="login_failed">Login failed.</string>
+    <string name="email_text">Email:</string>
+
+    <string name="default_time">0:00</string>
+
+    <string name="kakao_app_key">d72698dd316bac437e142d2c737f1390</string>
+    <string name="kakao_scheme">kakaod72698dd316bac437e142d2c737f1390</string>
+    <string name="kakaolink_host">kakaolink</string>
+    <string name="kakaostory_host">kakaostory</string>
+
+    <string name="naver_client_id">NU3wfj54p_eVWz6ZnPBi</string>
+    <string name="naver_client_secret">RtcRhgluB7</string>
+    <string name="facebook_app_id">307280393178933</string>
+    <string name="fb_login_protocol_scheme">fb307280393178933</string>
+
+    <string name="list_name">userArrayList</string>
+
+
+
+    <string name="toast_logging_in">로그인 중입니다.</string>
+    <string name="toast_log_in_failed">로그인에 실패하였습니다. 다시 시도해주세요.</string>
+
+    <string name="toast_handle_playlist">재생 목록 처리 중입니다.</string>
+    <string name="toast_network_error1">통신 오류로 처리되지 않았습니다.</string>
+    <string name="toast_network_error2">서버와의 통신 장애입니다. 지금은 사용이 어려우니 나중에 다시 시도해주세요.</string>
+    <string name="toast_input_playlist_name">만들 리스트의 이름을 입력해 주세요.</string>
+    <string name="toast_reward_connect">리워드 기능을 위해 통신 연결되었습니다.</string>
+    <string name="toast_request_login">로그인 요청중입니다.</string>
+    <string name="toast_request_logout">로그아웃 처리 중입니다.</string>
+    <string name="toast_request_playlist">재생 / 재생목록을 가져옵니다.</string>
+    <string name="toast_request_my_list">나의 리스트를 불러오는 중입니다.</string>
+    <string name="toast_success_collect">해당 플레이리스트에 담았습니다.</string>
+    <string name="toast_cancel_edit_playlist">플레이리스트 편집을 취소합니다.</string>
+    <string name="toast_please_get_play_item">음원을 가져오셔야 사용 가능합니다.</string>
+    <string name="toast_do_not_get_play_item">음원을 가져올 수 없습니다.</string>
+    <string name="toast_touch_again_will_finish">다시 한번 누르면 종료합니다.</string>
+
+    <string name="toast_share_instagram">사진과 함께 인스타그램에 올려보세요.
+                인스타그램 버전 및 설치 유무를 확인해주세요.</string>
+    <string name="toast_share_instagram_error1">인스타그램이 설치되어 있지 않습니다.</string>
+    <string name="toast_permission_check">기기의 업뮤직 설정 및 권한여부를 확인해주세요.</string>
+
+
+    <string name="toast_share_upmusic_title">[업뮤직] 좋은 음악 공유합니다.</string>
+    <string name="toast_share_upmusic_text">들어보세요.</string>
+
+    <string name="toast_go_direct">바로가기</string>
+    <string name="toast_share_kakao_error1">카카오톡 버전 및 설치 유무를 확인해주세요.</string>
+    <string name="toast_share_kakao_error2">카카오스토리 버전 및 설치 유무를 확인해주세요.</string>
+
+    <string name="toast_please_save_playlist">
+    플레이리스트를 저장 완료하려면 상단의 완료버튼을 누르세요.
+    서비스 재실행시 저장 이전 상태로 돌아갈 수 있습니다.</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <string name="ok">확인</string>
+    <string name="cancel">취소</string>
+
+    <string name="retry_msg">다시 시도해주세요.</string>
+
+    <string name="app_finish">\'뒤로\'버튼을 한번 더 누르시면 종료됩니다.</string>
+
+    <string name="update_check">새로운 버전이 있습니다. 설치하시겠습니까?</string>
+
+    <string name="notification_error_ssl_cert_invalid">유효하지 않은 페이지입니다.\n계속 진행하시겠습니까?</string>
+
+    <string name="alert_msg_permission_text">거부하신 권한은 [설정] > [권한] 에서 권한변경을 할 수 있습니다.</string>
+    <string name="alert_msg_permission_denied_text">권한을 허용해주셔야 이용하실 수 있습니다.\n앱 설정 페이지로 이동하시겠습니까?\n취소를 누르시면 앱이 종료됩니다.</string>
+
+    <string name="permission_error_qrcode_msg">QR코드를 이용하시려면 카메라 권한 및 저장 권한을 승인하셔야합니다.</string>
+    <string name="permission_error_call_msg">전화를 이용하시려면 전화걸기 권한을 승인하셔야합니다.</string>
+
+    <string name="toast_error_showing">일시적인 오류가 발생하였습니다.\n잠시 후 다시 시도해주세요.</string>
+    <string name="sns_login_error">이메일이 존재하지 않습니다.\nSNS로그인이 불가능합니다.</string>
+    <string name="no_login_error">Please Login. \n로그인 뒤에 사용하실 수 있습니다.</string>
+
+    <string name="menu_welcome">환영합니다</string>
+    <string name="menu_title01">주문.대기\n이벤트 알림</string>
+    <string name="menu_title02">로그아웃하기</string>
+    <string name="menu_title03">QR코드</string>
+    <string name="menu_title04">대기</string>
+    <string name="menu_title05">이벤트</string>
+    <string name="menu_title06">MY페이지</string>
+
+    <!-- QRCODE -->
+    <string name="qrcode_msg">안내선 안에 QR코드를 맞추어주세요.</string>
+    <string name="qrcode_url_error">지원하지 않는 QR코드입니다.</string>
+
+
+
+
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="share">Share</string>
+    <string name="list_button">List</string>
+    <string name="grid_button">Grid</string>
+    <string name="intent_picker">Intent Picker</string>
+    <string name="menu_resource">Inflating a Menu</string>
+    <string name="document">Document</string>
+    <string name="spreadsheet">Spreadsheet</string>
+    <string name="folder">Folder</string>
+    <string name="upload_photos">Upload photos or videos</string>
+    <string name="use_camera">Use camera</string>
+    <string name="share_some_text">Share some text!</string>
+    <string name="image_picker">Image picker</string>
+    <string name="show">Show</string>
+    <string name="reopen">Reopen as other type</string>
+    <string name="bottomsheet_fragment">BottomSheet Fragment</string>
+
+    <string name="label_google_sign_in">Firebase + Google Sign In</string>
+    <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
+
+    <string name="label_facebook_login">Firebase + Facebook Login</string>
+    <string name="desc_facebook_login">Use a Facebook Login credential to authenticate with Firebase.</string>
+
+    <string name="label_twitter_login">Firebase + Twitter Login</string>
+    <string name="desc_twitter_login">Use a Twitter Login credential to authenticate with Firebase.</string>
+
+    <string name="label_emailpassword">Email/Password Authentication</string>
+    <string name="desc_emailpassword">Use an email and password to authenticate with Firebase.</string>
+
+    <string name="label_passwordless">Passwordless Authentication</string>
+    <string name="desc_passwordless">Use only an email to authenticate with Firebase.</string>
+
+    <string name="label_phone_auth">Phone Number Authentication</string>
+    <string name="desc_phone_auth">Use a phone number to authenticate with Firebase.</string>
+
+    <string name="label_anonymous_auth">Anonymous Authentication</string>
+    <string name="desc_anonymous_auth">Sign in anonymously and then later upgrade to a full Firebase Auth user.</string>
+
+    <string name="label_custom_auth">Custom Authentication</string>
+    <string name="desc_custom_auth">Use a custom token signed by your own server to authenticate with Firebase.</string>
+
+    <string name="label_firebase_ui">FirebaseUI Auth</string>
+    <string name="desc_firebase_ui">Use the FirebaseUI-Android library to authenticate with Firebase.</string>
+
+    <string name="hint_user_id">User ID</string>
+    <string name="get_custom_token">Get Token</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="send_link">Send Link</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="loading">Loading…</string>
+    <string name="custom_token">Custom Token</string>
+    <string name="signed_in">Signed In</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="token_null">Token: null</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="desc_firebase_lockup">Firebase logo and name</string>
+    <string name="auth_failed">Authentication failed</string>
+    <string name="start_phone_auth">Start</string>
+    <string name="verify_phone_auth">Verify</string>
+    <string name="resend_phone_auth">Resend</string>
+    <string name="hint_phone_number">Phone Number</string>
+    <string name="hint_verification_code">Verification Code</string>
+    <string name="status_code_sent">Code Sent</string>
+    <string name="status_verification_failed">Verification failed</string>
+    <string name="status_verification_succeeded">Verification succeeded</string>
+    <string name="status_sign_in_failed">Sign-in failed</string>
+    <string name="instant_validation">(instant validation)</string>
+
+
+    <string name="btn_link_to_register">Not a member? Sign up now.</string>
+    <string name="btn_link_to_login">Already registred! Login Me.</string>
+
+    <string name="firebase_status_fmt">Firebase User: %s</string>
+    <string name="firebase_user_management">Firebase User Management</string>
+
+    <string name="google_status_fmt">Google User: %s</string>
+    <string name="google_title_text">Google Sign In</string>
+
+    <string name="facebook_status_fmt">Facebook User: %s</string>
+    <string name="facebook_title_text">Facebook Login</string>
+
+    <string name="emailpassword_status_fmt">Email User: %1$s (verified: %2$b)</string>
+    <string name="emailpassword_title_text">Email and Password</string>
+
+    <string name="passwordless_status_fmt">Email User: %1$s (verified: %2$b)</string>
+    <string name="passwordless_title_text">Passwordless Sign In</string>
+    <string name="status_email_not_sent">Send link to your email to get started.</string>
+    <string name="status_email_sent">Link sent, check your email to continue.</string>
+    <string name="status_link_found">Link received, enter email to sign in.</string>
+
+    <string name="phone_title_text">Phone Number</string>
+
+    <string name="twitter_status_fmt">Twitter User: %s</string>
+    <string name="twitter_title_text">Twitter Login</string>
+
+    <string name="firebaseui_status_fmt">Firebase User: %s</string>
+    <string name="firebaseui_title_text">FirebaseUI Auth</string>
+
+    <string name="id_fmt">User ID: %s</string>
+    <string name="email_fmt">Email: %s</string>
+
+
+
+    <string name="favorite">Favorite</string>
+    <string name="error_no_metadata">Unable to retrieve metadata.</string>
+    <string name="browse_genres">Genres</string>
+    <string name="browse_genre_subtitle">Songs by genre</string>
+    <string name="browse_musics_by_genre_subtitle">%1$s songs</string>
+    <string name="random_queue_title">Random music</string>
+    <string name="error_no_connection">Cannot connect to server. Please, check your Internet connectivity.</string>
+    <string name="error_loading_media">Error Loading Media</string>
+    <string name="casting_to_device">Casting to %1$s</string>
+    <string name="currently_playing_song">Song currently playing</string>
+    <string name="currently_playing_artist">Artist of currently playing song</string>
+    <string name="currently_playing_extra_info">Extra info for currently playing song</string>
+    <string name="play_item">Play item</string>
+    <string name="play_pause">play or pause</string>
+    <string name="skip_next">skip to next</string>
+    <string name="skip_prev">skip to previous</string>
+    <string name="touch_to_cast">Touch to connect to a Google Cast device</string>
+    <!-- Use the default receiver. To customize a styled media receiver, you can use
+         the css and images under <project-root>/docs/cast_styled_receiver -->
+    <string name="cast_application_id">CC1AD845</string>
+    <string name="home_title">Home</string>
+    <string name="related_content_header">You may also like</string>
+    <string name="action_listen">Listen</string>
+    <string name="open_content_drawer">Open the main menu</string>
+    <string name="close_content_drawer">Close the main menu</string>
+    <string name="placeholder_message">This is a placeholder for your application code.</string>
+    <string name="drawer_allmusic_title">All Music</string>
+    <string name="drawer_playlists_title">Playlists</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="background_image_str">Background image for album art</string>
+    <string name="search_queue_title">Search results</string>
+    <string name="no_search_results">No search results.</string>
+    <string name="media_route_menu_title">Play on…</string>
+    <string name="nav_header_username">Username</string>
+
+
+    <string name="blob_getting_started_button">Blob Getting Started Sample</string>
+    <string name="queue_getting_started_button">Queue Getting Started Sample</string>
+    <string name="table_getting_started_button">Table Getting Started Sample</string>
+    <string name="table_payload_format_button">Table Payload Format Sample</string>
+
+    <!-- Notificaiton Channel -->
+    <string name="notification_channel">UAMP_Channel_ID</string>
+    <string name="notification_channel_description">Channel ID for UAMP</string>
+
+
+    <string name="heading_dismissable_views">Simple Views</string>
+    <string name="heading_dismissable_list_view">ListView</string>
+
+</resources>

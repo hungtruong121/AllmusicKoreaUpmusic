@@ -1,0 +1,30 @@
+#Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'Upmusic' do
+ ## Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for Upmusic
+  pod 'Alamofire', '~> 4.5'
+  pod 'SDWebImage', '~> 4.0'
+  pod 'FeedKit', '7.0.1'
+  pod 'FBSDKLoginKit'
+  pod 'FBSDKShareKit'
+  pod 'Firebase/Core'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Messaging'
+  pod 'GoogleSignIn'
+  pod 'naveridlogin-sdk-ios'
+  pod 'SwiftyJSON', '~> 4.0'
+  pod 'AlamofireObjectMapper', '~> 5.0'
+  pod 'WKCookieWebView'
+  pod 'SwiftSocket'
+  pod 'AZSClient'
+  pod "StompClientLib"
+  pod "Device", '~> 3.1.2'
+  pod 'MarqueeLabel'
+  pod 'ReachabilitySwift'
+  pod 'Zip', '~> 1.1'
+  pod 'VGPlayer'
+end

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/home_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-lg-3"></div>
+			<div class="col-lg-6">
+				<h2 class="form-heading text-center">
+					<span th:text="#{common.app.title}" th:remove="tag"></span>
+				</h2>
+				<p>업뮤직은 크라우드펀딩과 리워드의 투명한 거래를 위하여 본인인증 후 회원가입 절차를 진행할 수 있습니다.</p>
+				<div sec:authorize="isAnonymous()" class="mt30 mb30">
+					<button id="check-memberform-request-code" class="btn btn-default" type="button" onclick="fnPopup();">
+						본인인증
+					</button>
+					
+					<!-- 본인인증 서비스 팝업을 호출하기 위해서는 다음과 같은 form이 필요합니다. -->
+					<form name="form_chk" method="post">
+						<input type="hidden" name="m" value="checkplusSerivce">				<!-- 필수 데이타로, 누락하시면 안됩니다. -->
+						<input type="hidden" name="EncodeData" th:value="${sEncData}">		<!-- 위에서 업체정보를 암호화 한 데이타입니다. -->
+					</form>
+				</div>
+			</div>
+			<div class="col-lg-3"></div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+			window.name ="Parent_window";
+			function fnPopup(){
+				window.open('', 'popupChk', 'width=500, height=550, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, location=no, scrollbar=no');
+				document.form_chk.action = "https://nice.checkplus.co.kr/CheckPlusSafeModel/checkplus.cb";
+				document.form_chk.target = "popupChk";
+				document.form_chk.submit();
+			}
+		</script>
+	</div>
+
+</body>
+</html>

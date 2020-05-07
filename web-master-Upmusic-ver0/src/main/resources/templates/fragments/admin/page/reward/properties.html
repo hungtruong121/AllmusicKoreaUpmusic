@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap section">
+			<p class="content_title2">리워드 설정 <span>*리워드 별 지급되는 업뮤직 포인트를 설정할 수 있는 화면</span></p>
+
+			<h4 class="content_title2 mt30">스트리밍 리워드<br><span>음원 청취 시 1초당 지급되는 업뮤직 포인트 설정</span></h4>
+			<form id="update-reward-streaming-properties" action="#" th:object="${conditionform}" method="POST" class="form-request" enctype="multipart/form-data" role="form">
+				<div class="membership_wrap">
+					<ul>
+						<li>
+							<div id="form-group-listenFirstStepPoint" class="form-group inputbox" th:classappend="${#fields.hasErrors('listenFirstStepPoint')} ? 'has-error' : ''">
+								<label class="input_title">1단계 지급 포인트</label>
+								<input th:field="*{listenFirstStepPoint}" id="listenFirstStepPoint" th:type="number" placeholder="1단계에 지급할 포인트를 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('listenFirstStepPoint')}" th:id="error-listenFirstStepPoint" class="help-block" th:errors="*{listenFirstStepPoint}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-listenFirstStepLimit" class="form-group inputbox" th:classappend="${#fields.hasErrors('listenFirstStepLimit')} ? 'has-error' : ''">
+								<label class="input_title">1단계 제한 시간 (단위는 분, 0은 무제한)</label>
+								<input th:field="*{listenFirstStepLimit}" th:type="number" placeholder="1단계 제한시간을 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('listenFirstStepLimit')}" th:id="error-listenFirstStepLimit" class="help-block" th:errors="*{listenFirstStepLimit}"></p>
+							</div>
+						</li>
+						
+						<li>
+							<div id="form-group-listenSecondStepPoint" class="form-group inputbox" th:classappend="${#fields.hasErrors('listenSecondStepPoint')} ? 'has-error' : ''">
+								<label class="input_title">2단계 지급 포인트</label>
+								<input th:field="*{listenSecondStepPoint}" id="listenSecondStepPoint" th:type="number" placeholder="2단계에 지급할 포인트를 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('listenSecondStepPoint')}" th:id="error-listenSecondStepPoint" class="help-block" th:errors="*{listenSecondStepPoint}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-listenSecondStepLimit" class="form-group inputbox" th:classappend="${#fields.hasErrors('listenSecondStepLimit')} ? 'has-error' : ''">
+								<label class="input_title">2단계 제한 시간 (단위는 분, 0은 무제한)</label>
+								<input th:field="*{listenSecondStepLimit}" th:type="number" placeholder="2단계 제한시간을 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('listenSecondStepLimit')}" th:id="error-listenSecondStepLimit" class="help-block" th:errors="*{listenSecondStepLimit}"></p>
+							</div>
+						</li>
+						
+						<li>
+							<div id="form-group-listenThirdStepPoint" class="form-group inputbox" th:classappend="${#fields.hasErrors('listenThirdStepPoint')} ? 'has-error' : ''">
+								<label class="input_title">3단계 지급 포인트</label>
+								<input th:field="*{listenThirdStepPoint}" id="listenThirdStepPoint" th:type="number" placeholder="3단계에 지급할 포인트를 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('listenThirdStepPoint')}" th:id="error-listenThirdStepPoint" class="help-block" th:errors="*{listenThirdStepPoint}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-listenThirdStepLimit" class="form-group inputbox" th:classappend="${#fields.hasErrors('listenThirdStepLimit')} ? 'has-error' : ''">
+								<label class="input_title">3단계 제한 시간 (단위는 분, 0은 무제한)</label>
+								<input th:field="*{listenThirdStepLimit}" th:type="number" placeholder="3단계 제한시간을 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('listenThirdStepLimit')}" th:id="error-listenThirdStepLimit" class="help-block" th:errors="*{listenThirdStepLimit}"></p>
+							</div>
+						</li>
+						
+						<li>
+							<div id="form-group-listenArtistSelfPoint" class="form-group inputbox" th:classappend="${#fields.hasErrors('listenArtistPoint')} ? 'has-error' : ''">
+								<label class="input_title">청취곡 저작권자 지급 포인트</label>
+								<input th:field="*{listenArtistPoint}" id="listenArtistPoint" th:type="number" placeholder="저작권자에게 초당 지급할 포인트를 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('listenArtistPoint')}" th:id="error-listenArtistPoint" class="help-block" th:errors="*{listenArtistPoint}"></p>
+							</div>
+						</li>
+						<li></li>
+						
+						<li>
+							<div id="form-group-listenArtistSelfPoint" class="form-group inputbox" th:classappend="${#fields.hasErrors('listenArtistSelfPoint')} ? 'has-error' : ''">
+								<label class="input_title">저작권자 자신의 곡 청취시 지급 포인트</label>
+								<input th:field="*{listenArtistSelfPoint}" id="listenArtistSelfPoint" th:type="number" placeholder="저작권자가 자신의 곡 청취시 초당 지급할 포인트를 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('listenArtistSelfPoint')}" th:id="error-listenArtistSelfPoint" class="help-block" th:errors="*{listenArtistSelfPoint}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-listenArtistSelfLimit" class="form-group inputbox" th:classappend="${#fields.hasErrors('listenArtistSelfLimit')} ? 'has-error' : ''">
+								<label class="input_title">저작권자 자신의 곡 청취시 지급 제한 시간 (단위는 분, 0은 무제한)</label>
+								<input th:field="*{listenArtistSelfLimit}" th:type="number" placeholder="저작권자가 자신의 곡 청취시 지급 제한시간을 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('listenArtistSelfLimit')}" th:id="error-listenArtistSelfLimit" class="help-block" th:errors="*{listenArtistSelfLimit}"></p>
+							</div>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="membership_btn clearfix">
+					<button class="btn btn-custom btn-dark fr h50" type="button" onclick="UPMUpdateRewardProperties.submitStreamingAction(event);return false;">
+						<span th:text="#{button.save}" th:remove="tag"></span>
+					</button>
+				</div>
+			</form>
+			
+			<hr>
+			
+			<h4 class="content_title2 mt50">업로드 리워드<br><span>음원 업로드 1건당 지급되는 업뮤직 포인트 설정 (심사통과 기준)</span></h4>
+			<form id="update-reward-upload-properties" action="#" th:object="${conditionform}" method="POST" class="form-request" enctype="multipart/form-data" role="form">
+				<div class="membership_wrap">
+					<ul>
+						<li>
+							<div id="form-group-uploadPoint" class="form-group inputbox" th:classappend="${#fields.hasErrors('uploadPoint')} ? 'has-error' : ''">
+								<label class="input_title">업로드 지급 포인트</label>
+								<input th:field="*{uploadPoint}" th:type="number" placeholder="업로드에 지급할 포인트를 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('uploadPoint')}" th:id="error-uploadPoint" class="help-block" th:errors="*{uploadPoint}"></p>
+							</div>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="membership_btn clearfix">
+					<button class="btn btn-custom btn-dark fr h50" type="button" onclick="UPMUpdateRewardProperties.submitUploadAction(event);return false;">
+						<span th:text="#{button.save}" th:remove="tag"></span>
+					</button>
+				</div>
+			</form>
+			
+			<hr>
+			
+			<h4 class="content_title2 mt50">공유 리워드<br><span>음원 공유 1건당 지급되는 업뮤직 포인트 설정</span></h4>
+			<form id="update-reward-share-properties" action="#" th:object="${conditionform}" method="POST" class="form-request" enctype="multipart/form-data" role="form">
+				<div class="membership_wrap">
+					<ul>
+						<li>
+							<div id="form-group-sharePoint" class="form-group inputbox" th:classappend="${#fields.hasErrors('sharePoint')} ? 'has-error' : ''">
+								<label class="input_title">공유 지급 포인트</label>
+								<input th:field="*{sharePoint}" th:type="number" placeholder="공유에 지급할 포인트를 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('sharePoint')}" th:id="error-sharePoint" class="help-block" th:errors="*{sharePoint}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-shareLimit" class="form-group inputbox" th:classappend="${#fields.hasErrors('shareLimit')} ? 'has-error' : ''">
+								<label class="input_title">공유 제한수</label>
+								<input th:field="*{shareLimit}" th:type="number" placeholder="공유 지급 제한수를 입력하세요" onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('shareLimit')}" th:id="error-shareLimit" class="help-block" th:errors="*{shareLimit}"></p>
+							</div>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="membership_btn clearfix">
+					<button class="btn btn-custom btn-dark fr h50" type="button" onclick="UPMUpdateRewardProperties.submitShareAction(event);return false;">
+						<span th:text="#{button.save}" th:remove="tag"></span>
+					</button>
+				</div>
+			</form>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+			var UPMUpdateRewardProperties = {
+				_config : {
+					loading : false
+				},
+				submit : function() {
+					if (UPMUpdateRewardProperties._config.loading) return;
+					UPMUpdateRewardProperties._config.loading = true;
+					document.getElementById("update-casting").submit();
+				},
+				submitStreamingAction: function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    if (UPMUpdateRewardProperties._config.loading) return;
+					UPMUpdateRewardProperties._config.loading = true;
+					UPMusicAdmin.startLoading();
+					$('#update-reward-streaming-properties ul li').each(function() {
+						  $(this).children().removeClass("has-error");
+						  if ($(this).children().children("p").length) $(this).children().children("p").remove();
+					});
+				    var form = document.getElementById('update-reward-streaming-properties');
+				    var formData = new FormData(form);
+					UPMusicAdmin.ajaxPostFormData(UPMusicAdmin._config._admin_api_reward + "/streaming_properties", headers, formData, UPMUpdateRewardProperties.submitCallback);
+				},
+				submitUploadAction: function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    if (UPMUpdateRewardProperties._config.loading) return;
+					UPMUpdateRewardProperties._config.loading = true;
+					UPMusicAdmin.startLoading();
+					$('#update-reward-upload-properties ul li').each(function() {
+						  $(this).children().removeClass("has-error");
+						  if ($(this).children().children("p").length) $(this).children().children("p").remove();
+					});
+				    var form = document.getElementById('update-reward-upload-properties');
+				    var formData = new FormData(form);
+					UPMusicAdmin.ajaxPostFormData(UPMusicAdmin._config._admin_api_reward + "/upload_properties", headers, formData, UPMUpdateRewardProperties.submitCallback);
+				},
+				submitShareAction: function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    if (UPMUpdateRewardProperties._config.loading) return;
+					UPMUpdateRewardProperties._config.loading = true;
+					UPMusicAdmin.startLoading();
+					$('#update-reward-share-properties ul li').each(function() {
+						  $(this).children().removeClass("has-error");
+						  if ($(this).children().children("p").length) $(this).children().children("p").remove();
+					});
+				    var form = document.getElementById('update-reward-share-properties');
+				    var formData = new FormData(form);
+					UPMusicAdmin.ajaxPostFormData(UPMusicAdmin._config._admin_api_reward + "/share_properties", headers, formData, UPMUpdateRewardProperties.submitCallback);
+				},
+				submitCallback : function(message, object) {
+					if (message == 'true') {
+						UPMusicAdmin.alert("저장되었습니다")
+					} else {
+						UPMusicAdmin.log(object);
+						var jsonArr = JSON.parse(object);
+						for (var key in jsonArr) {
+							if (jsonArr.hasOwnProperty(key) && jsonArr[key].codes[jsonArr[key].codes.length - 1] != 'typeMismatch') {
+								$('#form-group-' + jsonArr[key].field).addClass('has-error');
+								var errInfo = '<p id="error-' + jsonArr[key].field + '" class="help-block">' + jsonArr[key].codes[jsonArr[key].codes.length - 1] + '</p>';
+								$('#form-group-' + jsonArr[key].field).append(errInfo);
+							}
+						}
+					}
+					UPMUpdateRewardProperties._config.loading = false;
+					UPMusicAdmin.stopLoading();
+				}
+			};
+			$(document).ready(function(){
+				$('#listenFirstStepPoint').val([[${conditionform.listenFirstStepPoint}]]);
+				$('#listenSecondStepPoint').val([[${conditionform.listenSecondStepPoint}]]);
+				$('#listenThirdStepPoint').val([[${conditionform.listenThirdStepPoint}]]);
+				$('#listenArtistPoint').val([[${conditionform.listenArtistPoint}]]);
+				$('#listenArtistSelfPoint').val([[${conditionform.listenArtistSelfPoint}]]);
+				
+			    $('input#subject').keyup(function(){
+			        if ($(this).val().length > 50) {
+			            UPMusicAdmin.alert('50자를 넘을 수 없습니다');
+			            $(this).val($(this).val().substr(0, 50));
+			        }
+			    });
+			    $("#fileMultipart").change(function() {
+					if (this.files[0]) {
+						var fileURL = URL.createObjectURL(this.files[0]);
+						var filename = $(this).val().split('\\').pop();
+						$('input#filename').val(filename);
+					} else {
+						$('input#filename').val('');
+					}
+				});
+			});
+		</script>
+		
+	</div>
+
+</body>
+</html>

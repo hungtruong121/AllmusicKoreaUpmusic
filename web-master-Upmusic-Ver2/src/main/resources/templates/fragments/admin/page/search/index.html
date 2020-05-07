@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section search-result">
+				<div class="page-title-wrap">
+					<h2 class="page-title">&#39;<span th:text="${query}"></span>&#39;<span th:text="#{common.search.result}"></span></h2>
+				</div>
+				<div class="tab_design clear">
+				<ul>
+						<li id="result-track"><span th:text="#{common.source.music}" th:remove="tag"></span>
+							<div class="tab_line"></div>
+						</li>
+						<li id="result-video"><span th:text="#{nav.video}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="genre_listcontent mt30">
+							<div th:replace="fragments/admin/common/list_search_track :: list_track('search-tracks-fragment', ${tracks}, null)"></div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="genre_listcontent public_video_wrap mt30">
+							<div th:replace="fragments/admin/common/list_search_video :: list_video(#{nav.video}, 'search-all-videos-fragment', ${videos})"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

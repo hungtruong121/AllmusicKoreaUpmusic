@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" >
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_message">	
+		<div class="modal fade" id="modal-message" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title" th:text="#{common.info}"></h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<p id="alert-message" class="judge_info"></p>
+						</div>
+						<div class="login_btn upload_btn mt10">
+							<button class="btn btn-custom3 h50 w100p" data-dismiss="modal" th:text="#{button.ok}"></button>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<script type="text/javascript" th:inline="javascript">
+			var UPMMessageModal = {
+				showModal : function(msg) {
+				    if (msg != null) $('#alert-message.judge_info').html(msg);
+					$('#modal-message').modal('show');
+				}
+			};
+		</script>
+	</div>
+</body>
+
+</html>

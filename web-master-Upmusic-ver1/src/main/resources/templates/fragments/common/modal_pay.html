@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	</head>
+
+	<body>
+		<div th:fragment="modal_pay">
+			<div class="modal fade" id="modal-login" role="dialog" tabindex="-1" aria-labelledby="modal-login" aria-hidden="true">
+			</div>
+
+			<script type="text/javascript" th:inline="javascript">
+				var UPMPayModal = {
+					showModal : function() {
+						$.get('/pay', function(data) {
+							$('#modal-login').html(data);
+						});
+						$('#modal-login').modal('show');
+					}
+				};
+			</script>
+		</div>
+	</body>
+</html>

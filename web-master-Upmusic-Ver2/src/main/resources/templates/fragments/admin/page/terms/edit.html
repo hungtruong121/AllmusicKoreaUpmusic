@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+		<form id="update-terms" role="form" enctype="utf8" th:object="${termsform}" method="post">
+	    	<div class="subpage_wrap section">
+				<h2 class="page-title">정책 수정하기</h2>
+				<div>
+					<ul>
+						<li>
+							<div id="form-group-subject" class="form-group inputbox" th:classappend="${#fields.hasErrors('subject')} ? 'has-error' : ''">
+								<label class="input_title">제목</label>
+								<input th:field="*{subject}" th:type="text" placeholder="제목을 입력하세요." onkeypress="return event.keyCode != 13;" class="form-control" />
+								<p th:if="${#fields.hasErrors('subject')}" th:id="error-subject" class="help-block" th:errors="*{subject}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-content" class="form-group inputbox" th:classappend="${#fields.hasErrors('content')} ? 'has-error' : ''">
+								<label class="input_title">내용</label>
+								<textarea rows="" cols="" class="summernote" th:field="*{content}"></textarea>
+								<p th:if="${#fields.hasErrors('content')}" th:id="error-content" class="help-block" th:errors="*{content}"></p>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="membership_btn mt50">
+					<div class="btn_centerwrap btn_centerwrap2">
+						<button class="btn btn-custom btn-dark h50" type="submit" onclick="UPMTermsUpdate.submitAction(event); return false;">저장</button>
+						<button type="button" class="btn btn-custom2 h50" onclick="UPMusicAdmin.goto('/admin/terms');">취소</button>
+					</div>
+				</div>
+			</div><!-- subpage_wrap	 -->
+		</form>
+    </div>
+    
+    <script type="text/javascript" th:inline="javascript">
+    	var termsId = /*[[ ${termsform.id} ]]*/;
+    
+		var UPMTermsUpdate = {
+			_config : {
+				loading : false
+			},
+			submitAction: function(e) {
+				if (!e) var e = window.event;
+			    e.cancelBubble = true;
+			    if (e.stopPropagation) e.stopPropagation();
+			    if (UPMTermsUpdate._config.loading) return;
+			    UPMTermsUpdate._config.loading = true;
+			    UPMusicAdmin.startLoading();
+				$('#update-terms ul li').each(function() {
+					  $(this).children().removeClass("has-error");
+					  if ($(this).children().children("p").length) $(this).children().children("p").remove();
+				});
+			    var form = document.getElementById('update-terms');
+			    var formData = new FormData(form);
+			    UPMusicAdmin.ajaxPostFormData(UPMusicAdmin._config._admin_api_terms + "/" + termsId, headers, formData, UPMTermsUpdate.submitCallback);
+			},
+			submitCallback : function(message, object) {
+				if (message == 'true') {
+					UPMusicAdmin.alert("저장하였습니다.");
+					window.location.href="/admin/terms";
+				} else {
+					UPMusicAdmin.log(object);
+					var jsonArr = JSON.parse(object);
+					for (var key in jsonArr) {
+						if (jsonArr.hasOwnProperty(key)) {
+							$('#form-group-' + jsonArr[key].field).addClass('has-error');
+							var errInfo = '<p id="error-' + jsonArr[key].field + '" class="help-block">' + jsonArr[key].codes[jsonArr[key].codes.length - 1] + '</p>';
+							$('#form-group-' + jsonArr[key].field).append(errInfo);
+						}
+					}
+				}
+				UPMTermsUpdate._config.loading = false;
+				UPMusicAdmin.stopLoading();
+			}
+		};
+		
+		$(document).ready(function(){
+		    $('input#subject').keyup(function(){
+		        if ($(this).val().length > 50) {
+		            UPMusicAdmin.alert('50자를 넘을 수 없습니다');
+		            $(this).val($(this).val().substr(0, 50));
+		        }
+		    });
+		    
+		    $('.summernote').summernote({
+		    	height: 200
+		    });
+		});
+		
+	</script>
+
+  </div>
+
+</body>
+</html>

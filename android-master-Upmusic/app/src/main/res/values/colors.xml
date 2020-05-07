@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#181e33</color>
+    <color name="colorPrimaryTransparent">#80181e33</color>
+    <color name="colorPrimaryDark">#4d65c3</color>
+    <color name="colorAccent">#181e33</color>
+    <color name="colorPink">#ee215e</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorWhiteTransparent">#80FFFFFF</color>
+
+    <color name="colorBlackTransparent">#88000000</color>
+    <color name="colorBlackTransparentWeek">#66000000</color>
+
+
+    <color name="player_background">#4a4a4a</color>
+    <color name="holo_light_primary">#000000</color>
+    <color name="background_holo_light">#000000</color>
+    <color name="white_light">#FFFFFF</color>
+    <color name="selectablecolor">#333333</color>
+    <color name="default_screen_bg">#f9f9f9</color>
+    <color name="rounded_container_bg">#222222</color>
+    <color name="rounded_container_border">#3b3f44</color>
+    <color name="light_gray_header_color">#646663</color>
+
+    <color name="playlist_edit_color_1">#454c68</color>
+    <color name="playlist_edit_color_2">#e0e1e3</color>
+
+
+    <!-- Seekbar progress color -->
+    <color name="progress_background">#77CCCCCC</color>
+    <color name="progress_secondary">#77CCCCCC</color>
+    <color name="progress">#E6ee215e</color>
+
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_500">#9E9E9E</color>
+
+
+    <color name="grid_state_pressed">#1Affffff</color>
+    <color name="grid_state_focused">#80000000</color>
+    <color name="bg_login">#26ae90</color>
+    <color name="bg_register">#2e3237</color>
+    <color name="bg_main">#428bca</color>
+    <color name="white">#ffffff</color>
+    <color name="input_login">#222222</color>
+    <color name="input_login_hint">#999999</color>
+    <color name="input_register">#888888</color>
+    <color name="input_register_bg">#3b4148</color>
+    <color name="input_register_hint">#5e6266</color>
+    <color name="btn_login">#26ae90</color>
+    <color name="btn_login_bg">#eceef1</color>
+    <color name="lbl_name">#333333</color>
+    <color name="btn_logut_bg">#ff6861</color>
+
+
+    <color name="radio_button_selected_color">#ff33b5e5</color>
+    <color name="radio_button_unselected_color">#e0e0e0</color>
+
+
+    <color name="tv_branding">#ffff5722</color>
+    <color name="tv_branding_dark">#ffbf360c</color>
+    <color name="tv_branding_accent">#00B8D4</color>
+    <color name="bt_accent">#00B8D4</color>
+    <color name="media_item_icon_playing">@color/bt_accent</color>
+    <color name="media_item_icon_not_playing">#ccc</color>
+    <color name="drawer_header_background">@color/bt_accent</color>
+    <color name="error_message_background">#ffff1600</color>
+    <color name="drawer_item_selected_background">#feee</color>
+    <color name="drawer_item_tint_color">#ff333333</color>
+    <color name="fullscreen_secondary_line_color">#E5CCCCCC</color>
+    <color name="fullscreen_line_color">#E5FFFFFF</color>
+    <color name="tv_search_button">#ff0097A7</color>
+    <color name="background_gradient_start">#000000</color>
+    <color name="background_gradient_end">#DDDDDD</color>
+    <color name="default_background">#0096a6</color>
+</resources>

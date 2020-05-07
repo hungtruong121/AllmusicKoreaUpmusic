@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap section">
+			<h2 class="page-title">가이드 보컬 신청내역</h2>
+			<table class="tableType01 mt30 guide_vocal_detail">
+				<col width="30%" />
+				<col width="70%" />
+				<tr>
+					<th>나이</th>
+					<td th:text="${guide.age}"></td>
+				</tr>
+				<tr>
+					<th>가능지역</th>
+					<td th:text="${guide.area}"></td>
+				</tr>
+				<tr>
+					<th>음원 업로드</th>
+					<td><a th:href="${'/api/guide_vocal/download/' + guide.id}" target="_blank" th:text="${guide.filename}"></a></td>
+				</tr>
+				<tr>
+					<th>음원 링크</th>
+					<td><a th:if="${guide.filelink != null}" th:href="${guide.filelink}" target="_blank" th:text="${guide.filelink}"></a></td>
+				</tr>
+				<tr>
+					<th>가능 장르</th>
+					<td th:text="${guide.genre}"></td>
+				</tr>
+				<tr>
+					<th>가이드 범위</th>
+					<td th:text="${guide.getGuideVocalScopesString()}"></td>
+				</tr>
+				<tr>
+					<th>비용</th>
+					<td><span th:text="${guide.getCostString()}" th:remove="tag"></span>원</td>
+				</tr>
+				<tr>
+					<th>가능시간</th>
+					<td><span th:text="${10 > guide.openHour ? '0' + guide.openHour : guide.openHour}" th:remove="tag"></span>:00 ~ <span th:text="${10 > guide.closeHour ? '0' + guide.closeHour : guide.closeHour}" th:remove="tag"></span>:00</td>
+				</tr>
+				<tr>
+					<th>심사 상태</th>
+					<td>
+						<span th:if="${guide.guideStatus.name()} eq 'BEFORE_EXAM'" class="icoBtn_gray">심사 중</span>
+						<span th:if="${guide.guideStatus.name()} eq 'UNDER_EXAM'" class="icoBtn_gray">심사 중</span>
+						<span th:if="${guide.guideStatus.name()} eq 'ACCEPTED'" class="icoBtn_blue">심사 통과</span>
+						<span th:if="${guide.guideStatus.name()} eq 'REJECTED'" class="icoBtn_red">심사 반려</span>
+					</td>
+				</tr>
+				<tr>
+					<th>상세내용</th>
+					<td class="writing" th:text="${guide.description}"></td>
+				</tr>
+			</table>
+			<div class="commerce_btn commerce_btn_ver2 mt30 w444">
+				<ul>
+					<li th:if="${guide.guideStatus.name()} eq 'BEFORE_EXAM' or 'UNDER_EXAM'" th:onclick="@{${'UPMusicAdmin.acceptGuide(' + guide.id + ');'}}"><i>V</i>승인</li>
+					<li th:if="${guide.guideStatus.name()} eq 'BEFORE_EXAM' or 'UNDER_EXAM'" th:onclick="@{${'UPMusicAdmin.rejectGuide(' + guide.id + ');'}}"><i>X</i>거절</li>
+					<li th:onclick="@{${'UPMusic.goto(&quot;/admin/music/guide_vocal_judging&quot;);return false;'}}"><i><img th:src="@{/img/list_icon.png}" alt=""></i>목록</li>
+				</ul>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		
+	</div>
+
+</body>
+</html>

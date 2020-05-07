@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+<title>Music</title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<h1>Music</h1>
+		<div th:replace="fragments/common/list_track_reward :: list_track(${tracksFragmentId}, ${tracks}, ${tracksUrl})"></div>
+		<div th:replace="fragments/common/modal_share :: modal_share"></div>
+		
+		<script type="text/javascript">
+			var UPMListTrackAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				},
+				selectedGenre: function(genre) {
+					$('#genre .btn-group button').each(function() {
+						if (this.id == genre) {
+							if (!$(this).hasClass("active")) $(this).addClass('active');
+						} else {
+							if ($(this).hasClass("active")) $(this).removeClass('active');
+						}
+					});
+				},
+				selectedTheme: function(theme) {
+					$('#theme .btn-group button').each(function() {
+						if (this.id == theme) {
+							if (!$(this).hasClass("active")) $(this).addClass('active');
+						} else {
+							if ($(this).hasClass("active")) $(this).removeClass('active');
+						}
+					});
+				}
+				
+			};
+		</script>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMListTrack = {
+				likeTrack: function(trackId) {
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_track + '/' + trackId + '/like', headers, params, UPMListTrack.likeTrackCallback);
+				},
+				likeTrackCallback: function(msg, object) {
+					if (msg == 'true') {
+						//$('#album-tracks tr#' + object + ' #track-like').toggleClass('glyphicon-heart-empty glyphicon-heart');
+						$('[id="' + object + '"]').each(function(value) {
+							$(this).find("#track-like").toggleClass('glyphicon-heart-empty glyphicon-heart');
+						});
+					} else {
+						//$('#album-tracks tr#' + object + ' #track-like').toggleClass('glyphicon-heart glyphicon-heart-empty');
+						$('[id="' + object + '"]').each(function(value) {
+							$(this).find("#track-like").toggleClass('glyphicon-heart glyphicon-heart-empty');
+						});
+					}
+				}
+			};
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

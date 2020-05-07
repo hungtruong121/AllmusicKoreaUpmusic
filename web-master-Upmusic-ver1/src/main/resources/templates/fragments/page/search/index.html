@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section search-result">
+				<div class="page-tltle-wrap">
+					<h2 class="page-title">&#39;<span th:text="${query}"></span>&#39;<span th:text="#{common.search.result}"></span></h2>
+				</div>
+				<div class="tab_design clear swiper-container searchSwiper">
+					<ul class="swiper-wrapper">
+						<li id="result-all" class="swiper-slide"><span th:text="#{model.search.all}" th:remove="tag"></span>
+							<div class="tab_line"></div>
+						</li>
+						<li id="result-track" class="swiper-slide"><span th:text="#{common.source.music}" th:remove="tag"></span></li>
+						<li id="result-album" class="swiper-slide"><span th:text="#{model.search.album}" th:remove="tag"></span></li>
+						<!--<li id="result-store" class="swiper-slide"><span th:text="#{nav.music.store}" th:remove="tag"></span></li>-->
+						<li id="result-artist" class="swiper-slide"><span th:text="#{nav.music.artist}" th:remove="tag"></span></li>
+						<li id="result-casting" class="swiper-slide"><span th:text="#{nav.music.vocal_casting}" th:remove="tag"></span></li>
+						<li id="result-video" class="swiper-slide"><span th:text="#{nav.video}" th:remove="tag"></span></li>
+						<li id="result-band" class="swiper-slide"><span th:text="#{model.search.band}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="genre_listcontent mt30">
+							<div th:if="${tracks != null and 0 < tracks.getTotalElements()}" class="search_content_wrap">
+								<div th:replace="fragments/common/list_track_default :: list_track('search-all-tracks-fragment', ${tracks}, null)"></div>
+							</div>
+							<div th:if="${albums != null and 0 < albums.getTotalElements()}" class="search_content_wrap">
+								<div th:replace="fragments/common/list_search_album :: list_album(#{model.search.album}, 'search-all-albums-fragment', ${albums})"></div>
+							</div>
+							<!--
+							<div th:if="${storeTracks != null and 0 < storeTracks.getTotalElements()}" class="search_content_wrap">
+								<div th:replace="fragments/common/list_track_store :: list_track('search-all-stores-fragment', ${storeTracks}, null)"></div>
+							</div>
+							-->
+							<div th:if="${artists != null and 0 < artists.getTotalElements()}" class="search_content_wrap">
+								<div th:replace="fragments/common/list_search_artist :: list_artist(#{nav.music.artist}, 'search-all-artists-fragment', ${artists})"></div>
+							</div>
+							<div th:if="${castings != null and 0 < castings.getTotalElements()}" class="search_content_wrap">
+								<div th:replace="fragments/common/list_search_vocal_casting :: list_casting(#{nav.music.vocal_casting}, 'search-all-castings-fragment', ${castings})"></div>
+							</div>
+							<div th:if="${videos != null and 0 < videos.getTotalElements()}" class="search_content_wrap">
+								<div class="public_video_wrap">
+									<div th:replace="fragments/common/list_search_video :: list_video(#{nav.video}, 'search-all-videos-fragment', ${videos})"></div>
+								</div>
+							</div>
+							<div th:if="${bands != null and 0 < bands.getTotalElements()}" class="search_content_wrap">
+								<div th:replace="fragments/common/list_search_bands :: list_bands(#{nav.upm_news.upm_band}, 'search-all-bands-fragment', ${bands})"></div>
+							</div>
+							
+							<!-- nothing to show -->
+							<div th:if="${(tracks == null or 0 == tracks.getTotalElements()) and (albums == null or 0 == albums.getTotalElements()) and (storeTracks == null or 0 == storeTracks.getTotalElements()) and (artists == null or 0 == artists.getTotalElements()) and (castings == null or 0 == castings.getTotalElements()) and (videos == null or 0 == videos.getTotalElements()) and (bands == null or 0 == bands.getTotalElements())}" class="list_none">
+								<ul>
+									<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+									<li th:text="#{common.nothing.search_result}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="genre_listcontent mt30">
+							<div th:if="${tracksAll != null and 0 < tracksAll.size()}">
+								<div th:replace="fragments/common/list_track_default :: list_track('search-tracks-fragment', ${tracksAll}, null)"></div>
+							</div>
+							<div th:unless="${tracksAll != null and 0 < tracksAll.size()}" class="list_none">
+								<ul>
+									<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+									<li th:text="#{common.nothing.search_result}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="genre_listcontent mt30">
+							<div th:if="${albumsAll != null and 0 < albumsAll.size()}">
+								<div th:replace="fragments/common/list_search_album :: list_album(#{model.search.album}, 'search-albums-fragment', ${albumsAll})"></div>
+							</div>
+							<div th:unless="${albumsAll != null and 0 < albumsAll.size()}" class="list_none">
+								<ul>
+									<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+									<li th:text="#{common.nothing.search_result}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!--
+					<div class="tab_content">
+						<div class="genre_listcontent mt30">
+							<div th:if="${storeTracksAll != null and 0 < storeTracksAll.size()}">
+								<div th:replace="fragments/common/list_track_store :: list_track('search-stores-fragment', ${storeTracksAll}, null)"></div>
+							</div>
+							<div th:unless="${storeTracksAll != null and 0 < storeTracksAll.size()}" class="list_none">
+								<ul>
+									<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+									<li th:text="#{common.nothing.search_result}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					-->
+					<div class="tab_content">
+						<div class="genre_listcontent mt30">
+							<div th:if="${artistsAll != null and 0 < artistsAll.size()}">
+								<div th:replace="fragments/common/list_search_artist :: list_artist(#{nav.music.artist}, 'search-artists-fragment', ${artistsAll})"></div>
+							</div>
+							<div th:unless="${artistsAll != null and 0 < artistsAll.size()}" class="list_none">
+								<ul>
+									<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+									<li th:text="#{common.nothing.search_result}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="genre_listcontent mt30">
+							<div th:if="${castingsAll != null and 0 < castingsAll.size()}">
+								<div th:replace="fragments/common/list_search_vocal_casting :: list_casting(#{nav.music.vocal_casting}, 'search-castings-fragment', ${castingsAll})"></div>
+							</div>
+							<div th:unless="${castingsAll != null and 0 < castingsAll.size()}" class="list_none">
+								<ul>
+									<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+									<li th:text="#{common.nothing.search_result}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="genre_listcontent public_video_wrap mt30">
+							<div th:if="${videosAll != null and 0 < videosAll.size()}">
+								<div th:replace="fragments/common/list_search_video :: list_video(#{nav.video}, 'search-videos-fragment', ${videosAll})"></div>
+							</div>
+							<div th:unless="${videosAll != null and 0 < videosAll.size()}" class="list_none">
+								<ul>
+									<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+									<li th:text="#{common.nothing.search_result}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="genre_listcontent public_video_wrap mt30">
+							<div th:if="${bandsAll != null and 0 < bandsAll.size()}">
+								<div th:replace="fragments/common/list_search_bands :: list_bands(#{nav.upm_news.upm_band}, 'search-bands-fragment', ${bandsAll})"></div>
+							</div>
+							<div th:unless="${bandsAll != null and 0 < bandsAll.size()}" class="list_none">
+								<ul>
+									<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+									<li th:text="#{common.nothing.search_result}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- reward music content -->
+			<div class="reward_wrap">
+				<div class="nl_panel pdb0 pdt0">
+					<ul class="nav nav-tabs tabType02">
+						<li class="active"><a><span th:text="#{nav.music.reward.realtime}" th:remove="tag"></span></a></li>
+						<li><a><span th:text="#{nav.music.reward.genre}" th:remove="tag"></span></a></li>
+						<li><a><span th:text="#{nav.music.reward.theme}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane active" id="reward-1">
+						<!-- track list -->
+						<div class="album_list_wrap">
+							<div class="p0_panel btm_gray1">
+								<div class="nl_panel">
+									<div class="ct_title ofh h45">
+										<h2 class="content_title"><span th:text="#{nav.music.reward}" th:remove="tag"></span> <!--<u class="reword_popup"><a onclick="$('#modal-reward-introduction').modal('show');"><span th:text="#{common.reward.what_is}" th:remove="tag"></span></a></u>--></h2>
+										<p class="benchmark"><button class="btn_myreward" th:onclick="@{${'UPMusic.goto(&quot;/my_upm/reward&quot;);'}}"><span th:text="#{button.my_reward}" th:remove="tag"></span></button></p>
+										<p class="listIconBtn">
+											<label class="ico_allSelect"><a th:onclick="@{${'UPMusic.selectAllTracks(&quot;#' + tracksFragmentId + '&quot;);'}}"><span th:text="#{button.select_all}" th:remove="tag"></span></a></label>
+											<label class="ico_allPlay"><a th:onclick="@{${'UPMusicCommon.addAllToPlaylist(&quot;#' + tracksFragmentId + '&quot;);'}}"><span th:text="#{button.play_all}" th:remove="tag"></span></a></label>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div th:replace="fragments/common/list_track_default_mobile :: list_track(${tracksFragmentId}, ${tracks}, ${paginationUrl})"></div>
+						</div>
+						<!--// track list -->
+					</div>
+					<!-- 장르 -->
+					<div class="tab-pane" id="reward-2">
+						<div class="nl_panel">
+							<p class="pd5 col_gray">*장르를 선택해주세요.</p>
+							<div class="swiper-container mainSwiper">
+								<ul class="swiper-wrapper genre_menu of-h">
+									<li th:each="genreOption, iter : ${genreMap}" th:text="${genreOption['value']}" th:id="${genreOption['key']}" class="swiper-slide rewordlist_tab" th:classappend="${iter.index} eq 0 ? 'active genre_0' + ${iter.index%5 + 1} : 'genre_0' + ${iter.index%5 + 1}" th:onclick="@{${'UPMListTrackAnonymous.selectedGenre(&quot;' + genreTracksFragmentId + '&quot;, &quot;' + genrePaginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="slidebtn_clickwrap">
+							<!-- Add Pagination -->
+						</div>
+						<div th:replace="fragments/common/list_track_default_mobile :: list_track(${genreTracksFragmentId}, ${genreTracks}, ${genrePaginationUrl})"></div>
+					</div>
+					<!-- //end 장르 -->
+					<!-- 테마 -->
+					<div class="tab-pane" id="reward-3">
+						<div class="nl_panel">
+							<p class="pd5 col_gray">*테마를 선택해주세요.</p>
+							<!--<div class="swiper-container-theme">-->
+							<div class="swiper-container mainSwiper">
+								<ul class="swiper-wrapper genre_menu of-h">
+									<li th:each="themeOption, iter : ${themeMap}" th:text="${themeOption['value']}" th:id="${themeOption['key']}" class="swiper-slide rewordlist_tab" th:classappend="${iter.index} eq 0 ? 'active genre_0' + ${iter.index%5 + 1} : 'genre_0' + ${iter.index%5 + 1}" th:onclick="@{${'UPMListTrackAnonymous.selectedTheme(&quot;' + themeTracksFragmentId + '&quot;, &quot;' + themePaginationUrl + '&quot;, &quot;' + themeOption['key'] + '&quot;);'}}"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="slidebtn_clickwrap">
+							<!-- Add Pagination -->
+						</div>
+						<div th:replace="fragments/common/list_track_default_mobile :: list_track(${themeTracksFragmentId}, ${themeTracks}, ${themePaginationUrl})"></div>
+					</div>
+					<!-- //end 테마 -->
+				</div><!-- //end tab-content -->
+				
+			</div>
+			<!-- //end reward music content -->
+		</div>
+		
+		<!-- 스트리밍리워드 Modal -->
+		<div class="modal fade" id="modal-reward-introduction" role="dialog" tabindex="-1" aria-labelledby="reward-modal" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content pd0">
+	
+	                <!--Modal header-->
+	                <div class="modal-header">
+	                    <button type="button" class="close wh" data-dismiss="modal"></button>                   
+	                </div>
+	
+	                <!--Modal body-->
+	                <div class="modal-body pd0 imgModal">
+	                    <img th:src="@{/img/mobile/reward_modal.png}" alt="" />
+	                </div>
+	                
+	                <div class="repop_footer">
+						<div class="checkbox color_white">
+							<input id="demo-form-inline-checkbox" class="checkbox-checked" type="checkbox" onclick="UPMusic.doNotShow24hRewardPop();">
+							<label for="demo-form-inline-checkbox"><span class="checkbox-custom"></span> 1일동안 이 창을 열지않음</label>
+						</div>
+					</div>
+	            </div>
+	        </div>
+	    </div>
+		<!-- end 스트리밍리워드 Modal -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentGenre = /*[[ ${defaultGenre} ]]*/;
+			var currentTheme = /*[[ ${defaultTheme} ]]*/;
+			var UPMListTrackAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					if (elementId == 'reward-genre-fragment') url += '&genre=' + currentGenre;
+					else if (elementId == 'reward-theme-fragment') url += '&theme=' + currentTheme;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				},
+				appendPage: function(elementId, paginationUrl, page, totalPages) {
+					var url = paginationUrl + '?page=' + page;
+					if (elementId == 'reward-genre-fragment') url += '&genre=' + currentGenre;
+					else if (elementId == 'reward-theme-fragment') url += '&theme=' + currentTheme;
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.track-list').append(data);
+					});
+					if (page + 1 >= totalPages) {
+						$('#' + elementId + ' #list-more-button').remove();
+					} else {
+						var moreButton = '<p><a onclick="UPMListTrackAnonymous.appendPage(\'' + elementId + '\', \'' + paginationUrl + '\', ' + (page + 1) + ', ' + totalPages + ');">SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i></a></p>';
+						$('#' + elementId + ' #list-more-button').html(moreButton);
+					}
+				},
+				selectedGenre: function(elementId, url, genre) {
+					currentGenre = genre;
+					$('#genre .btn-group button').each(function() {
+						if (this.id == genre) {
+							if (!$(this).hasClass("active")) $(this).addClass('active');
+						} else {
+							if ($(this).hasClass("active")) $(this).removeClass('active');
+						}
+					});
+					UPMListTrackAnonymous.loadPage(elementId, url, 0);
+				},
+				selectedTheme: function(elementId, url, theme) {
+					currentTheme = theme;
+					$('#theme .btn-group button').each(function() {
+						if (this.id == theme) {
+							if (!$(this).hasClass("active")) $(this).addClass('active');
+						} else {
+							if ($(this).hasClass("active")) $(this).removeClass('active');
+						}
+					});
+					UPMListTrackAnonymous.loadPage(elementId, url, 0);
+				}
+			};
+			$(document).ready(function() {
+			    /* 오픈베타를 위해 잠시 막아놓습니다.
+				if (UPMusic.getCookie("upm-reward-introduction") != 'checked') {
+					$('#modal-reward-introduction').modal('show');
+				} else {
+					$('#demo-form-inline-checkbox').prop("checked", true);
+				}
+				*/
+			});
+		/*]]>*/
+		</script>
+	</div>
+
+</body>
+</html>

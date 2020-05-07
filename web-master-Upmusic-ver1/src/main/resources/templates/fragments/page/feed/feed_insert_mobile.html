@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 피드 이미지 -->
+			<form action="#" th:action="@{'/feed/feedInsert'}" role="form" id="feedInsertForm" enctype="multipart/form-data" method="post" th:object="${paramData}">
+			<div class="nl_panel pdt0">
+
+				<div class="feed mb_80">
+					<div class="feedBox bdn">
+						<div class="feedWrite">
+							<div class="feedWriteTop">
+								<div class="userImg noImg"></div>
+								<div class="form-group smallSelect">
+									<ul class="feed_commentsend">
+										<li>
+											<div class="selectbox_design">
+												<span id="selectbox_seleted_text">전체공개</span>
+												<i><img src="/img/select_ar.png" alt="" /></i>
+												<input type="hidden" name="publicRangeFormValue" id="publicRangeFormValue" value="ALL">
+												<ul class="selectbox_option selectbox_off">
+													<li class="ALL">전체 공개</li>
+													<li class="LIKE">좋아요 공개</li>
+													<li class="PRIVATE">나만 보기</li>
+												</ul>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group mar-btm">
+									<textarea placeholder="음악대장님의 뮤직 스토리를 입력하세요." rows="18" id="feed_insert_content" class="form-control" name="content"></textarea>
+								</div>
+							</div>
+
+							<div class="form-group mg0">
+								<div class="input-group ">
+									<div class="imgFileBox">
+										<!-- 파일미리보기 -->
+										<div class="img_box">
+											<ul id="img_ul">
+												<li id="li_clone" style="display: none;">
+													<img src="/img/close.png" alt="" class="close_imgbox">
+												</li>
+												<li id="img_add" onclick="$('#feedImg').trigger('click');return false;"></li>
+											</ul>
+										</div>
+										<!-- //파일미리보기 -->
+										<input type="file" id="feedImg" multiple="multiple" style="display: none;">
+									</div>
+								</div>
+								<p class="colBlue mt_10 mb_10 fll">*첫번째 사진이 대표 사진으로 등록됩니다.</p>
+							</div>
+						</div>
+					</div>
+				</div><!-- //end feed -->
+
+			</div>
+			<!-- //end 피드 -->
+			<div class="btn_box fixedBox">
+				<button class="btn btn-block btn-lg btn-dark" id="btn_feed_insert" type="button" style="display: none;">등록</button>
+			</div>
+
+			</form>
+		</div>
+		<!-- //end content -->
+
+
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+
+		/*]]>*/
+		var fileList = [];
+        $('#feedImg').change(function (e) {
+            for(var i=0; i<e.target.files.length; i++) {
+                var li = $('#li_clone').clone();
+                li.css('background', 'url('+ URL.createObjectURL(e.target.files[i]) +') center center').css('background-size', 'cover');
+                $('#img_ul').prepend(li);
+                li.show();
+                fileList.push(e.target.files[i]);
+            }
+            console.log(fileList)
+
+    	    $('#feedImg').val('');
+
+    	  	//2018-08-03 인풋에 x클릭하면 해당박스 사라짐
+    		$(".close_imgbox").click(function(){
+    			var index = $(this).parent("li").index();
+    			fileList[index] = null;
+    			$(this).parent("li").fadeOut(300);
+
+    			if($(this).parent("li:last").index() > 1){
+		    		$('#btn_feed_insert').show();
+	    	  	}else{
+	    	  		$('#btn_feed_insert').hide();
+	    	  	}
+    	    });
+
+    		if(fileList.length > 0){
+	    		$('#btn_feed_insert').show();
+    	  	}else{
+    	  		$('#btn_feed_insert').hide();
+    	  	}
+        });
+
+		$(".checkbox").click(function(){
+			if($(".checkbox-checked").is(":checked")){
+				$(this).parent("dd").removeClass("off").addClass("on");
+			}else{
+				$(this).parent("dd").removeClass("on").addClass("off");
+			}
+		});
+		// 공개여부 선택
+		$('.selectbox_option').on('click', function(e){
+			var selectboxText = $(e.target).html();
+			var selectValue = $(e.target).attr('class');
+
+			$('#selectbox_seleted_text').html(selectboxText);
+			$('#publicRangeFormValue').val(selectValue);
+
+		});
+
+        $('#btn_feed_insert').click(function(){
+            var form = $('#feedInsertForm')[0];
+            var formData = new FormData(form);
+
+            for(var i=0; i< fileList.length; i++) {
+                formData.append('feedImg', fileList[i]);
+            }
+
+			$.ajax({
+				type : 'post',
+				url : '/api/feed/insert.json',
+				data : formData,
+				processData : false,
+				contentType : false,
+				success : function(data){
+					UPMusic.alert("피드 등록이 완료 되었습니다.");
+					UPMusic.goto("/feed/me#my_feed");
+				}
+			});
+		});
+
+		$('#feed_insert_content').keyup(function(){
+			var feed_insert_content = $('#feed_insert_content').val();
+
+			if(feed_insert_content.length > 0){
+				$('#btn_feed_insert').show();
+			}else{
+				$('#btn_feed_insert').hide();
+			}
+		});
+	</script>
+	</div>
+
+</body>
+</html>

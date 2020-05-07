@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+
+<head>
+<meta charset="utf-8"/>
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE" th:text="#{common.app.title}"></title>
+<meta name="keywords" content="Music" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script th:src="@{/js/jquery.min.js}"></script>
+</head>
+
+<body>
+	<div class="container" id="mainContent">
+		<div layout:fragment="content"></div>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 프로젝트소식 상세 -->
+			<div class="p0_panel">
+				<div class="projectNewsView">
+					<div class="btm_gray1">
+						<p class="subject clamp2" th:text="${result.subject}"></p>								
+						<p class="date"><span th:text="${result.getCreatedAtFormat()}"></span></p>								
+					</div>
+					<div class="content" th:utext="${result.content}">
+					</div>
+					<div class="h80"></div>
+					
+				</div>
+			</div>
+			<!-- //end 프로젝트소식 상세 -->
+			
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		
+		
+		</script>
+	</div>
+
+</body>
+</html>

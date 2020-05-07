@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_collection_new">
+		<div class="modal fade" id="modal-track-rejected-reason" role="dialog" tabindex="-1" aria-labelledby="Track Rejection" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">심사 반려</h2>
+	                    <img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<div class="inputbox mt10">
+								<label class="input_title pop_title">반려 사유</label>
+								<input id="rejected-reason" type="text" placeholder="이유를 간략히 입력해주세요" class="form-control login_input" />
+							</div>
+							<div class="login_btn upload_btn mt10">
+								<button class="btn btn-custom3 h50 w100p" onclick="UPMTrackRejectedReasonModal.rejectTrack();">확인</button>
+							</div>
+						</div>
+	                </div>
+	
+	            </div>
+	        </div>
+	    </div>
+		
+		<script type="text/javascript">
+			var currentTrackId = 0;
+			var UPMTrackRejectedReasonModal = {
+				showModal : function(trackId) {
+					currentTrackId = trackId;
+					$('#modal-track-rejected-reason').modal('show');
+				},
+				rejectTrack : function() {
+					var reason = $('#rejected-reason').val();
+					if (reason != '') {
+			  			UPMusicAdmin.rejectTrack(currentTrackId, reason);
+					} else {
+						UPMusicAdmin.alert("이유를 간략히 입력해주세요");
+					}
+				}
+			};
+	    </script>
+	</div>
+</body>
+
+</html>

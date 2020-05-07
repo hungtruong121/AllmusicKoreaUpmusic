@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<div class="page-title-wrap">
+					<h2 class="page-title fl"><span th:text="#{nav.music.reward}" th:remove="tag"></span> <!--<span class="reword_popup"><a onclick="$('#modal-reward-introduction').modal('show');"><span th:text="#{common.reward.what_is}" th:remove="tag"></span></a></span>--></h2>
+					<a th:onclick="@{${'UPMusic.goto(&quot;/my_upm/reward&quot;);'}}" class="btn btn-custom2 fr"><i><img th:src="@{/img/reword_icon.png}" alt="" /></i> <span th:text="#{button.my_reward}" th:remove="tag"></span></a>
+				</div>
+				<div class="tab_design clear">
+					<ul>
+						<li id="reward-realtime"><span th:text="#{nav.music.reward.realtime}" th:remove="tag"></span>
+							<div class="tab_line"></div>
+						</li>
+						<li id="reward-genre"><span th:text="#{nav.music.reward.genre}" th:remove="tag"></span></li>
+						<li id="reward-theme"><span th:text="#{nav.music.reward.theme}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div th:replace="fragments/common/list_track_default :: list_track(${tracksFragmentId}, ${tracks}, ${paginationUrl})"></div>
+					</div>
+					<div class="tab_content">
+						<!--
+						<div class="swiper-container reword_listwrap">
+							<div class="swiper-wrapper genre-btn-group">
+								<div th:each="genreOption, iter : ${genreMap}" th:id="${genreOption['key']}" class="swiper-slide rewordlist_tab" th:classappend="${iter.index} eq 0 ? 'rewordlist_checked rewordlist_tab' + ${iter.index%3 + 1} : 'rewordlist_tab' + ${iter.index%3 + 1}" th:onclick="@{${'UPMListTrackAnonymous.selectedGenre(&quot;' + genreTracksFragmentId + '&quot;, &quot;' + genrePaginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"><img th:src="${iter.index} eq 0 ? '/img/reword_tab_on' + ${iter.index%3 + 1} + '.png' : '/img/reword_tab' + ${iter.index%3 + 1} + '.png'" alt=""><p class="mt5" th:text="${genreOption['value']}"></p></div>
+							</div>
+						</div>
+						-->
+						<!-- 20181204 jm수정 탭디자인 변경 -->
+						<div class="thema_list">
+							<ul>
+									<!--<li class="active">전체</li> -->
+									<!--<li>발라드</li> -->
+									<!--<li>댄스</li> -->
+									<!--<li>힙합</li> -->
+									<!--<li>일렉트로닉</li> -->
+									<!--<li>락/메탈</li> -->
+									<!--<li>재즈</li> -->
+									<!--<li>인디</li> -->
+									<!--<li>성인가요</li> -->
+									<!--<li>BGM</li> -->
+									<!--<li>뉴에이지</li> -->
+									<!--<li>종교</li> -->
+									<!--<li>어린이</li> -->
+									<!--20181218 ngoclh fix bug #23424 &23425 -->
+									<li th:each="genreOption, iter : ${genreMap}" th:id="${genreOption['key']}" th:onclick="@{${'UPMListTrackAnonymous.selectedGenre(&quot;' + genreTracksFragmentId + '&quot;, &quot;' + genrePaginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"><p th:text="${genreOption['value']}"></p></li>
+							</ul>
+						</div>
+						<div class="slidebtn_clickwrap">
+							<!-- Add Pagination -->
+						</div>
+						<div th:replace="fragments/common/list_track_default :: list_track(${genreTracksFragmentId}, ${genreTracks}, ${genrePaginationUrl})"></div>
+					</div>
+					<div class="tab_content">
+						<!--
+						<div class="swiper-container-theme reword_listwrap">
+							<div class="swiper-wrapper theme-btn-group">
+								<div th:each="themeOption, iter : ${themeMap}" th:id="${themeOption['key']}" class="swiper-slide rewordlist_tab" th:classappend="${iter.index} eq 0 ? 'rewordlist_checked rewordlist_tab' + ${iter.index%3 + 1} : 'rewordlist_tab' + ${iter.index%3 + 1}" th:onclick="@{${'UPMListTrackAnonymous.selectedTheme(&quot;' + themeTracksFragmentId + '&quot;, &quot;' + themePaginationUrl + '&quot;, &quot;' + themeOption['key'] + '&quot;);'}}"><img th:src="${iter.index} eq 0 ? '/img/reword2_tab_on' + ${iter.index%3 + 1} + '.png' : '/img/reword2_tab' + ${iter.index%3 + 1} + '.png'" alt=""><p class="mt5" th:text="${themeOption['value']}"></p></div>
+							</div>
+						</div>
+						-->
+						<!-- 20181204 jm수정 탭디자인 변경 -->
+						<div class="thema_list thema_list2">
+							<ul>
+									<!--<li class="active">전체</li> -->
+									<!--<li>발라드</li> -->
+									<!--<li>댄스</li> -->
+									<!--<li>힙합</li> -->
+									<!--<li>일렉트로닉</li> -->
+									<!--<li>락/메탈</li> -->
+									<!--<li>재즈</li> -->
+									<!--<li>인디</li> -->
+									<!--<li>성인가요</li> -->
+									<!--<li>BGM</li> -->
+									<!--<li>뉴에이지</li> -->
+									<!--<li>종교</li> -->
+									<!--<li>어린이</li> -->
+									<!--20181218 ngoclh fix bug #23424 &23425 -->
+									<li th:each="themeOption, iter : ${themeMap}" th:id="${themeOption['key']}"  th:onclick="@{${'UPMListTrackAnonymous.selectedTheme(&quot;' + themeTracksFragmentId + '&quot;, &quot;' + themePaginationUrl + '&quot;, &quot;' + themeOption['key'] + '&quot;);'}}"><p th:text="${themeOption['value']}"></p></li>
+							</ul>
+						</div>
+						<div class="slidebtn_clickwrap">
+							<!-- Add Pagination -->
+						</div>
+						<div th:replace="fragments/common/list_track_default :: list_track(${themeTracksFragmentId}, ${themeTracks}, ${themePaginationUrl})"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentGenre = /*[[ ${defaultGenre} ]]*/;
+			var currentTheme = /*[[ ${defaultTheme} ]]*/;
+			var UPMListTrackAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					if (elementId == 'reward-genre-fragment') url += '&genre=' + currentGenre;
+					else if (elementId == 'reward-theme-fragment') url += '&theme=' + currentTheme;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				},
+				selectedGenre: function(elementId, url, genre) {
+					currentGenre = genre;
+					$('.genre-btn-group .rewordlist_tab').each(function() {
+						if (this.id == genre) {
+							if (!$(this).hasClass("rewordlist_checked")) {
+								$(this).addClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (!src.includes("_on")) {
+									src = src.replace("tab", "tab_on");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						} else {
+							if ($(this).hasClass("rewordlist_checked")) {
+								$(this).removeClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (src.includes("_on")) {
+									src = src.replace("_on", "");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						}
+					});
+					UPMListTrackAnonymous.loadPage(elementId, url, 0);
+				},
+				selectedTheme: function(elementId, url, theme) {
+					currentTheme = theme;
+					$('.theme-btn-group .rewordlist_tab').each(function() {
+						if (this.id == theme) {
+							if (!$(this).hasClass("rewordlist_checked")) {
+								$(this).addClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (!src.includes("_on")) {
+									src = src.replace("tab", "tab_on");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						} else {
+							if ($(this).hasClass("rewordlist_checked")) {
+								$(this).removeClass('rewordlist_checked');
+								var src = $(this).children('img').attr('src');
+								if (src.includes("_on")) {
+									src = src.replace("_on", "");
+									$(this).children('img').attr('src',src);
+								}
+							}
+						}
+					});
+					UPMListTrackAnonymous.loadPage(elementId, url, 0);
+				}
+			};
+			$(document).ready(function() {
+				 //오픈베타를 위해 막아놓습니다. 2019-12-16
+			    if (UPMusic.getCookie("upm-reward-introduction") != 'checked') {
+					$('#modal-reward-introduction').modal('show');
+				} else {
+					$('#demo-form-inline-checkbox').prop("checked", true);
+				}
+				
+				//20181218 ngoclh fix bug #23424 &23425
+				$('.thema_list>ul>li:first').addClass("active");
+				$('.thema_list2>ul>li:first').addClass("active");
+				
+				//20181204 jm수정 탭디자인 변경
+                $(".thema_list>ul>li").click(function(){
+                    $(this).addClass('active').siblings('li').removeClass('active');
+                });
+			});
+		/*]]>*/
+		</script>
+	</div>
+
+</body>
+</html>

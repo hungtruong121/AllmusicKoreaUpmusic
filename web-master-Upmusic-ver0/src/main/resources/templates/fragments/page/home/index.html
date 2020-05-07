@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content" class="section_wrap">
+		<div class="section section1">
+			<div class="upmusic_notice_slide">
+				<div class="notice_memo">
+					<div th:if = "${!@environment.acceptsProfiles('prod')}" class="swiper-slide"><span>재생시간</span>: <span th:text="${streamingRewardPlaytime}"></span> <span class="ml10">스트리밍 리워드</span>: <span th:text="${streamingRewardPoint}"></span></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="section section2">
+			<div class="content_video">
+				<h3 class="content_title">
+					<span th:text="#{common.recommended.video}" th:remove="tag"></span>
+				</h3>
+				<div th:if="${recommendedVideos != null && 0 < recommendedVideos.size()}" class="video_content_left">
+					<div class="video_item video_item1 videoplay_on pointer" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedVideos[0].getUrl() + '&quot;)'}}">
+						<div class="mainItem_hover1" th:style="@{${'background-image: url(' + recommendedVideos[0].getThumbnailUrl() + ');'}}">
+							<div class="play_iconwrap">
+								<ul>
+									<li><img th:src="@{/img/play_icon.png}" alt="" /></li>
+									<li th:text="${recommendedVideos[0].formattedDuration()}"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="item_info item_infoText100">
+							<ul>
+								<li><span th:text="${recommendedVideos[0].subject}" th:remove="tag"></span></li>
+								<li th:onclick="@{${'UPMusic.goto(&quot;' + recommendedVideos[0].getArtistUrl() + '&quot;, event)'}}"><span th:text="${recommendedVideos[0].getArtistNick()}" th:remove="tag"></span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div th:if="${recommendedVideos != null && 1 < recommendedVideos.size()}" class="video_content_right">
+					<div class="video_item video_item2 videoplay_on2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedVideos[1].getUrl() + '&quot;)'}}">
+						<div class="mainItem_hover2" th:style="@{${'background-image: url(' + recommendedVideos[1].getThumbnailUrl() + ');'}}">
+							<div class="play_iconwrap play_iconwrap2">
+								<ul>
+									<li><img th:src="@{/img/play_icon.png}" alt="" /></li>
+									<li th:text="${recommendedVideos[1].formattedDuration()}"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="item_info item_info_ver2">
+							<ul>
+								<li><span th:text="${recommendedVideos[1].subject}" th:remove="tag"></span></li>
+								<li th:onclick="@{${'UPMusic.goto(&quot;' + recommendedVideos[1].getArtistUrl() + '&quot;, event)'}}"><span th:text="${recommendedVideos[1].getArtistNick()}" th:remove="tag"></span></li>
+							</ul>
+						</div>
+					</div>
+					<div th:if="${recommendedVideos != null && 2 < recommendedVideos.size()}" class="video_item video_item3 videoplay_on2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedVideos[2].getUrl() + '&quot;)'}}">
+						<div class="mainItem_hover1" th:style="@{${'background-image: url(' + recommendedVideos[2].getThumbnailUrl() + ');'}}">
+							<div class="play_iconwrap play_iconwrap2">
+								<ul>
+									<li><img th:src="@{/img/play_icon.png}" alt="" /></li>
+									<li th:text="${recommendedVideos[2].formattedDuration()}"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="item_info item_info_ver2">
+							<ul>
+								<li><span th:text="${recommendedVideos[2].subject}" th:remove="tag"></span></li>
+								<li th:onclick="@{${'UPMusic.goto(&quot;' + recommendedVideos[2].getArtistUrl() + '&quot;, event)'}}"><span th:text="${recommendedVideos[2].getArtistNick()}" th:remove="tag"></span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="content_music">
+				<h3 class="content_title">
+					<span th:text="#{common.recommended.music}" th:remove="tag"></span>
+				</h3>
+				<div th:if="${recommendedTracks != null && 0 < recommendedTracks.size()}" class="video_content_left video_content_left2">
+					<div th:id="${recommendedTracks[0].id}" class="video_item video_item1 music_item1 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedTracks[0].getUrl() + '&quot;)'}}">
+						<div class="mainItem_hover4" th:style="@{${'background-image: url(' + recommendedTracks[0].getCoverImageUrl() + ');'}}"></div>
+						<div class="item_info item_infoText185">
+							<ul class="item_padding">
+								<li><span th:text="${recommendedTracks[0].subject}"></span></li>
+								<li th:onclick="@{${'UPMusic.goto(&quot;' + recommendedTracks[0].getArtistUrl() + '&quot;, event)'}}"><span th:text="${recommendedTracks[0].getArtistNick()}"></span></li>
+							</ul>
+							<div class="item_like">
+								<a th:onclick="@{${'UPMShareModal.showShareModalFromList(' + recommendedTracks[0].getMusicAlbum().id + ', ' + recommendedTracks[0].id + ', event);'}}"><i><img th:src="@{/img/share.png}" alt="" class="share_icon" /></i></a>
+								<a th:onclick="@{${'UPMusicCommon.likeTrack(' + recommendedTracks[0].id + ', event);'}}"><i><span id="track-like" class="heart_icon" th:classappend="${recommendedTracks[0].liked} ? 'heart_icon_on' : 'heart_icon_off'">&nbsp;</span></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div th:if="${recommendedTracks != null && 1 < recommendedTracks.size()}" class="video_content_right video_content_right2">
+					<div th:id="${recommendedTracks[1].id}" class="video_item video_item2 music_item2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedTracks[1].getUrl() + '&quot;)'}}">
+						<div class="mainItem_hover5" th:style="@{${'background-image: url(' + recommendedTracks[1].getCoverImageUrl() + ');'}}"></div>
+						<div class="item_info item_info_ver2 item_info_ver3">
+							<ul class="w100p">
+								<li><span th:text="${recommendedTracks[1].subject}"></span></li>
+								<li th:onclick="@{${'UPMusic.goto(&quot;' + recommendedTracks[1].getArtistUrl() + '&quot;, event)'}}"><span th:text="${recommendedTracks[1].getArtistNick()}"></span></li>
+							</ul>
+						</div>
+					</div>
+					<div th:if="${recommendedTracks != null && 2 < recommendedTracks.size()}" th:id="${recommendedTracks[2].id}" class="video_item video_item3 music_item3 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedTracks[2].getUrl() + '&quot;)'}}">
+						<div class="mainItem_hover6" th:style="@{${'background-image: url(' + recommendedTracks[2].getCoverImageUrl() + ');'}}"></div>
+						<div class="item_info item_info_ver2 item_info_ver3">
+							<ul class="w100p">
+								<li><span th:text="${recommendedTracks[2].subject}"></span></li>
+								<li th:onclick="@{${'UPMusic.goto(&quot;' + recommendedTracks[2].getArtistUrl() + '&quot;, event)'}}"><span th:text="${recommendedTracks[2].getArtistNick()}"></span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="section section3">
+			<div class="advertisement_item1">
+				<div class="main_event_banner">
+
+				</div>
+				<!--  2018-06-29 인조이웍스 추가 -->
+				<div>
+					<ul class="advertisement_slide">
+						<!--
+						<li></li>
+						<li></li>
+						<li></li>
+						-->
+					</ul>
+				</div>
+			</div>
+			<div class="advertisement_item2"></div>
+		</div>
+
+		<div class="section section4">
+			<div class="section4_contwrap">
+				<div th:replace="fragments/common/list_home_track :: list_track('home-top50-fragment', ${top5Tracks})" class="top50_wrap musiclist_table"></div>
+				<div th:replace="fragments/common/list_home_video :: list_video('home-topVideo-fragment', ${top4Videos})" class="popularity_video"></div>
+			</div>
+		</div>
+
+		<div class="section5">
+			<div th:replace="fragments/common/list_home_horizontal :: list_media('home-recent-play-fragment', ${recentPlayedTracks}, ${recentPlayedVideos}, ${hasRecentPlayedList})"></div>
+		</div>
+
+		<div class="section6">
+			<div th:replace="fragments/common/list_home_horizontal :: list_media('home-likes-fragment', ${likedTracks}, ${likedVideos}, ${hasLikedList})"></div>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		//스와이퍼 선언
+		var swiper = new Swiper('.swiper-container', {
+			slidesPerView: 'auto',
+			spaceBetween: 30,
+			pagination: {
+				el: '.swiper-pagination',
+				clickable: true,
+			},navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+			},
+		});
+
+		// 메인 영상/음원탭
+		$(".radio_custom>ul>li").click(function() {
+			$(this).addClass("accordion_btnOn").siblings("li").removeClass("accordion_btnOn");
+		});
+
+		$(".section5 .radio_custom>ul>li").click(function() {
+			tabNum = $(this).index();
+			$(".section5 .tab_contentwrap>div").eq(tabNum).addClass("active").siblings("div").removeClass("active");
+            for(i=0; i < swiper.length ; i++){
+                swiper[i].update();
+            }
+			if ($(this).attr('id')) {
+				$('.section5 #horizontal-list-controls').hide();
+			} else {
+				$('.section5 #horizontal-list-controls').show();
+			}
+		});
+		$(".section6 .radio_custom>ul>li").click(function() {
+			tabNum = $(this).index();
+			$(".section6 .tab_contentwrap>div").eq(tabNum).addClass("active").siblings("div").removeClass("active");
+            for(i=0; i < swiper.length ; i++){
+                swiper[i].update();
+            }
+			if ($(this).attr('id')) {
+				$('.section6 #horizontal-list-controls').hide();
+			} else {
+				$('.section6 #horizontal-list-controls').show();
+			}
+		});
+
+		// 메인 앨범
+		$(".nearest_plbg").click(function(e) {
+			UPMusic.log("nearest_plbg clicked!");
+			if (!e) var e = window.event;
+		    e.cancelBubble = true;
+		    if (e.stopPropagation) e.stopPropagation();
+			if ($(this).parents(".playlist_content").hasClass('nearest_plbg_info_on')) {
+				$(this).parents(".playlist_content").removeClass("nearest_plbg_info_on");
+				$(this).parents(".playlist_content").children('.nearest_plbg').children(".cd_hole").hide();
+				$(this).parents(".playlist_content").children(".nearest_plinfo").show();
+                for(i=0; i < swiper.length ; i++){
+                    swiper[i].update();
+                }
+			} else {
+				$(this).parents(".playlist_content").addClass("nearest_plbg_info_on");
+				$(this).children(".cd_hole").show();
+				$(this).children(".nearest_plbg_info").show().animate({
+					"left" : "200px",
+					"z-index" : "3"
+				}, 500);
+				$(this).children(".cdplaybtn").delay(500).fadeIn(300);
+				$(this).parents(".playlist_content").children(".nearest_plinfo").hide();
+                for(i=0; i < swiper.length ; i++){
+                    swiper[i].update();
+                }
+			}
+		});
+		/* $('.nearest_plinfo').click(function() {
+			$(this).parents(".playlist_content").children(".nearest_plbg").click();
+		}); */
+
+		//배너 슬라이드
+		//2018-06-29 인조이웍스 추가
+        var eventBannerList = /*[[ ${eventBannerList} ]]*/;
+        var artistBannerList = /*[[ ${artistBannerList} ]]*/;
+
+        $.each(eventBannerList, function (i, v) {
+			$("<li></li>").appendTo($(".advertisement_slide"));
+        });
+
+        $(".main_event_banner").css({'background':'url("' + eventBannerList[0].imgUrl + '") no-repeat','backgroundSize':'cover','cursor':'pointer'});
+        $('.main_event_banner').val(eventBannerList[0].link);
+        $(".advertisement_item2").css({'background':'url("' + artistBannerList[0].imgUrl + '") no-repeat','backgroundSize':'cover','cursor':'pointer'});
+        $(".advertisement_item2").click(function () {
+            window.location.href = artistBannerList[0].link;
+		});
+		$(".advertisement_slide>li").click(function(){
+			idx = $(this).index();
+			// $(".advertisement_item1").css({'background':'url("' + eventBannerList[idx].imgUrl + '") no-repeat','backgroundSize':'cover','cursor':'pointer'});
+			$(".main_event_banner").css({'background':'url("' + eventBannerList[idx].imgUrl + '") no-repeat','backgroundSize':'cover','cursor':'pointer'});
+			$('.main_event_banner').val(eventBannerList[idx].link);
+			$(this).css("borderRadius","0").siblings("li").css("borderRadius","12px");
+		});
+
+        $('.main_event_banner').click(function () {
+			window.location.href = $(this).val();
+        });
+        //배너 end
+
+		// 좋아요 리스트는 영상탭을 활성화
+		$('.section6 #home-video-tab').click();
+
+        /*]]>*/
+		</script>
+	</div>
+	<!-- section wrap	 -->
+
+</body>
+</html>

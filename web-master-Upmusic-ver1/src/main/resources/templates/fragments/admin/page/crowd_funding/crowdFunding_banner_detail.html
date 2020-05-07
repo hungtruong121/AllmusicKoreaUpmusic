@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+		<form action="#" th:action="@{/admin/crowd_funding/banner/detail}" role="form" enctype="multipart/form-data" th:object="${bannerForm}" method="post" id="updateForm">
+		<input type="hidden" name="crowdFundingBannerId" th:value="${result.crowdFundingBannerId}">
+		<input type="hidden" name="filename" th:value="${result.filename}" >
+    	<div class="subpage_wrap section">
+			<h2 class="page-title">배너 상세보기</h2>
+			<!--
+			이미지 업로드
+			노출여부
+			링크
+			노출순서
+			 -->
+			<div class="membership_wrap">
+				<ul>
+					<li>
+						<div id="form-group-imageFilename" class="form-group inputbox">
+							<div class="input-file">
+								<label class="input_title">웹 배너 썸네일 이미지</label>
+								<input th:type="text" id="imageFilename" placeholder="이미지를 등록하세요" class="form-control imgupload_input" onclick="$('#cropit-image-input').trigger('click');return false;" onkeypress="return event.keyCode != 13;"/>
+								<!--<input type="file" name="thumbnailImg" id="cropit-image-input" style="display: none;"/>-->
+								<input type="file" id="cropit-image-input" style="display: none;"/>
+								<img th:src="@{/img/inputicon_img.png}" alt="" />
+							</div>
+						</div>
+						<div class="banner_view" style="display: none"></div>
+					</li>
+					<li>
+						<div id="form-group-imageFilename" class="form-group inputbox">
+							<div class="input-file">
+								<label class="input_title">모바일 배너 썸네일 이미지</label>
+								<input th:type="text" id="imageFilename_m" placeholder="이미지를 등록하세요" class="form-control imgupload_input" onclick="$('#cropit-image-input_m').trigger('click');return false;" onkeypress="return event.keyCode != 13;"/>
+								<!--<input type="file" name="thumbnailImgMobile" id="cropit-image-input_m" style="display: none;"/>-->
+								<input type="file" id="cropit-image-input_m" style="display: none;"/>
+								<img th:src="@{/img/inputicon_img.png}" alt="" />
+							</div>
+						</div>
+						<div class="banner_view_m" style="display: none"></div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">링크</label>
+							<input type="text" placeholder="입력하세요." class="form-control" name="link" th:value="${result.link}" id="banner_link">
+						</div>
+					</li>
+					<li>
+						<div class="form-group inputbox w49p mr2p fl">
+							<label class="input_title">노출 여부</label>
+							<div>
+								<select class="form-control" name="showYn" style="height: 50px;" >
+									<option value="1" th:selected="${result.showYn} == '1' ? true : false">노출</option>
+									<option value="0" th:selected="${result.showYn} == '0' ? true : false">비노출</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group inputbox w49p fl">
+							<label class="input_title">노출순서</label>
+							<input type="text" placeholder="입력하세요." class="form-control" name="orderNo" th:value="${result.orderNo}">
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- <div class="inputbox">
+				<label class="input_title">내용</label>
+			    <textarea rows="" cols="" class="summernote" name="content"></textarea>
+			</div> -->
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom btn-dark h50" type="button" id="btn_submit">수정</button>
+					<button class="btn btn_delete btn-dark h50" type="button">삭제</button>
+					<button type="button" class="btn btn-custom2 h50" id="btn_back">취소</button>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</form>
+    </div>
+	<div th:replace="fragments/common/modal_crop_image"></div>
+    <script type="text/javascript" th:inline="javascript">
+        var UPMBannerDetail = {
+            _config : {
+                loading : false
+            },
+            readURL: function(input) {
+                UPMBannerDetail._config.loading = false;
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        UPMCropImageModal.showModal(e, 1543/220, '');
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                    UPMBannerDetail.readURLCallback(input.files[0]);
+                }
+            },
+            readURLCallback : function (file) {
+                $('.banner_view').css('display','block');
+                $('.banner_view').css('background','url(' + URL.createObjectURL(file) + ')');
+            },
+            readURLApp: function(input) {
+                UPMBannerDetail._config.loading = false;
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        UPMCropImageModal.showModal(e, 330/183, 'app');
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                    UPMBannerDetail.readURLAppCallback(input.files[0]);
+                }
+            },
+            readURLAppCallback : function (file) {
+                $('.banner_view_m').css('display','block');
+                $('.banner_view_m').css('background','url(' + URL.createObjectURL(file) + ')');
+            },
+            submitAction: function(e) {
+                if (!e) var e = window.event;
+                e.cancelBubble = true;
+                if (e.stopPropagation) e.stopPropagation();
+                if (UPMBannerDetail._config.loading) return;
+                UPMBannerDetail._config.loading = true;
+                UPMusicAdmin.startLoading();
+                var form = document.getElementById('updateForm');
+                var formData = new FormData(form);
+                if (UPMCropImageModal._config.imageBlob) formData.append('thumbnailImg', UPMCropImageModal._config.imageBlob, $('input#imageFilename').val());
+                if (UPMCropImageModal._config.imageBlobMobile) formData.append('thumbnailImgMobile', UPMCropImageModal._config.imageBlobMobile, $('input#imageFilename_m').val());
+                UPMusicAdmin.ajaxPostFormData("/admin/crowd_funding/banner/update", headers, formData, UPMBannerDetail.submitCallback);
+
+            },
+            submitCallback : function(message, object) {
+                window.location.href = '/admin/crowd_funding/banner';
+                UPMBannerDetail._config.loading = false;
+                UPMusicAdmin.stopLoading();
+            }
+        };
+
+	    $('#btn_back').click(function(){
+	    	history.back();
+	    });
+
+	    $('.btn_delete').click(function(e){
+	    	UPMusicAdmin.confirm("정말로  삭제하시겠습니까?", function() {
+	    		UPMusicAdmin.goto(/*[[${result.getAdminDeleteUrl()}]]*/);
+		    });
+	    });
+
+        $('#cropit-image-input').change(function(e){
+            if (UPMBannerDetail._config.loading) return;
+            UPMBannerDetail._config.loading = true;
+            UPMBannerDetail.readURL(this);
+
+            var temp = $(this).val().split('.');
+            var fileExt = temp[temp.length-1].toLowerCase();
+
+            if(fileExt == "jpg" || fileExt == "jpeg" || fileExt == "png" || fileExt == "gif" || fileExt == "bmp"){
+                // $('#img_fileName').val(e.target.files[0].name);
+                // $('.banner_view').css('display','block');
+                // $('.banner_view').css('background','url(' + URL.createObjectURL(e.target.files[0]) + ')');
+            }else{
+                alert('이미지 파일만 등록 가능 합니다.');
+                $(this).val('');
+            }
+        });
+
+        $('#cropit-image-input_m').change(function(e){
+            if (UPMBannerDetail._config.loading) return;
+            UPMBannerDetail._config.loading = true;
+            UPMBannerDetail.readURLApp(this);
+
+            var temp = $(this).val().split('.');
+            var fileExt = temp[temp.length-1].toLowerCase();
+
+            if(fileExt == "jpg" || fileExt == "jpeg" || fileExt == "png" || fileExt == "gif" || fileExt == "bmp"){
+                // $('#img_fileName').val(e.target.files[0].name);
+                // $('.banner_view_m').css('display','block');
+                // $('.banner_view_m').css('background','url(' + URL.createObjectURL(e.target.files[0]) + ')');
+            }else{
+                alert('이미지 파일만 등록 가능 합니다.');
+                $(this).val('');
+            }
+        });
+	    
+	    $('#btn_submit').on('click', function(){
+	    	var linkValue = $('#banner_link').val();
+	    	
+	    	if(linkValue != ""){
+	    		if(linkValue.indexOf('http://') == -1){
+	    			if(linkValue.indexOf('https://') == -1){
+	    				alert('링크에 입력되는 URL 정보에 (http://, https://)를 필수로 입력해주세요.');
+	    				return false;
+	    			}
+	    		}
+	    	}else{
+	    		alert('링크의 URL 정보를 입력해주세요');
+	    		return false;
+	    	}
+	    	
+	    	// $('#updateForm').submit();
+            UPMBannerDetail.submitAction(event);
+	    });
+
+	</script>
+  </div>
+
+</body>
+</html>

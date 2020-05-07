@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap section">
+			<h2 class="page-title" th:text="#{model.music.upload}"></h2>
+			<button class="btn btn-custom2 fr" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/music/excelTrack&quot;);'}}"><i><img src="img/add-event.png" alt="" /></i> Excel 파일로 등록</button>
+			<div class="additional_information clear ml0">
+				<ul>
+					<li><h3 class="copyright_title additional_title fl mb10">나의 음원 등록</h3></li>
+					<li class="clear">업로드 되는 모든 저작물의 및 권리와 책임은 회원님에게 있으며 업로드 승인 후 서비스 되는 창작물은 회원님 소유이며 업뮤직에 절대 귀속되지 않음을 알려드립니다.</li>
+					<li>한국음악저작권협회 등 신탁단체에서 관리중인 저작물이거나 또는 서비스사(SP) , 유통사(CP)에서 서비스 중인 저작물은 ‘업로드’ 운영 원칙에 따라 등록 기준이 다르게 적용됨을 알려드립니다.</li>
+					<li>관련 법규와 ‘업뮤직’ 운영원칙에 위배되지 않는 한 등록된 회원님의 모든 저작물은 블록체인 네트워크 시스템에 기록, 관리되어 저작물 소유에 대한 권리 증명과 보호가 가능함을 알려드립니다.</li>
+					<li>업뮤직에서 서비스되는 회원님의 모든 저작물은 해당 서비스에 따라 투명하게 기록 관리되며 이에 따른 투명한 분배와 정산이 이루어짐을 알려드립니다.</li>
+				</ul>
+			</div>
+			<div class="tabcontent_wrap">
+				<div class="tabcontent_0">
+					<p class="content_title2"><span th:text="#{common.music.upload.description_1}" th:remove="tag"></span> <span th:text="#{common.music.upload.description_2}"></span></p>
+					<input id="cropit-image-input" type="file" accept="image/*" class="cropit-image-input hidden" value="">
+					<form id="upload-album" action="#" th:action="@{/upload/music}" th:object="${musicform}" method="POST" class="form-music" enctype="multipart/form-data" role="form">
+						<div class="inputbox_wrap">
+							<ul>
+								<li class="mb20">
+									<div id="form-group-albumType" class="form-group inputbox" th:classappend="${#fields.hasErrors('albumType')} ? 'has-error' : ''">
+										<label class="input_title db" th:text="#{model.music.type}"></label>
+										<select class="form-control selectpicker clear w100p" th:field="*{albumType}">
+											<option th:each="albumTypeOption : ${albumTypeMap}" th:value="${albumTypeOption['key']}" th:text="${albumTypeOption['value']}"></option>
+										</select>
+										<p th:if="${#fields.hasErrors('albumType')}" th:id="error-albumType" class="help-block" th:errors="*{albumType}"></p>
+									</div>
+								</li>
+								<li class="mb20">
+									<div id="form-group-genre" class="form-group inputbox" th:classappend="${#fields.hasErrors('genre')} ? 'has-error' : ''">
+										<label class="input_title db" th:text="#{model.music.genre}"></label>
+										<select class="form-control selectpicker clear w100p" th:field="*{genre.id}">
+											<option th:each="genreOption : ${genreMap}" th:value="${genreOption['key']}" th:text="${genreOption['value']}"></option>
+										</select>
+										<p th:if="${#fields.hasErrors('genre')}" th:id="error-genre" class="help-block" th:errors="*{genre}"></p>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-subject" class="form-group inputbox" th:classappend="${#fields.hasErrors('subject')} ? 'has-error' : ''">
+										<label class="input_title" th:text="#{model.music.subject}"></label>
+										<input th:field="*{subject}" th:type="text" th:placeholder="#{model.music.subject.placeholder}" onkeypress="return event.keyCode != 13;" class="form-control" />
+										<p th:if="${#fields.hasErrors('subject')}" th:id="error-subject" class="help-block" th:errors="*{subject}"></p>
+									</div>
+								</li>
+								<li>
+									<div id="form-group-imageFilename" class="form-group inputbox" th:classappend="${#fields.hasErrors('imageFilename')} ? 'has-error' : ''">
+										<div class="input-file" id="imageFilename">
+											<label class="input_title" th:text="#{model.music.cover_image}"></label>
+											<input th:type="text" th:field="*{imageFilename}" th:placeholder="#{model.music.cover_image.placeholder}" class="form-control imgupload_input" onclick="$('.cropit-image-input').trigger('click');return false;" onkeypress="return event.keyCode != 13;" readonly/>
+											<img th:src="@{/img/inputicon_img.png}" alt="" />
+										</div>
+										<p th:if="${#fields.hasErrors('imageFilename')}" th:id="error-thumbnail" class="help-block" th:errors="*{imageFilename}"></p>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="inputbox">
+							<label class="input_title" th:text="#{model.music.label.description}"></label>
+							<textarea class="form-control masage_input" th:field="*{description}" th:placeholder="#{model.music.description.placeholder}" rows="3"></textarea>
+						</div>
+						
+						<div class="membership_btn mt50">
+							<div class="btn_centerwrap btn_centerwrap2">
+								<button class="btn btn-custom btn-dark h50" type="button" onclick="UPMAlbumUpload.submitAction(event); return false;"><span th:text="#{button.next}" th:remove="tag"></span></button>
+								<button class="btn btn-custom2 h50" onclick="UPMusic.goBack(); return false;"><span th:text="#{button.cancel}" th:remove="tag"></span></button>
+							</div>
+						</div>
+					</form>
+					
+					<div th:replace="fragments/page/upload/upload_introduction"></div>
+					
+				</div>
+			</div>
+		</div>
+		
+		<div th:replace="fragments/common/modal_crop_image"></div>
+		
+		
+		<script type="text/javascript"  th:inline="javascript">
+		var UPMAlbumUpload = {
+				_config : {
+					loading : false
+				},
+				readURL: function(input) {
+					UPMAlbumUpload._config.loading = false;
+					if (input.files && input.files[0]) {
+                        var filename = $(input).val().split('\\').pop();
+                        var fileext = (filename.substring(filename.lastIndexOf(".")+1)).toLowerCase();
+
+                        //확장자 체크
+                        if(fileext != "gif" && fileext != "jpg" && fileext != "jpeg" && fileext != "png"){
+                            UPMusic.alert("이미지 파일만 업로드 가능합니다");
+                            $("#cropit-image-input").val("");
+                            return;
+                        }
+
+						var reader = new FileReader();
+						reader.onload = function(e) {
+							UPMCropImageModal.showModal(e, 1/1, '');
+						}
+					    reader.readAsDataURL(input.files[0]);
+					}
+				},
+				submitAction: function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    if (UPMAlbumUpload._config.loading) return;
+					UPMAlbumUpload._config.loading = true;
+					UPMusic.startLoading();
+					$('#upload-album ul li').each(function() {
+						  $(this).children().removeClass("has-error");
+						  if ($(this).children().children("p").length) $(this).children().children("p").remove();
+					});
+				    var form = document.getElementById('upload-album');
+				    var formData = new FormData(form);
+				    if (UPMCropImageModal._config.imageBlob) formData.append('coverImageMultipart', UPMCropImageModal._config.imageBlob, $('input#imageFilename').val());
+					UPMusic.ajaxPostFormData(UPMusic._config._api_album + "/create", headers, formData, UPMAlbumUpload.submitCallback);
+				},
+				submitCallback : function(message, object) {
+					if (message == 'true') {
+						window.location.href="music/" + object + "/track";
+					} else {
+						UPMusic.log(object);
+						var jsonArr = JSON.parse(object);
+						for (var key in jsonArr) {
+							if (jsonArr.hasOwnProperty(key)) {
+								$('#form-group-' + jsonArr[key].field).addClass('has-error');
+								var errInfo = '<p id="error-' + jsonArr[key].field + '" class="help-block">' + jsonArr[key].codes[jsonArr[key].codes.length - 1] + '</p>';
+								$('#form-group-' + jsonArr[key].field).append(errInfo);
+							}
+						}
+					}
+					UPMAlbumUpload._config.loading = false;
+					UPMusic.stopLoading();
+				}
+			};
+			
+			$("#cropit-image-input").change(function() {
+				if (UPMAlbumUpload._config.loading) return;
+				UPMAlbumUpload._config.loading = true;
+				UPMAlbumUpload.readURL(this);
+			});
+			
+			$(document).ready(function(){
+			    $('input#subject').keyup(function(){
+			        if ($(this).val().length > 50) {
+			            UPMusic.alert('50자를 넘을 수 없습니다');
+			            $(this).val($(this).val().substr(0, 50));
+			        }
+			    });
+			});
+			
+		</script>
+	</div>
+
+</body>
+</html>

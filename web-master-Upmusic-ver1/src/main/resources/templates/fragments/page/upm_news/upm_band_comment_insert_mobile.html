@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 피드 이미지 -->
+			<form action="#" th:action="@{/upm_news/upm_band/comment_insert}" role="form" enctype="utf-8" th:object="${paramData}" method="post" id="comment_insert">
+			<input type="hidden" name="bandRecruitId" th:value="${bandRecruitId}">
+			<div class="nl_panel pdt0 mb_80">
+
+				<div class="feed">
+					<div class="feedBox bdn">
+						<div class="feedWrite">
+							<div class="form-group">
+								<label class="control-label">댓글쓰기 <span style="float: right;"><span id="currCnt">0</span>/200</span>
+									<!-- <label class="flr"><span class="colBlue">5</span> / 100</label> -->
+								</label>									
+								<div class="input-group mar-btm">
+									<textarea placeholder="상세 내용을 입력하세요." rows="13" class="form-control" name="content" id="comment_content" oninput="checkByteCnt()"></textarea>
+								</div>
+							</div>
+						</div>								
+					</div>
+				</div><!-- //end feed -->
+
+			</div>
+			<!-- //end 피드 -->
+			<div class="btn_box fixedBox">
+				<button class="btn btn-block btn-lg btn-dark" type="submit">등록</button>
+			</div>
+			</form>
+		</div>
+		<!-- //end content -->
+		
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		
+		$('#comment_content').keyup(function(e){
+			var content = $(e.target).val();
+			
+			var byteCnt = UPMusic.byteCheck(content);
+			
+			$('#currCnt').html(byteCnt);
+			
+			if(byteCnt > 200){
+				UPMusic.alert('댓글 글자수는 한글기준 최대 100자를 초과할 수 없습니다.', null);
+				content = content.substring(0, content.length-1);
+				$(e.target).val(content);
+			}
+		});
+		
+		
+		function checkByteCnt(){
+			var content = $('#comment_content').val();
+			
+			var byteCnt = UPMusic.byteCheck(content);
+			
+			$('#currCnt').html(byteCnt);
+			
+			if(byteCnt > 200){
+				UPMusic.alert('댓글 글자수는 한글기준 최대 100자를 초과할 수 없습니다.', null);
+				content = content.substring(0, content.length-1);
+				$(e.target).val(content);
+			}
+		}
+		</script>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 캐스팅 상세 -->
+			<div class="p0_panel">
+				<div class="castingView">
+					<div class="btm_gray1">
+						<p class="subject clamp2" th:text="${result.subject}"></p>								
+						<p class="date">
+							<span th:text="${result.member.nick}"></span>
+							<span th:text="${result.getCreateAtFormat()}"></span>
+						</p>								
+					</div>
+
+					<div class="writing p10" th:utext="${result.content}"></div>
+					
+				</div>
+			</div>
+			<!-- //end 캐스팅 상세 -->
+			<!-- 댓글 -->
+			<div class="comment_list_wrap">
+				<div class="nl_panel btm_gray2">
+					<div class="ct_title ofh">
+						<h2 class="content_title">댓글<span class="sub" th:text="${result.commentCnt} + 개"></span></h2>
+						<p class="benchmark" sec:authorize="isAuthenticated()"><a th:href="@{${'/upm_news/upm_band/commentInsertForm'}(bandRecruitId=${result.bandRecruitId})}"><button class="btn-write">댓글쓰기</button></a></p>
+					</div>
+				</div>
+				<dl class="comment_list">
+					<dd th:each="comment : ${commentListMobile}">
+						<div class="user"><img th:src="@{${comment.member.getProfileImageUrl()}}" alt="" /></div>
+						<div class="cmt_box">
+							<p class="id" th:text="${comment.member.nick}"></p>
+							<p class="cmt" th:text="${comment.content}"></p>
+						</div>
+						<div class="date">
+							<p th:text="${comment.formattedTime()}"></p>
+							
+							<form action="#" role="form" th:action="@{/upm_news/upm_band/comment_delete}" enctype="utf-8" method="post" class="comment_delete_form">
+								<input type="hidden" id="bandRecruitCommentId" name="bandRecruitCommentId" th:value="${comment.bandRecruitCommentId}">
+								<input type="hidden" id="bandRecruitId" name="bandRecruitId_sub" th:value="${result.bandRecruitId}">
+								<p class="edit" th:if="${comment.registrantFlag}">
+									<span id="btn_updateForm"><a th:href="@{${'/upm_news/upm_band/commentUpdateForm'}(bandRecruitCommentId=${comment.bandRecruitCommentId})}">수정</a></span>
+									<span><a class="btn_delete">삭제</a></span>
+								</p>
+							</form>
+						</div>
+					</dd>
+				</dl>
+				<div class="h80"></div>
+			</div>
+			<!-- //end 댓글 -->
+
+
+			
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		$('.btn_delete').click(function(e){
+			if(confirm("정말로 삭제하시겠습니까?")){
+				$(e.target).closest('.comment_delete_form').submit();
+			}
+	    });
+		
+		</script>
+	</div>
+
+</body>
+</html>

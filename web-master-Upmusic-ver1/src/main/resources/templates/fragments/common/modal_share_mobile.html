@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_share">
+		<div class="modal fade" id="modal-sns-share" role="dialog" tabindex="-1" aria-labelledby="sns-share-modal" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	
+	                <!--Modal header-->
+	                <div class="modal-header pos-relative">
+	                    <button type="button" class="close" data-dismiss="modal"></button>
+	                    <h4 class="modal-title">공유하기</h4>
+	                </div>
+	
+	                <!--Modal body-->
+	                <div class="modal-body">
+	                    <ul class="modal-sns">
+	                    	<li class="sns1" onclick="UPMShareModal.shareUrl('facebook');">페이스북</li>
+	                    	<li class="sns2" onclick="UPMShareModal.shareUrl('twitter');">트위터</li>
+	                    	<li class="sns3" onclick="UPMShareModal.shareUrl('kakao');">카카오</li>
+	                    	<li class="sns4" onclick="UPMShareModal.shareUrl('upmusic');">업뮤직</li>
+							<li class="sns5" onclick="UPMShareModal.shareUrl('instagram');">인스타그램</li>
+	                    	<li class="sns6" onclick="UPMShareModal.shareUrl('naver');">네이버</li>
+	                    </ul>
+	                    <div class="input-group ">
+							<input id="modal-share-url-to-copy" type="text" class="form-control" th:value="${shareUrl}" readonly/>
+							<span class="input-group-btn">
+								<button id="button-copy-url" class="btn btn-gray ml_10" type="button">URL 복사</button>
+							</span>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var shareUrl = /*[[ ${shareUrl} ]]*/;
+			var origSelectionStart, origSelectionEnd;
+			var UPMShareModal = {
+				showShareModal : function(albumId, trackId) {
+					var urlToShare = shareUrl;
+					// if (trackId && albumId) urlToShare = urlToShare + '/' + albumId +  '?ti=' + trackId;
+                    if (albumId && urlToShare.endsWith("album/")){
+                        urlToShare += albumId;
+                    } else if(albumId){
+                        urlToShare += 'album/' + albumId;
+					}
+                    if (trackId) urlToShare += '?ti=' + trackId;
+					$('#modal-share-url-to-copy').val(urlToShare);
+					$('#modal-sns-share').modal('show');
+				},
+				showShareModalFromList : function(albumId, trackId, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					var urlToShare = shareUrl;
+					if (albumId && urlToShare.endsWith("album/")) urlToShare += albumId;
+					if (trackId) urlToShare += '?ti=' + trackId;
+					$('#modal-share-url-to-copy').val(urlToShare);
+					$('#modal-sns-share').modal('show');
+				},
+				showShareModalFromSearchList : function(path, albumId, trackId, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					var urlToShare = shareUrl + path;
+					if (albumId) urlToShare += albumId;
+					if (trackId) urlToShare += '?ti=' + trackId;
+					$('#modal-share-url-to-copy').val(urlToShare);
+					$('#modal-sns-share').modal('show');
+				},
+				shareUrl : function(sns) {
+					if (sns == 'upmusic') {
+						UPMShareUpmusicModal.showShareModal();
+					} else {
+						UPMusicCommon.shereUrl(sns, document.getElementById("modal-share-url-to-copy").value);
+					}
+				},
+				copyUrl : function() {
+					var copyText = document.getElementById("modal-share-url-to-copy");
+					var $temp = $("<input>");
+					$("body").append($temp);
+					$temp.val($(copyText).val()).select();
+					document.execCommand("copy");
+					$temp.remove();
+					UPMusic.alert('복사하였습니다.');
+				},
+				showShareFeed : function(feedId) {
+					var urlToShare = shareUrl;
+					if (feedId) urlToShare += '?feedId=' + feedId;
+					$('#modal-share-url-to-copy').val(urlToShare);
+					$('#modal-sns-share').modal('show');
+				},
+			};
+		
+			$(function() {
+				$('#button-copy-url').click(function() {
+					var copyText = document.getElementById("modal-share-url-to-copy");
+					copyText.select();
+					document.execCommand("copy");
+					UPMusic.alert('복사하였습니다.');
+		  		});
+			});
+		/*]]>*/
+	    </script>
+	</div>
+</body>
+
+</html>

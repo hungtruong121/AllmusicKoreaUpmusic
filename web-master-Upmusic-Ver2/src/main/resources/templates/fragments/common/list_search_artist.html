@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_artist(fragmentTitle, fragmentId, artistList)" th:id="${fragmentId}">
+		<h3 th:if="${fragmentId == 'search-detail-artists-fragment' or fragmentId == 'search-artists-fragment'}" class="content_title mt30"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${artistList.size()}" th:remove="tag"></span></span></h3>
+		<h3 th:unless="${fragmentId == 'search-detail-artists-fragment' or fragmentId == 'search-artists-fragment'}" class="content_title mt30"><a onclick="$('.tab_design ul li#result-artist').click();"><span th:text="${fragmentTitle}" th:remove="tag"></span><span><span th:text="${artistList.getTotalElements()}" th:remove="tag"></span></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a></h3>
+		<div class="listcontrols"></div>
+		<div class="clearfix"></div>
+		<div class="reword_tabwrap">
+			<div class="artist_list clear">
+				<ul class="artist_contentlist">
+					<li th:each="artist,iter : ${artistList}" th:id="@{${'artist-' + artist.id}}">
+						<div class="artist_profile">
+							<a th:href="@{${artist.getUrl()}}" href="${artist.getUrl()}">
+								<img th:src="@{${artist.getProfileImageUrl()}}" src="${artist.getProfileImageUrl()}" title="cover"/>
+							</a>
+						</div>
+						<div class="artist_info">
+							<h3 class="artist-title"><a th:href="@{${artist.getUrl()}}" href="${artist.getUrl()}"><span th:text="${artist.nick}" th:remove="tag"></span></a></h3>
+							<table>
+								<tr>
+									<td><i class="mr10"><img th:src="@{/img/artist_music_icon.png}" alt="" /></i><span th:text="#{common.source.music}"></span></td>
+									<td><span th:text="${artist.trackCnt}"></span><span th:text="#{common.count}"></span></td>
+								</tr>
+								<tr>
+									<td><i class="mr3"><img th:src="@{/img/artist_movie_icon.png}" alt="" /></i><span th:text="#{common.source.video}"></span></td>
+									<td><span th:text="${artist.videoCnt}"></span><span th:text="#{common.count}"></span></td>
+								</tr>
+								<tr>
+									<td><i class="mr5"><img th:src="@{/img/artist_rating_icon.png}" alt="" /></i>등급</td>
+									<td>아티스트</td>
+								</tr>
+							</table>
+							<div id="artist-like" class="like_btn_round center w100p" th:classappend="${artist.liked} ? 'like_btn_round_on' : 'like_btn_round_off'" th:onclick="@{${'UPMusicCommon.likeArtist(' + artist.id + ');'}}"><i><span class="heart">&nbsp;</span></i><span th:text="#{common.like}" th:remove="tag"></span><span id="artist-like-cnt" th:text="${artist.heartCnt}"></span></div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_login">
+		<div class="modal fade" id="modal-login" role="dialog" tabindex="-1" aria-labelledby="modal-login" aria-hidden="true">
+	    </div>
+					
+		<script type="text/javascript" th:inline="javascript">
+			var UPMLoginModal = {
+				showModal : function() {
+					$.get('/auth/login?modal=1', function(data) {
+						$('#modal-login').html(data);
+						$( '#demo-form-inline-checkbox' ).click( function() {
+					      $( '.checkbox-checked' ).prop( 'checked', this.checked );
+					    });
+					});
+					$('#modal-login').modal('show');
+				},
+				clearForm : function() {
+					$('#login-email').val('');
+					$('#login-password').val('');
+					$('#login-generalErrorMessage').css("display", "none");
+				},
+				login : function() {
+					var params = {
+						email : $('#login-email').val(),
+						password : $('#login-password').val(),
+					};
+					if ($("input:checkbox[name='remember-me']").is(":checked")) params.remember_me=1;
+					UPMusic.ajaxPost(UPMusic._config._api_login, null, params, UPMLoginModal.loginCallback);
+				},
+				loginCallback : function(msg, obj) {
+					if (msg == 'true') {
+						$('#modal-login').modal('hide');
+						window.location.reload();
+					} else {
+						UPMLoginModal.showFormError(msg);
+					}
+				},
+				showFormError : function(errorVal) {
+					UPMLoginModal.clearForm();
+					$('#login-generalErrorMessage').css("display", "block").html(errorVal);
+				}
+			};
+			$(document).ready(function() {
+				UPMLoginModal.clearForm();
+			});
+	    </script>
+	</div>
+</body>
+
+</html>

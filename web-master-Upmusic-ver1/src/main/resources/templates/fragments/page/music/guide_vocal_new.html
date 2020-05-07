@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap section">
+			<h2 class="page-title">가이드 보컬 신청</h2>
+			<p class="content_title2">가이드 보컬 신청하기 <span>* 아래 양식에 맞춰 내용을 입력하세요.</span></p>
+			<form id="create-guide" action="#" th:action="@{/music/guide_vocal/new/guide}" th:object="${guideform}" method="POST" class="form-request" enctype="multipart/form-data" role="form">
+				<input th:type="file" th:field="*{fileMultipart}" class="hidden" accept=".mp3" />
+				<div class="membership_wrap">
+					<ul>
+						<li>
+							<div id="form-group-age" class="form-group inputbox" th:classappend="${#fields.hasErrors('age')} ? 'has-error' : ''">
+								<label class="input_title">나이</label>
+								<input th:field="*{age}" th:type="number" placeholder="나이를 입력하세요." class="form-control"/>
+								<p th:if="${#fields.hasErrors('age')}" th:id="error-age" class="help-block" th:errors="*{age}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-area" class="form-group inputbox" th:classappend="${#fields.hasErrors('area')} ? 'has-error' : ''">
+								<label class="input_title db">가능 지역</label>
+								<select class="selectpicker clear w100p" th:field="*{area}">
+									<option value="전국">전국</option>
+									<option value="서울">서울</option>
+									<option value="부산">부산</option>
+									<option value="대구">대구</option>
+									<option value="인천">인천</option>
+									<option value="광주">광주</option>
+									<option value="대전">대전</option>
+									<option value="울산">울산</option>
+									<option value="세종">세종</option>
+									<option value="경기">경기</option>
+									<option value="강원">강원</option>
+									<option value="충청도">충청도</option>
+									<option value="전라도">전라도</option>
+									<option value="경상도">경상도</option>
+									<option value="제주도">제주도</option>
+									<option value="기타">기타</option>
+								</select>
+								<p th:if="${#fields.hasErrors('area')}" th:id="error-area" class="help-block" th:errors="*{area}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-filename" class="form-group inputbox" th:classappend="${#fields.hasErrors('filename')} ? 'has-error' : ''">
+								<label class="input_title">음원 업로드</label>
+								<div class="input-musicfile">
+									<input th:type="text" th:field="*{filename}" th:placeholder="#{model.vacal_casting.filename.placeholder}" class="form-control imgupload_input" onclick="$('#fileMultipart').trigger('click');return false;" readonly/>
+									<img th:src="@{/img/inputicon_music.png}" alt="" />
+								</div>
+								<p th:if="${#fields.hasErrors('filename')}" th:id="error-filename" class="help-block" th:errors="*{filename}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-filelink" class="form-group inputbox" th:classappend="${#fields.hasErrors('filelink')} ? 'has-error' : ''">
+								<label class="input_title">음원 링크</label>
+								<input type="url" class="form-control" placeholder="음원 링크를 입력하세요." th:field="*{filelink}">
+								<p th:if="${#fields.hasErrors('filelink')}" th:id="error-filelink" class="help-block" th:errors="*{filelink}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-genre" class="form-group inputbox" th:classappend="${#fields.hasErrors('genre')} ? 'has-error' : ''">
+								<label class="input_title">가능 장르</label>
+								<input type="text" placeholder="가능 장르를 입력하세요." class="form-control" th:field="*{genre}">
+								<p th:if="${#fields.hasErrors('genre')}" th:id="error-genre" class="help-block" th:errors="*{genre}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-vocalGuideScopes" class="form-group inputbox" th:classappend="${#fields.hasErrors('vocalGuideScopes')} ? 'has-error' : ''">
+								<label class="input_title">가이드 범위</label>
+								<div class="checkbox">
+									<input type="checkbox" id="checked-2" class="checkbox-checked" name="guideScopeGuide" th:checked="${guideform.guideScopeGuide}"/>
+									<label for="checked-2" class="mr15"><span class="checkbox-custom"></span> 가이드 가능</label>
+								</div>
+								<div class="checkbox">
+									<input type="checkbox" id="checked-3" class="checkbox-checked" name="guideScopeChorus" th:checked="${guideform.guideScopeChorus}"/>
+									<label for="checked-3" class="mr15"><span class="checkbox-custom"></span> 코러스 가능</label>
+								</div>
+								<div class="checkbox">
+									<input type="checkbox" id="checked-4" class="checkbox-checked" name="guideScopeRap" th:checked="${guideform.guideScopeRap}"/>
+									<label for="checked-4"><span class="checkbox-custom"></span> 랩 가능</label>
+								</div>
+								<p th:if="${#fields.hasErrors('vocalGuideScopes')}" th:id="error-vocalGuideScopes" class="help-block" th:errors="*{vocalGuideScopes}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-openHour" class="form-group inputbox time_select" th:classappend="${#fields.hasErrors('openHour')} ? 'has-error' : ''">
+								<label class="input_title db">가능 시간</label>
+								<select class="selectpicker clear w50p" th:field="*{openHour}">
+									<option th:each="i: ${#numbers.sequence(0, 23)}" th:value="${i}"><span th:text="@{${10 > i ? '0' + i : i}}" th:remove="tag"></span>:00</option>
+								</select>
+								 ~ 
+								<select class="selectpicker clear w50p" th:field="*{closeHour}">
+									<option th:each="i: ${#numbers.sequence(0, 23)}" th:value="${i}"><span th:text="@{${10 > i ? '0' + i : i}}" th:remove="tag"></span>:00</option>
+								</select>
+								<p th:if="${#fields.hasErrors('openHour')}" th:id="error-openHour" class="help-block" th:errors="*{openHour}"></p>
+							</div>
+						</li>
+						<li>
+							<div id="form-group-cost" class="form-group inputbox" th:classappend="${#fields.hasErrors('cost')} ? 'has-error' : ''">
+								<label class="input_title">비용</label>
+								<input type="number" placeholder="비용을 입력하세요." class="form-control" th:field="*{cost}">
+								<p th:if="${#fields.hasErrors('cost')}" th:id="error-openHour" class="help-block" th:errors="*{cost}"></p>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="form-group inputbox" th:classappend="${#fields.hasErrors('description')} ? 'has-error' : ''">
+					<label class="input_title">기타 내용</label>
+					<textarea class="form-control masage_input" th:field="*{description}" placeholder="기타 내용을 입력해주세요." rows="3"></textarea>
+					<p th:if="${#fields.hasErrors('description')}" th:id="error-description" class="help-block" th:errors="*{description}"></p>
+				</div>
+				
+				<div class="additional_information clear ml0">
+					<ul>
+						<li>업뮤직 서비스의 질적 향상을 위해 등록 전 전문 심사단의 간단한 사전검증을 거친 후 가이드 보컬 선정이 됨을 알려드립니다.</li>
+						<li class="mb10">이에 대한 결과는 최대 3일 이내로 회원님의 업뮤직 UPS계정과 문자서비스를 이용하여 바로 확인 하실 수 있습니다.</li>
+					</ul>
+				</div>
+				<div class="membership_btn mt50">
+					<div class="btn_centerwrap btn_centerwrap2">
+						<button class="btn btn-custom btn-dark h50" onclick="UPMusic.startLoading();UPMCreateVocalGuide.submit();return false;">신청</button>
+						<button class="btn btn-custom2 h50" th:onclick="@{${'UPMusic.goto(&quot;/music/artist#artist-guide&quot;);return false;'}}">취소</button>
+					</div>
+				</div>
+			</form>
+			
+		</div><!-- subpage_wrap	 -->
+		
+		<script type="text/javascript" th:inline="javascript">
+			var UPMCreateVocalGuide = {
+				_config : {
+					loading : false
+				},
+				submit : function() {
+					if (UPMCreateVocalGuide._config.loading) return;
+					UPMCreateVocalGuide._config.loading = true;
+					document.getElementById("create-guide").submit();
+				}
+			};
+			$(document).ready(function(){
+			    $("#fileMultipart").change(function() {
+					if (this.files[0]) {
+						var fileURL = URL.createObjectURL(this.files[0]);
+						var filename = $(this).val().split('\\').pop();
+
+                        //확장자 체크
+                        if(filename.substring(filename.lastIndexOf(".")+1,filename.length).search("mp3") == -1){
+                            UPMusic.alert("음원 파일(mp3)만 업로드 가능합니다");
+                            $("#fileMultipart").val("");
+                            return;
+                        }
+
+						$('input#filename').val(filename);
+					} else {
+						$('input#filename').val('');
+					}
+				});
+			});
+		</script>
+		
+	</div>
+
+</body>
+</html>

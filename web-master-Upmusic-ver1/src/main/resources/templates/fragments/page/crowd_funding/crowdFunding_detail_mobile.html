@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 크라우드 펀딩 상세 -->
+			<div class="nl_panel ofh">
+				<div class="cloudFundingView_top">
+					<div class="img">
+						<img th:src="${result.getThumbnailImgUrl()}" alt="" />
+						<span class="dday">
+							남은기간 <span th:text="${result.getDateTerm()} + 일"></span>
+						</span>
+					</div>
+					<div class="info">
+						<p class="title">
+							<span th:text="${result.subject}"></span>
+							<span class="price" th:text="${result.attainmentPrice} + 원"></span>
+						</p>
+						<p class="participate">
+							펀딩에 참여한 아티스트: <span th:text="${result.joinCnt}"></span>명
+						</p>
+						<p class="period" th:text="${result.getexpiryDate()}"></p>
+
+						<div class="graphBox">
+							<p class="l">
+								<span th:text="${result.getPercent()}"></span>
+								<span class="small">
+									(<span th:text="${result.joinCnt}"></span> 득표)
+								</span>
+							</p>
+							<p class="r">
+								목표금액 <span th:text="${result.targetPrice}"></span>
+							</p>
+							<div class="graph_bg">
+								<span th:style="'width: ' + @{${result.getPercentForLoadingBar()}} +';'" class="funding_bar"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="nl_panel">
+				<div class="ct_title ofh">
+					<h2 class="content_title">프로젝트 소개</h2>
+				</div>
+			</div>
+			<div class="projectInfo" th:utext="${result.content1}">
+				<!-- <img src="./img/pj_img01.png" alt="" /> -->
+			</div>
+
+			<div class="nl_panel" th:if = "${!@environment.acceptsProfiles('prod')}">
+				<div class="ct_title ofh">
+					<h2 class="content_title">프로젝트 리워드</h2>
+				</div>
+			</div>
+			<div class="projectInfo" th:utext="${result.content2}" th:if = "${!@environment.acceptsProfiles('prod')}">
+
+			</div>
+
+			<div class="nl_panel">
+				<div class="ct_title ofh">
+					<h2 class="content_title">프로젝트 주의사항</h2>
+				</div>
+			</div>
+			<div class="projectInfo" th:utext="${result.content3}">
+			</div>
+			<!-- //end 크라우드 펀딩 상세 -->
+			<div class="btn_box">
+				<!-- <button class="btn btn-block btn-lg btn-dark" sec:authorize="isAnonymous()" onclick="UPMLoginModal.showModal();">
+					펀딩하기
+				</button> -->
+				<button class="btn btn-block btn-lg btn-dark mt_20" sec:authorize="isAuthenticated()">
+					<a th:href="@{${result.getRewardUrl()}}">펀딩하기</a>
+				</button>
+			</div>
+		</div>
+		<!-- //end content -->
+
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+
+		/*]]>*/
+			    /* $(document).ready(function() {
+			      $('.projectInfo').summernote({
+			        tabsize: 2,
+			        airMode: true
+			      });
+			    }); */
+		</script>
+	</div>
+
+</body>
+</html>

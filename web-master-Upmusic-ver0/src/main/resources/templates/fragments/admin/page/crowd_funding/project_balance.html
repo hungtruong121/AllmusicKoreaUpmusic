@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<style type="text/css">
+	.musiclist_table tr td:nth-child(4), .musiclist_table tr td:nth-child(5), .musiclist_table tr td:nth-child(6), .musiclist_table tr td:nth-child(7), .musiclist_table tr td:nth-child(8) {
+    width: 7% !important;
+}
+</style>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl">프로젝트 정산 관리</h2>
+				
+				<table style="float: right;">
+					<tr>
+						<td>전체 : </td>
+						<td th:text="${allCnt}"></td>
+						<td> / 종료(성공) : </td>
+						<td th:text="${successCnt}"></td>
+						<td> / 종료(실패)</td>
+						<td th:text="${failCnt}"></td>
+					</tr>
+				</table>
+				
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="accordion_btn"></div>
+						<div class="genre_listcontent">
+							<div id="uploaded-track-list" class="musiclist_table_hover2">
+								<table>
+									<tr>
+										<th style="width: 3% !important;">No.</th>
+										<th style="width: 10% !important;">프로젝트 명</th>
+										<th style="width: 10% !important;">이메일 아이디</th>
+										<th style="width: 3% !important;">아티스트 닉네임</th>
+										<th style="width: 3% !important;">목표금액</th>
+										<th style="width: 3% !important;">달성금액</th>
+										<th style="width: 3% !important;">수수료</th>
+										<th style="width: 5% !important;">진행 상태</th>
+										<th style="width: 10% !important;">계좌번호</th>
+										<th style="width: 10% !important;">정산</th>
+										<th style="width: 10% !important;">종료일자</th>
+									</tr>
+									<tr th:each="funding, iter : ${fundingList.content}" class="pointer">
+										<td th:text="${funding.noData}"></td>
+										<td th:text="${funding.subject}"></td>
+										<td th:text="${funding.artistMember.email}"></td>
+										<td th:text="${funding.artistNick}"></td>
+										<td th:text="${funding.targetPrice}"></td>
+										<td th:text="${funding.attainmentPrice}"></td>
+										<td th:text="${funding.getCommission()}"></td>
+										<td th:text="${funding.getTargetAttainmentYnFlag()}"></td>
+										<td th:text="${funding.accountNumber}"></td>
+										<td>
+											<span th:if="${funding.getCalculateStateStr()} eq '정산완료'" th:text="${funding.getCalculateStateStr()}"></span>
+											<span th:if="${funding.getCalculateStateStr()} eq '환불완료'" th:text="${funding.getCalculateStateStr()}"></span>
+											<button th:if="${funding.getCalculateStateStr()} eq '정산하기'" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + funding.getBalanceUrl() + '&quot;);'}}">정산하기</button>
+											<button th:if="${funding.getCalculateStateStr()} eq '환불하기'" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + funding.getReturnPayUrl() + '&quot;);'}}">환불하기</button>
+										</td>
+										<td th:text="${funding.getCloseAtFormat()}"></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div th:if="${fundingList != null and fundingList.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${fundingList.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not fundingList.first}" th:href="@{${'/admin/crowd_funding/balance'}(page=${fundingList.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${fundingList.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, fundingList.totalPages - 1)}" th:class="${fundingList.number eq pageNo}? 'active' : ''">
+						            <a th:if="${fundingList.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (fundingList.number eq pageNo)}" th:href="@{${'/admin/crowd_funding/balance'}(page=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${fundingList.number + 1 ge fundingList.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not fundingList.last}" th:href="@{${'/admin/crowd_funding/balance'}(page=${fundingList.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${fundingList.last}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+	    	
+		</script>
+		
+		
+	</div>
+
+</body>
+</html>

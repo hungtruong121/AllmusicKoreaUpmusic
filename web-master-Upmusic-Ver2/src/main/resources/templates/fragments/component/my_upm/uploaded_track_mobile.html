@@ -1,0 +1,16 @@
+<dd class="off" th:each="track, iter : ${tracks}" th:id="${track.id}" th:onclick="@{${'UPMListUpload.selectOrNot(&quot;' + track.trackStatus.name() + '&quot;, this);'}}">
+	<div class="num"><span th:if="${tracks.number * tracks.size + iter.index + 1} lt 10" th:remove="tag">0</span><span th:text="${tracks.number * tracks.size + iter.index + 1}" th:remove="tag"></span></div>
+	<div class="info">
+		<p class="img"><a th:href="@{${track.getUrl()}}"><i><img th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></a></p>
+		<p class="subject"><a th:href="@{${track.getUrl()}}"><span class="sj clamp ico_title" th:text="${track.subject}"></span></a><a th:href="@{${track.getArtistUrl()}}"><span class="arti" th:text="${track.getArtistNick()}"></span></a></p>
+	</div>
+	<div>
+		<div th:if="${track.trackStatus.name()} eq 'BEFORE_EXAM'" class="state_label" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_ing&quot;, null, event);'}}">심사 중</div>
+		<div th:if="${track.trackStatus.name()} eq 'UNDER_EXAM'" class="state_label" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_ing&quot;, null, event);'}}">심사 중</div>
+		<div th:if="${track.trackStatus.name()} eq 'ACCEPTED'" class="state_label state_pass" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_pass&quot;, null, event);'}}">심사 통과</div>
+		<div th:if="${track.trackStatus.name()} eq 'REJECTED'" class="state_label state_back" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_rejection&quot;, &quot;' + track.rejectedReason + '&quot;, event);'}}">심사 반려</div>
+	</div>
+</dd>
+<dd th:if="${tracks != null and tracks.totalPages gt tracks.number + 1}" id="list-more-track-button" class="showmore_wrap"  th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;list-more-track-button&quot;, &quot;' + paginationTrackUrl + '&quot;, ' + (tracks.number+1) + ');'}}">
+	<p>SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></p>
+</dd>

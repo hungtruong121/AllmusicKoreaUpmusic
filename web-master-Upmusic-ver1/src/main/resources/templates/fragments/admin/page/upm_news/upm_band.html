@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+    	<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title">업뮤직 밴드</h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="artist_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl">밴드 리스트 <span>* 제작을 의뢰하시고 숨어있는 고수들을 찾으세요.</span></p>
+							</div>
+								<ul class="artist_contentlist">
+									<li th:each="bandRecruit : ${bandRecruitList.content}">
+										<!-- <a th:href=""> -->
+										<div class="artist_profile band_profile">
+											<img src="../img/artist_profile.png" alt="" />
+											<div class="bandsmall_profile"></div>
+										</div>
+										<div class="artist_info band_info">
+											<h3 class="band_title" th:text="${bandRecruit.member.nick}"> 
+												<span th:text="${bandRecruit.getCreateAtFormat()}"></span>
+											</h3>
+											<p class="band_introduce" th:text="${bandRecruit.subject}"></p>
+										</div>
+										<div class="feedcontent_footer band_comment">
+											<ul>
+												<li><i><img src="img/feedbtn_0.png" alt="" /></i>댓글<span th:text="${bandRecruit.bandCommentCnt}">개</span></li>
+											</ul>
+										</div>
+										<!-- </a> -->
+									</li>
+									<!-- <li>
+										<div class="artist_profile band_profile">
+											<img src="../img/artist_profile.png" alt="" />
+											<div class="bandsmall_profile"></div>
+										</div>
+										<div class="artist_info band_info">
+											<h3 class="band_title">지코 <span>2018-05-03</span></h3>
+											<p class="band_introduce">[급구] 현아밴드의 서브보컬 모집!
+												30대 여성분 찾고있습니다~ 경력ㆍㆍㆍ
+											</p>
+										</div>
+										<div class="feedcontent_footer band_comment">
+											<ul>
+												<li><i><img src="img/feedbtn_0.png" alt="" /></i>댓글<span>7개</span></li>
+											</ul>
+										</div>
+									</li> -->
+								</ul>
+							</div>
+							<div th:if="${bandRecruitList != null and bandRecruitList.totalPages gt 0}" class="panel-body text-center">
+							    <ul class="pagination">
+							        <li th:class="${bandRecruitList.number eq 0} ? 'disabled' : ''">
+							            <a class="demo-pli-arrow-left" th:if="${not bandRecruitList.first}" th:href="@{${'/upm_news/upm_band'}(page=${bandRecruitList.number-1})}"></a>
+							            <a class="demo-pli-arrow-left" th:if="${bandRecruitList.first}" href="javascript:void(0);"></a>
+							        </li>
+							        <li th:each="pageNo : ${#numbers.sequence(0, bandRecruitList.totalPages - 1)}" th:class="${bandRecruitList.number eq pageNo}? 'active' : ''">
+							            <a th:if="${bandRecruitList.number eq pageNo}" href="javascript:void(0);">
+							                <span th:text="${pageNo + 1}"></span>
+							            </a>
+							            <a th:if="${not (bandRecruitList.number eq pageNo)}" th:href="@{${'/upm_news/upm_band'}(page=${pageNo})}">
+							                <span th:text="${pageNo + 1}"></span>
+							            </a>
+							        </li>
+							        <li th:class="${bandRecruitList.number + 1 ge bandRecruitList.totalPages} ? 'disabled' : ''">
+							            <a class="demo-pli-arrow-right" th:if="${not bandRecruitList.last or bandRecruitList.number > 9}" th:href="@{${'/upm_news/upm_band'}(page=${bandRecruitList.number+1})}"></a>
+							            <a class="demo-pli-arrow-right" th:if="${bandRecruitList.last or bandRecruitList.number > 9}" href="javascript:void(0);"></a>
+							        </li>
+							    </ul>
+							</div>
+						</div>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>UPMusic</title>
+</head>
+
+<body>
+	<nav class="navbar navbar-default" th:fragment="navigation">
+		<div class="container">
+			<!-- <div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbarNavAltMarkup"
+					aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+
+			</div> -->
+
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+				<ul class="nav navbar-nav">
+					<li><a th:href="@{/}" class="nav-item nav-link" href="/"><span th:text="#{nav.home}" th:remove="tag"></span></a></li>
+					<li><a th:href="@{/music}" class="nav-item nav-link" href="/music"><span th:text="#{nav.music}" th:remove="tag"></span></a></li>
+					<li><a th:href="@{/video}" class="nav-item nav-link" href="/video"><span th:text="#{nav.video}" th:remove="tag"></span></a></li>
+					<li><a th:href="@{/feed}" class="nav-item nav-link" href="/feed"><span th:text="#{nav.feed}" th:remove="tag"></span></a></li>
+					<li><a th:href="@{/my_playlist}" class="nav-item nav-link" href="/my_playlist"><span th:text="#{nav.my_playlist}" th:remove="tag"></span></a></li>
+					<li><a th:href="@{/my_upm}" class="nav-item nav-link" href="/my_upm"><span th:text="#{nav.my_upm}" th:remove="tag"></span></a></li>
+					<li><a th:href="@{/crowd_funding}" class="nav-item nav-link" href="/crowd_funding"><span th:text="#{nav.crowd_funding}" th:remove="tag"></span></a></li>
+					<li><a th:href="@{/upm_news}" class="nav-item nav-link" href="/upm_news"><span th:text="#{nav.upm_news}" th:remove="tag"></span></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</body>
+
+</html>

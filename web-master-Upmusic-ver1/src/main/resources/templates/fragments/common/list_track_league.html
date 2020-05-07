@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_track(fragmentId, trackList, paginationUrl)" th:id="${fragmentId}" class="musiclist_table musiclist_table_hover2">
+		
+		<table th:if="${trackList != null and ((fragmentId == 'league-top50-fragment' and 0 < trackList.size()) or (fragmentId != 'league-top50-fragment' and 0 < trackList.getTotalElements()))}" id="album-tracks">
+			<tr>
+				<th th:if="${fragmentId == 'league-top50-fragment'}"><span th:text="#{model.track.rank}" th:remove="tag"></span></th>
+				<th th:unless="${fragmentId == 'league-top50-fragment'}"><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+				<th><span th:text="#{model.track.information}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.duration}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.play}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.put_in}" th:remove="tag"></span></th>
+				<th><span th:text="#{button.share}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.like}" th:remove="tag"></span></th>
+				<th><span th:text="#{common.download}" th:remove="tag"></span></th>
+			</tr>
+			<tr th:each="leagueTrack, iter : ${trackList}" th:id="${leagueTrack.getMusicTrack().id}" onclick="UPMusic.selectItem(this);">
+				<td th:if="${fragmentId == 'league-top50-fragment'}">
+					<span class="league-table-rank-span" th:text="${leagueTrack.rank}"></span>
+					<div th:if="${leagueTrack.getLastRank() eq 0}" class="ranking">
+						<span class="up_new">New</span>
+					</div>
+					<div th:if="${leagueTrack.getLastRank() != 0 and leagueTrack.getLastRank() - leagueTrack.getRank() gt 0}" class="ranking">
+						<i><img th:src="@{/img/up.png}" alt="" /></i><span class="up" th:text="${leagueTrack.getLastRank() - leagueTrack.getRank()}"></span>
+					</div>
+					<div th:if="${leagueTrack.getLastRank() != 0 and leagueTrack.getLastRank() - leagueTrack.getRank() lt 0}" class="ranking">
+						<i><img th:src="@{/img/down.png}" alt="" /></i><span class="down" th:text="${leagueTrack.getLastRank() - leagueTrack.getRank()}"></span>
+					</div>
+					<div th:if="${leagueTrack.getLastRank() != 0 and leagueTrack.getLastRank() - leagueTrack.getRank() eq 0}" class="ranking">
+						<span class="not">-</span>
+					</div>
+				</td>
+				<td th:unless="${fragmentId == 'league-top50-fragment'}"><span th:text="${leagueTrack.rank}" th:remove="tag"></span></td>
+				<th>
+					<a th:href="@{${leagueTrack.getMusicTrack().getUrl()}}"><i><img class="track-list-cover" th:src="@{${leagueTrack.getMusicTrack().getCoverImageUrl()}}" alt="" /></i></a>
+					<p>
+						<a th:href="@{${leagueTrack.getMusicTrack().getUrl()}}"><span th:text="${leagueTrack.getMusicTrack().subject}" th:remove="tag"></span></a><br />
+						<b><a th:href="@{${leagueTrack.getMusicTrack().getArtistUrl()}}"><span th:text="${leagueTrack.getMusicTrack().getArtistNick()}" th:remove="tag"></span></a></b>
+					</p>
+				</th>
+				<td><span th:text="${leagueTrack.getMusicTrack().formattedDuration()}" th:remove="tag"></span></td>
+				<td>
+					<a th:onclick="@{${'UPMusicCommon.addTrackToPlaylist(' + leagueTrack.getMusicTrack().id + ', event);'}}"><img th:src="@{/img/listcontrols_icon1.png}" alt="" /></a>
+				</td>
+				<td>
+					<a th:onclick="@{${'UPMusicCommon.showCollectionModalFromList(&quot;#' + fragmentId + '&quot;, ' + leagueTrack.getMusicTrack().id + ', event);'}}"><img th:src="@{/img/listcontrols_icon2.png}" alt="" /></a>
+				</td>
+				<td>
+					<a th:onclick="@{${'UPMShareModal.showShareModalFromList(' + leagueTrack.getMusicTrack().getMusicAlbumId() + ', ' + leagueTrack.getMusicTrack().id + ', event);'}}"><img th:src="@{/img/listcontrols_icon3.png}" alt="" /></a>
+				</td>
+				<td>
+					<a th:onclick="@{${'UPMusicCommon.likeTrack(' + leagueTrack.getMusicTrack().id + ', event);'}}"><span id="track-like" class="heart_icon2" th:classappend="${leagueTrack.getMusicTrack().liked} ? 'heart_icon_on' : 'heart_icon_off'">&nbsp;</span></a>
+				</td>
+				<td id="button-track-download">
+					<a th:if="${leagueTrack.getMusicTrack().inStore}" th:onclick="@{${'UPMDownloadModal.showModal(' + leagueTrack.getMusicTrack().id + ', event);'}}"><img th:src="@{/img/download.png}" alt="" /></a>
+				</td>
+			</tr>
+		</table>
+		<div th:unless="${trackList != null and ((fragmentId == 'league-top50-fragment' and 0 < trackList.size()) or (fragmentId != 'league-top50-fragment' and 0 < trackList.getTotalElements()))}" class="nodataBox clear"><span>내역이 없습니다.</span></div>
+		<div th:unless="${fragmentId == 'league-top50-fragment'}">
+			<div th:if="${trackList != null and trackList.totalPages gt 0}" class="panel-body text-center clear">
+			    <ul class="pagination">
+			        <li th:class="${trackList.number eq 0} ? 'disabled' : ''">
+			            <a class="demo-pli-arrow-left" th:if="${not trackList.first}" th:onclick="@{${'UPMListTrackLeagueAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (trackList.number-1) + ');'}}"></a>
+			            <a class="demo-pli-arrow-left" th:if="${trackList.first}" href="javascript:void(0);"></a>
+			        </li>
+			
+			        <li th:each="pageNo : ${#numbers.sequence(0, trackList.totalPages - 1)}" th:class="${trackList.number eq pageNo}? 'active' : ''">
+			            <a th:if="${trackList.number  eq pageNo}" href="javascript:void(0);">
+			                <span th:text="${pageNo + 1}"></span>
+			            </a>
+			            <a th:if="${not (trackList.number  eq pageNo)}" th:onclick="@{${'UPMListTrackLeagueAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + pageNo + ');'}}">
+			                <span th:text="${pageNo + 1}"></span>
+			            </a>
+			
+			        </li>
+			        <li th:class="${trackList.number + 1 ge trackList.totalPages} ? 'disabled' : ''">
+			            <a class="demo-pli-arrow-right" th:if="${not trackList.last}" th:onclick="@{${'UPMListTrackLeagueAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (trackList.number+1) + ');'}}"></a>
+			            <a class="demo-pli-arrow-right" th:if="${trackList.last}" href="javascript:void(0);"></a>
+			        </li>
+			    </ul>
+			</div>
+		</div>
+		
+	</div>
+</body>
+
+</html>

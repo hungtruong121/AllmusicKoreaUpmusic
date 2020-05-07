@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="currentUser"
+            type="com.google.firebase.auth.FirebaseUser" />
+    </data>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activity.MainActivity"
+        android:id="@+id/bottomsheet">
+
+        <!--tools:showIn="@layout/app_bar_navigation_drawer"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+
+        <FrameLayout
+            android:id="@+id/main_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/rl_bottom_sheet"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="0dp"
+            >
+            <include
+                layout="@layout/activity_webview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <include
+                layout="@layout/content_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <include
+                layout="@layout/content_bottom_menu2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:visibility="gone"
+                />
+
+        </FrameLayout>
+
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/field_button_facebook_login"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:visibility="gone"
+            />
+
+
+        <com.nhn.android.naverlogin.ui.view.OAuthLoginButton
+            android:id="@+id/field_naver_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_bottom_sheet"
+            android:background="@color/colorPrimaryTransparent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:behavior_peekHeight="51dp"
+            app:layout_behavior="@string/bottom_sheet_behavior"
+            >
+
+            <!--app:behavior_hideable="false"-->
+
+            <include
+                layout="@layout/content_player"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

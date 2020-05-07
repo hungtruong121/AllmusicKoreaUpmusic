@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl">전체 시즌</h2>
+				<a id="seasonLimitFalse" th:href="@{/admin/music/season/new}" class="btn btn-custom btn-dark fr"><i><img th:src="@{/img/change_icon2.png}" alt="" /></i> 시즌 만들기</a>
+				<a id="seasonLimitTrue" class="btn btn-custom1 btn-dark fr"><i><img th:src="@{/img/change_icon2.png}" alt="" /></i> 시즌 만들기</a>
+				<div class="tab_contentwrap">
+					<div id="season" class="tab_content active">
+						<div class="accordion_btn"></div>
+						<div th:if="${seasons}" class="season_period_container">
+							<input id="season-year-datetimepicker" type="text" class="season-year-input"  th:onchange="@{${'UPMListTrackLeagueAnonymous.changeYear(&quot;/admin/music/season&quot;, this.value);'}}" th:value="${currentYear}">
+						</div>
+						<br>
+						<br>
+						<div class="genre_listcontent" th:if="${!seasons.empty}">
+							<div id="uploaded-track-list" class="musiclist_table musiclist_table_hover2">
+								<table>
+									<tr>
+										<th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+										<th>시즌명</th>
+										<th>시즌 시작일</th>
+										<th>시즌 종료일</th>
+									</tr>
+									<tr th:each="season, iter : ${seasons}" th:id="${season.id}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + season.getUrl() + '&quot;);'}}">
+										<td><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+										<th>
+											<a th:href="@{${season.getUrl()}}"><i><img class="track-list-cover" th:src="@{${season.getImageUrl()}}" alt="" /></i></a>
+											<p>
+												<a th:href="@{${season.getUrl()}}"><span th:text="${season.subject}" th:remove="tag"></span></a><br />
+											</p>
+										</th>
+										<td><span th:text="${season.openDate}" th:remove="tag"></span></td>
+										<td><span th:text="${season.closeDate}" th:remove="tag"></span></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div th:if="${seasons.empty}" class="season_wrap">
+							<div class="nodataBox clear">
+								<span>등록된 시즌이 없습니다.</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script th:inline="javascript" type="text/javascript">
+            /*<![CDATA[*/
+			var UPMListTrackLeagueAnonymous = {
+                changeYear: function(paginationUrl, year) {
+                    console.log(paginationUrl + ":" + year);
+                    var url = paginationUrl + '?year=' + year;
+                    $.get(url, function(data) {
+                        $('#season').html(data);
+                    });
+                }
+			};
+			$(function () {
+			    var seasonLimit = /*[[ ${seasonLimit} ]]*/;
+				console.log(seasonLimit);
+				if(seasonLimit){
+					$('#seasonLimitTrue').removeClass('hide');
+					$('#seasonLimitFalse').addClass('hide');
+				} else {
+                    $('#seasonLimitFalse').removeClass('hide');
+                    $('#seasonLimitTrue').addClass('hide');
+				}
+                $('#season-year-datetimepicker').datepicker({
+                    format: "yyyy",
+                    weekStart: 1,
+                    keyboardNavigation: false,
+                    viewMode: "years",
+                    minViewMode: "years",
+                    orientation: "bottom"
+                }).on('changeYear', function(e){
+                    $(this).keyup();
+                    $(this).datepicker('hide');
+                });
+                //$('#season-year-datetimepicker').datepicker('update', new Date(leagueYears[0]));
+
+
+                $(".season_wrap>ul>li").click(function(){
+                    $(this).css("z-index","9").stop().animate({"top":"0px"},300).siblings("li").css("z-index","inherit").stop().animate({"top":"25px"},500);
+                    $(this).children(".upseason_title").css("color","#5875e5");
+                    $(this).siblings("li").children(".upseason_title").css("color","inherit");
+                    $(this).children(".upseoson_hover").fadeIn(300);
+                    $(this).siblings("li").children(".upseoson_hover").fadeOut(300);
+                });
+
+                if ($('.season_wrap li').length) {
+                    $('.season_wrap li.active').click();
+                }
+                
+                $('#seasonLimitTrue').on('click', function () {
+					UPMusicAdmin.alert('시즌은 한 해에 10개까지만 등록이 가능합니다.');
+                })
+            })
+            /*]]>*/
+		</script>
+		
+	</div>
+
+</body>
+</html>

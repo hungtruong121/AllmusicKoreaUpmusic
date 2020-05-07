@@ -1,0 +1,228 @@
+PODS:
+  - Alamofire (4.8.1)
+  - AlamofireObjectMapper (5.2.0):
+    - Alamofire (~> 4.7)
+    - ObjectMapper (~> 3.4)
+  - AZSClient (0.2.6)
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.9.0)
+  - Device (3.1.2)
+  - FBSDKCoreKit (4.40.0):
+    - Bolts (~> 1.9)
+  - FBSDKLoginKit (4.40.0):
+    - FBSDKCoreKit
+  - FBSDKShareKit (4.40.0):
+    - FBSDKCoreKit
+  - FeedKit (7.0.1)
+  - Firebase/Auth (5.17.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (= 5.3.1)
+  - Firebase/Core (5.17.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 5.6.0)
+  - Firebase/CoreOnly (5.17.0):
+    - FirebaseCore (= 5.3.0)
+  - Firebase/Messaging (5.17.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (= 3.3.1)
+  - FirebaseAnalytics (5.6.0):
+    - FirebaseCore (~> 5.3)
+    - FirebaseInstanceID (~> 3.5)
+    - GoogleAppMeasurement (= 5.6.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
+    - GoogleUtilities/MethodSwizzler (~> 5.2)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - nanopb (~> 0.3)
+  - FirebaseAnalyticsInterop (1.2.0)
+  - FirebaseAuth (5.3.1):
+    - FirebaseAuthInterop (~> 1.0)
+    - FirebaseCore (~> 5.2)
+    - GoogleUtilities/Environment (~> 5.2)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - FirebaseAuthInterop (1.0.0)
+  - FirebaseCore (5.3.0):
+    - GoogleUtilities/Logger (~> 5.2)
+  - FirebaseInstanceID (3.5.0):
+    - FirebaseCore (~> 5.3)
+    - GoogleUtilities/Environment (~> 5.3)
+    - GoogleUtilities/UserDefaults (~> 5.3)
+  - FirebaseMessaging (3.3.1):
+    - FirebaseAnalyticsInterop (~> 1.1)
+    - FirebaseCore (~> 5.2)
+    - FirebaseInstanceID (~> 3.4)
+    - GoogleUtilities/Environment (~> 5.2)
+    - GoogleUtilities/Reachability (~> 5.2)
+    - Protobuf (~> 3.1)
+  - GoogleAppMeasurement (5.6.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
+    - GoogleUtilities/MethodSwizzler (~> 5.2)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - nanopb (~> 0.3)
+  - GoogleSignIn (4.4.0):
+    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
+    - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GoogleToolboxForMac/DebugUtils (2.2.0):
+    - GoogleToolboxForMac/Defines (= 2.2.0)
+  - GoogleToolboxForMac/Defines (2.2.0)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.2.0)":
+    - GoogleToolboxForMac/DebugUtils (= 2.2.0)
+    - GoogleToolboxForMac/Defines (= 2.2.0)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.0)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.2.0)"
+  - GoogleUtilities/AppDelegateSwizzler (5.3.7):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (5.3.7)
+  - GoogleUtilities/Logger (5.3.7):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (5.3.7):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (5.3.7):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (5.3.7)"
+  - GoogleUtilities/Reachability (5.3.7):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (5.3.7):
+    - GoogleUtilities/Logger
+  - GTMSessionFetcher/Core (1.2.1)
+  - MarqueeLabel (3.2.0):
+    - MarqueeLabel/ObjC (= 3.2.0)
+  - MarqueeLabel/ObjC (3.2.0)
+  - nanopb (0.3.901):
+    - nanopb/decode (= 0.3.901)
+    - nanopb/encode (= 0.3.901)
+  - nanopb/decode (0.3.901)
+  - nanopb/encode (0.3.901)
+  - naveridlogin-sdk-ios (4.0.10)
+  - ObjectMapper (3.4.2)
+  - Protobuf (3.6.1)
+  - ReachabilitySwift (4.3.0)
+  - SDWebImage (4.4.5):
+    - SDWebImage/Core (= 4.4.5)
+  - SDWebImage/Core (4.4.5)
+  - SnapKit (4.0.1)
+  - SocketRocket (0.5.1)
+  - StompClientLib (1.2.7):
+    - SocketRocket
+  - SwiftSocket (2.0.2)
+  - SwiftyJSON (4.2.0)
+  - VGPlayer (0.2.0):
+    - SnapKit (~> 4.0.0)
+  - WKCookieWebView (1.1.3)
+  - Zip (1.1.0)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.5)
+  - AlamofireObjectMapper (~> 5.0)
+  - AZSClient
+  - Device (~> 3.1.2)
+  - FBSDKLoginKit
+  - FBSDKShareKit
+  - FeedKit (= 7.0.1)
+  - Firebase/Auth
+  - Firebase/Core
+  - Firebase/Messaging
+  - GoogleSignIn
+  - MarqueeLabel
+  - naveridlogin-sdk-ios
+  - ReachabilitySwift
+  - SDWebImage (~> 4.0)
+  - StompClientLib
+  - SwiftSocket
+  - SwiftyJSON (~> 4.0)
+  - VGPlayer
+  - WKCookieWebView
+  - Zip (~> 1.1)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - AlamofireObjectMapper
+    - AZSClient
+    - Bolts
+    - Device
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - FBSDKShareKit
+    - FeedKit
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseAnalyticsInterop
+    - FirebaseAuth
+    - FirebaseAuthInterop
+    - FirebaseCore
+    - FirebaseInstanceID
+    - FirebaseMessaging
+    - GoogleAppMeasurement
+    - GoogleSignIn
+    - GoogleToolboxForMac
+    - GoogleUtilities
+    - GTMSessionFetcher
+    - MarqueeLabel
+    - nanopb
+    - naveridlogin-sdk-ios
+    - ObjectMapper
+    - Protobuf
+    - ReachabilitySwift
+    - SDWebImage
+    - SnapKit
+    - SocketRocket
+    - StompClientLib
+    - SwiftSocket
+    - SwiftyJSON
+    - VGPlayer
+    - WKCookieWebView
+    - Zip
+
+SPEC CHECKSUMS:
+  Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
+  AlamofireObjectMapper: 92b6ce2423a9d159e686f6a1d514a009bf903ddc
+  AZSClient: efd576cabf56f97e38cb1b614739f4b0c1906392
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  Device: 62242076214c30fb5760174b3601cefafa70a481
+  FBSDKCoreKit: ae214474b25033399c131dc81d258e412582a2ba
+  FBSDKLoginKit: 7a1e411d46acc8834588eca437daf34de42e1d52
+  FBSDKShareKit: 0e45916f4150da485928ae2a17ca021950b194f5
+  FeedKit: 9be69ab57ef0eb922ee4b6c31cb6b8840a5bbb29
+  Firebase: dea1503e402b769c0d5d75cf8387db547e05aa02
+  FirebaseAnalytics: 960cacc2ebe40ebe79c77f3b40d413cb14e245fd
+  FirebaseAnalyticsInterop: 540b558d0a2f848d2f86e0a9452fbe591f8f6643
+  FirebaseAuth: 7f673899d39ba6bcdba575b5f4c812cdcdb05957
+  FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
+  FirebaseCore: 5dc0e138079c13f7617cdfedf54e17e1a866c63f
+  FirebaseInstanceID: dbc039dd72761024b23fecc22e951d0db19e20d2
+  FirebaseMessaging: f870fb76e47ff26a147ab632bd6bd404d91e9b92
+  GoogleAppMeasurement: ec6258b7fe3eafb3fc445fd0f6eaf0da0154d2da
+  GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
+  GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
+  GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
+  GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
+  MarqueeLabel: 440a502b91a9179bd98f9fff00ba1150650a1c0e
+  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  naveridlogin-sdk-ios: b5a31343e7f98bab1a5a37b1bc0af3354ad59d11
+  ObjectMapper: 0d4402610f4e468903ae64629eec4784531e5c51
+  Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
+  ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
+  SDWebImage: b25513bba9950f39b94ccd510f43cd8f05c84665
+  SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
+  SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
+  StompClientLib: 6d58f97c8c9882251e4559d3a8b1796e7e1f3ac8
+  SwiftSocket: 6f4c9c63fbc5c1d61188936bb3c599fd546f40ae
+  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
+  VGPlayer: a1787135559aa3b9201ebdc733ee283315492289
+  WKCookieWebView: b9e394bed880407d74a36d7c21d94c56ed588ba0
+  Zip: 8877eede3dda76bcac281225c20e71c25270774c
+
+PODFILE CHECKSUM: 3261076707601fe6509ebe0c5d47b7c78a012f85
+
+COCOAPODS: 1.5.3

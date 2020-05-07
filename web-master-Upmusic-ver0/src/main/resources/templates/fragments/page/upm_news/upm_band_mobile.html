@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 업뮤직 밴드 -->
+			<div class="nl_panel">
+				<div class="ct_title ofh">
+					<h2 class="content_title"></span></h2>
+					<p class="benchmark" sec:authorize="isAuthenticated()"><a th:href="@{/upm_news/upm_band/insertForm}"><button class="btn-gray2">함께해요 등록</button></a></p>
+				</div>
+			</div>
+			<div class="nl_panel pdt0">
+
+				<dl class="bandList">
+					<dd th:each="bandRecruit : ${bandRecruitListMobile}">
+						<a th:href="${bandRecruit.getDetailUrl()}">
+						<!--
+						<div class="userImg">
+							<img th:src="${bandRecruit.member.getProfileImageUrl()}" alt="" />
+						</div>
+						<div class="img">
+							<img th:src="${bandRecruit.getThumbnailImgUrl() ne ''}? ${bandRecruit.getThumbnailImgUrl()} : '/img/artist_profile.png'"/>
+						</div>
+						-->
+						<!-- 2019-01-14 jm수정 -->
+						<div class="img" th:if="${bandRecruit.getThumbnailImgUrl() ne ''}" th:style="'background: url('+@{${bandRecruit.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+							<div class="userImg" th:style="'background: url('+ @{${bandRecruit.member.getProfileImageUrl()}} +') center center no-repeat; background-size: cover;'">
+							</div>
+						</div>
+						<div class="img" th:if="${bandRecruit.getThumbnailImgUrl() eq ''}" style='background: url("/img/artist_profile.png") center center no-repeat; background-size: cover;'>
+							<div class="userImg" th:style="'background: url('+ @{${bandRecruit.member.getProfileImageUrl()}} +') center center no-repeat; background-size: cover;'">
+							</div>
+						</div>
+
+						<div class="info">
+							<p class="bandName">
+								<span th:text="${#strings.replace( #strings.escapeXml(bandRecruit.limitSubjectMobile()),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></span>
+								<span class="date" th:text="${bandRecruit.getCreateAtFormat()}"></span></p>
+							<p class="txt clamp2"></p>
+						</div>
+						<div class="comment">
+							<span class="ico">댓글</span>
+							<span class="unit" th:text="${bandRecruit.bandCommentCnt}"></span>
+						</div>
+						</a>
+					</dd>
+				</dl>
+				<div class="h80"></div>							
+			</div>
+			<!-- //end 업뮤직 밴드 -->
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		
+		
+		</script>
+	</div>
+
+</body>
+</html>

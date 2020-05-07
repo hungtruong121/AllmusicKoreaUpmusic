@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_request(requestsFragmentId, requestList, requestPaginationUrl)" th:id="${requestsFragmentId}" class="h100p of-a">
+		<dl class="item-list making_list01 nl_panel">
+			<dd th:each="request, iter : ${requestList}" th:id="${request.id}" class="pointer" th:onclick="@{${'UPMusic.goto(&quot;' + request.getUrl() + '&quot;, event);'}}">
+				<div class="img">
+					<img th:src="@{${request.getMember().getProfileImageUrl()}}" alt="" />
+					<p class="comment"><i class="ico_comment"><img th:src="@{/img/mobile/ico_list_reply_wh.png}" alt=""></i><span th:text="#{model.comment}" ></span> <span th:text="${request.commentCnt}"></span></p>
+				</div>
+				<div class="info">
+					<p class="subject" th:text="${request.getMember().getNick()}"></p>
+					<p class="text clamp2" th:text="${request.getDescription()}"></p>
+					<p class="money" th:text="${request.getFormattedPrice()}"></p>
+				</div>
+			</dd>
+		</dl>
+		
+		<div th:if="${paginationUrl != null and requestList != null and requestList.totalPages gt pageNo + 1}" id="list-more-button" class="showmore_wrap">
+			<p><a th:onclick="@{${'UPMusic.appendPage(&quot;' + requestsFragmentId + '&quot;, &quot;' + requestPaginationUrl + '&quot;, ' + (pageNo + 1) + ', ' + requestList.totalPages + ');'}}">SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></a></p>
+		</div>
+		<script>
+            $(function () {
+                var leng = $('.clamp2').html().length;
+                if(leng >= 30){
+                    var content = $('.clamp2').html().substring(0,27);
+                    $('.clamp2').html(content + "..");
+                }
+            })
+		</script>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_track_add_cooperator(fragmentId)" th:id="${fragmentId}">
+		<div class="modal fade" id="modal-add-track-cooperator" tabindex="-1" role="dialog" aria-labelledby="UPM Share" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" th:text="#{model.track.add_cooperator}">Cooperator</h4>
+					</div>
+					<div class="modal-body">
+						<div class="input-group">
+			                <input id="member-email-account" type="text" class="form-control" name="q" th:placeholder="#{common.artist.email_account}">
+			                <span class="input-group-btn">
+			                    <button id="search-member" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+			                </span>
+			            </div>
+			            <div id="search-member-result">
+			            </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal" aria-label="Close">
+							<span th:text="#{button.close}" th:remove="tag"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+			var currentMemberId = 0;
+			var UPMModalAddCooperator = {
+				showModal : function(memberId) {
+					currentMemberId = memberId;
+					$('#modal-add-track-cooperator').modal('show');
+				},
+				searchCallback : function(memberObj) {
+					var memberField = UPMModalAddCooperator.renderMember(memberObj);
+					$('#search-member-result').html(memberField);
+				},
+				renderMember : function(memberObj) {
+					if (memberObj) {
+						var memberField = '<img src="' + memberObj.profileImageUrl + '" width="50" title="profileimage" class="img-thumbnail" />';
+						memberField += '<span>' + memberObj.nick + '</span>';
+						memberField += '<span>' + memberObj.email + '</span>';
+						if (memberObj.id == currentMemberId) {
+							memberField += '<button type="button" class="btn btn-default" disabled>본인</button>';
+						} else {
+							if([[${fragmentId == 'track_edit'}]]){
+								memberField += '<button type="button" class="btn btn-info" onclick="UPMEditTrack.addCooperatorCallback(' + memberObj.id + ', &quot;' + memberObj.nick + '&quot;);">추가</button>';
+							}else memberField += '<button type="button" class="btn btn-info" onclick="UPMUploadTrack.addCooperatorCallback(' + memberObj.id + ', &quot;' + memberObj.nick + '&quot;);">추가</button>';
+						}
+						return memberField;
+					} else {
+						return "<p>해당 이메일 계정을 사용하는 아티스트를 찾지 못했습니다.</p>";
+					}
+				}
+			};
+			$(function() {
+				$('#search-member').click(function() {
+					var memberEmail = $('#member-email-account').val();
+					if (memberEmail) {
+						var params = {
+							email: memberEmail
+						};
+						UPMusic.ajaxPostResObj(UPMusic._config._api_search_member, headers, params, UPMModalAddCooperator.searchCallback);
+					}
+		  		});
+			});
+		</script>
+		</div>
+	</div>
+</body>
+
+</html>

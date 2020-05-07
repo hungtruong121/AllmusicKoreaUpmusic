@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div class="modal-dialog login_pop">
+		<div class="modal-content">
+			<div class="modal-header login_header">
+				<img th:src="@{/img/logo.png}" class="loginLogo" alt="" /> <img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+			</div>
+			<div class="modal-body login_body">
+				<form action="#" th:action="@{/auth/login}" method="POST" class="form-signin login_body1" enctype="utf8" role="form">
+					<div class="form-group" th:classappend="${loginError != null} ? 'has-error' : ''">
+						<div class="inputbox mt20">
+							<input id="login-email" name="email" type="email"
+								class="form-control login_input"
+								th:placeholder="#{model.member.email}" />
+						</div>
+						<div class="inputbox mt10 mb15">
+							<input id="login-password" name="password" type="password"
+								class="form-control login_input"
+								th:placeholder="#{model.member.password}" />
+						</div>
+						<div class="checkbox login_checkbox">
+							<input id="demo-form-inline-checkbox" class="checkbox-checked" name="remember-me" type="checkbox" />
+							<label for="demo-form-inline-checkbox"><span class="checkbox-custom"></span><span th:text="#{model.member.remember_me}"></span></label>
+						</div>
+						<div class="login_btn mt30">
+							<button class="btn btn-custom3 h50 w100p" onclick="UPMusic.startLoading();" type="submit">
+								<span th:text="#{button.login}" th:remove="tag"></span>
+							</button>
+						</div>
+						<div th:text="${loginError}"></div>
+					</div>
+				</form>
+				<hr class="login_line" />
+				<div class="login_alert">
+					<small>* 소셜 로그인 시 지연현상이 발생합니다. 잠시만 기다려주세요.</small>
+				</div>
+				<div class="login_body1">
+					<div class="social_login">
+						<a href="/auth/facebook" class="btn btn-social btn-facebook h50 w100p"><i><img th:src="@{/img/login_facebook.png}" alt="" /></i>계정 로그인</a>
+ 						<a href="/auth/google" class="btn btn-social btn-google h50 w100p"><i><img th:src="@{/img/login_google.png}" alt="" /></i>계정 로그인</a>
+						<a href="/auth/kakao" class="btn btn-social btn-kakao h50 w100p"><i><img th:src="@{/img/login_kakao.png}" alt="" /></i>계정 로그인</a>
+						<a href="/auth/naver" class="btn btn-social btn-naver h50 w100p"><i><img th:src="@{/img/login_naver.png}" alt="" /></i>계정 로그인</a>
+					</div>
+					<ul class="login_footer mb20">
+						<li><a th:href="@{/auth/forgot_password}"><span th:text="#{model.member.forgot_password}" th:remove="tag"></span></a></li>
+						<li><a th:href="@{/auth/registration}"><span th:text="#{model.member.registration}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

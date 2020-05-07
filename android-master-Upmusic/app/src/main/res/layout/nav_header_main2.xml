@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#d6d9e1"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="25dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="68.9dp"
+            android:layout_height="68.9dp"
+            android:contentDescription="@string/nav_header_desc"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            app:srcCompat="@drawable/profile" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/textView01"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16.3sp"
+                android:textColor="#647bdc"
+                tools:text="음악대장"
+                />
+
+            <TextView
+                android:id="@+id/textView02"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="21.8sp"
+                android:textColor="#000000"
+                tools:text="68,002 HYC"
+                />
+
+            <TextView
+                android:id="@+id/textView03"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="11.8sp"
+                android:textColor="#585b64"
+                tools:text="764,245 원"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:weightSum="9"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        >
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_button"
+            android:layout_margin="5dp"
+            android:text="피드 홈"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_button"
+            android:layout_margin="5dp"
+            android:text="나의 피드"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_button"
+            android:layout_margin="5dp"
+            android:text="UPM 피드"
+            />
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

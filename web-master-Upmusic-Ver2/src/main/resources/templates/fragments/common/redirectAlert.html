@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>UPMusic</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+	<script th:src="@{/js/jquery.min.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+	<script th:src="@{/js/upmusic.js}"></script>
+</head>
+
+<body>
+	<div th:replace="fragments/common/modal_message :: modal_message"></div>
+
+	<script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+            //var emailDup = /*[[ ${emailDup} ]]*/;
+            var msg = /*[[ #{model.member.duplicated.email} ]]*/;
+
+            UPMusic.alert(msg);
+            /*if (emailDup != null) {
+                UPMusic.alert(msg);
+            }*/
+            document.location.href = "/auth/logout";
+
+        });
+        /*]]>*/
+	</script>
+</body>
+
+</html>

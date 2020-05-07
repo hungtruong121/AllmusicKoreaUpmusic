@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap section">
+			<h2 class="page-title" th:text="#{model.music.upload}"></h2>
+			<div class="tabcontent_wrap">
+				<div class="tabcontent_0">
+					<div class="upload_head mt30">
+						<p class="content_title2"><span>* 최초 입력한 음원이 자동으로 타이틀곡으로 설정되며 이후 음원 추가를 원할 경우 하단의 <span class="point">'저장'</span> 버튼을 클릭하세요</span></p>
+					</div>
+					<form id="upload-track-form" action="#" th:action="@{${'/upload/music/' + trackform.getMusicAlbum().getId() + '/track'}}" th:object="${trackform}" method="POST" class="form-music" enctype="multipart/form-data" role="form">
+						<!--<input th:type="file" th:field="*{fileMultipart}" class="hidden" accept=".mp3,audio/*" />-->
+						<input th:type="file" th:field="*{fileMultipart}" class="hidden" accept=".mp3" />
+						<!--<input th:type="file" th:field="*{extraFileMultipart}" class="hidden" accept=".zip,.rar" />-->
+						<div class="inputbox_wrap inputbox_wrap2">
+							<ul>
+								<li class="w100p">
+									<div id="form-group-fileMultipart" class="form-group inputbox w100p" th:classappend="${#fields.hasErrors('filename')} ? 'has-error' : ''">
+										<label class="input_title"><span th:text="#{model.music.upload}" th:remove="tag"></span></label>
+										<div class="input-musicfile" th:id="@{${'filename'}}">
+											<input th:type="text" th:field="*{filename}" th:placeholder="#{model.music.filename.placeholder}" class="form-control" onclick="$('#fileMultipart').trigger('click');return false;" onkeypress="return event.keyCode != 13;" readonly/>
+											<img th:src="@{/img/inputicon_music.png}" alt="" />
+										</div>
+										<p th:if="${#fields.hasErrors('filename')}" th:id="error-thumbnail" class="help-block" th:errors="*{filename}"></p>
+										<input th:id="input-duration" th:field="*{duration}" th:type="hidden" class="form-control" />
+									</div>
+								</li>
+								<li class="clear mb20 w100p">
+									<div id="form-group-subject" class="form-group inputbox fl w64p mr2p" th:classappend="${#fields.hasErrors('subject')} ? 'has-error' : ''">
+										<label class="input_title" th:text="#{model.track.subject}"></label>
+										<input id="subject" th:field="*{subject}" th:type="text" th:placeholder="#{model.track.subject.placeholder}" onkeypress="return event.keyCode != 13;" class="form-control imgupload_input">
+										<p th:if="${#fields.hasErrors('subject')}" th:id="error-subject" class="help-block" th:errors="*{subject}"></p>
+									</div>
+									<div id="form-group-trackType" class="form-group inputbox fl w10p mr2p" th:classappend="${#fields.hasErrors('trackType')} ? 'has-error' : ''">
+										<label class="input_title" th:text="#{model.track.upload_tracktype}"></label>
+										<select class="form-control selectpicker clear w100p" th:field="*{trackType}">
+											<option th:each="trackTypeOption : ${trackTypeMap}" th:value="${trackTypeOption['key']}" th:text="${trackTypeOption['value']}"></option>
+										</select>
+										<p th:if="${#fields.hasErrors('trackType')}" th:id="error-videoType" class="help-block" th:errors="*{trackType}"></p>
+									</div>
+									<div id="form-group-genre" class="form-group inputbox fl w10p mr2p" th:classappend="${#fields.hasErrors('genre')} ? 'has-error' : ''">
+										<label class="input_title" th:text="#{model.track.genre}"></label>
+										<select class="form-control selectpicker clear w100p" th:field="*{genre.id}">
+											<option th:each="genreOption : ${genreMap}" th:value="${genreOption['key']}" th:text="${genreOption['value']}"></option>
+										</select>
+										<p th:if="${#fields.hasErrors('genre')}" th:id="error-genre" class="help-block" th:errors="*{genre}"></p>
+									</div>
+									<div id="form-group-theme" class="form-group inputbox fl w10p" th:classappend="${#fields.hasErrors('theme')} ? 'has-error' : ''">
+										<label class="input_title" th:text="#{model.track.theme}"></label>
+										<select id="track-theme-select" class="form-control selectpicker clear w100p h100p" th:field="*{theme.id}">
+											<option th:each="themeOption : ${themeMap}" th:value="${themeOption['key']}" th:text="${themeOption['value']}"></option>
+										</select>
+										<p th:if="${#fields.hasErrors('theme')}" th:id="error-theme" class="help-block" th:errors="*{theme}"></p>
+									</div>
+								</li>
+							</ul>
+						</div>
+
+						<div class="collaboration_wrap">
+							<div class="collaboration_head">
+								<p class="content_title2 fl mt0" th:text="#{model.track.cooperation}"></p>
+								<button id="add-track-cooperator" type="button" class="btn btn-dark btn-custom fr" th:onclick="@{${'UPMModalAddCooperator.showModal(' + trackform.getArtistId() + '); return false;'}}">
+									<span th:text="#{model.track.add_cooperator}" th:remove="tag"></span>
+								</button>
+							</div>
+							<div class="collaboration_info">
+								<table id="track-cooperator-table">
+									<colgroup>
+										<col style="width:30%"/>
+										<col style="width:30%"/>
+										<col style="width:30%"/>
+										<col style="width:10%"/>
+									</colgroup>
+									<tr>
+										<th th:text="#{model.track.cooperator}"></th>
+										<th th:text="#{enum.track.cooperator.role}"></th>
+										<th><span th:text="#{model.track.distribution}" th:remove="tag"></span> <span>(&#37;)</span></th>
+										<th th:text="#{button.delete}"></th>
+									</tr>
+									<tr>
+										<td><span th:text="${trackform.getArtistNick()}" th:remove="tag"></span> <span th:text="#{model.track.cooperator.myself}"></span></td>
+										<td><span th:text="#{enum.track.cooperator.role.MAIN}" th:remove="tag"></span></td>
+										<td><span id="track-distribution-myself">100</span></td>
+										<td></td>
+									</tr>
+									<tr th:each="cooperator, cooperatorStat : *{cooperators}" th:id="*{cooperators[__${cooperatorStat.index}__].member.id}">
+										<td><span th:text="*{cooperators[__${cooperatorStat.index}__].member.nick}" th:remove="tag"></span></td>
+										<td class="cooperator-table-td">
+											<select class="form-control" th:field="*{cooperators[__${cooperatorStat.index}__].cooperatorRole}">
+												<option th:each="cooperatorRoleOption : ${cooperatorRoleMap}" th:value="${cooperatorRoleOption['key']}" th:text="${cooperatorRoleOption['value']}"></option>
+											</select>
+										</td>
+										<td class="cooperator-table-td">
+											<input type="number" id="track-distribution" class="form-control" th:field="*{cooperators[__${cooperatorStat.index}__].distribution}" th:onkeyup="@{${'UPMUploadTrack.calcDistribution();'}}" min="0" max="100" />
+										</td>
+										<td>
+											<a id="remove-album-cooperator" th:onclick="@{${'UPMUploadTrack.removeCooperator(' + trackform.cooperators[__${cooperatorStat.index}__].id + '); return false;'}}">X</a>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+
+						<div class="additional_wrap mb20">
+							<p class="content_title2 mt0" th:text="#{model.music.extra_information}"></p>
+							<div class="additional_radio mt20">
+								<h3 class="copyright_title additional_title fl">음원을 최신곡 리스트에 등록하시겠습니까? <span>*선택시 전문 심사단의 사전 검증 후 최신곡 리스트에 등록됩니다.</span></h3>
+								<div class="radiowrap fl">
+									<div class="radio">
+										<input id="demo-form-radio-1" th:field="*{inRecent}" value="1" type="radio">
+										<label for="demo-form-radio-1" ><span class="radiobtn_custom"></span><sapn th:text="#{common.yes}" th:remove="tag"></sapn></label>
+									</div>
+									<div class="radio">
+										<input id="demo-form-radio-2" th:field="*{inRecent}" value="0" type="radio">
+										<label for="demo-form-radio-2" ><span class="radiobtn_custom"></span><sapn th:text="#{common.no}" th:remove="tag"></sapn></label>
+									</div>
+								</div>
+							</div>
+							<div class="additional_radio">
+								<h3 class="copyright_title additional_title fl"><span th:text="#{model.music.want_register_in_reague}" th:remove="tag"></span> <span th:text="#{model.music.want_register_in_reague.description}"></span></h3>
+								<div class="radiowrap fl">
+									<div class="radio">
+										<input id="demo-form-radio-3" th:field="*{inLeague}" value="1" type="radio">
+										<label for="demo-form-radio-3" ><span class="radiobtn_custom"></span><sapn th:text="#{common.yes}" th:remove="tag"></sapn></label>
+									</div>
+									<div class="radio">
+										<input id="demo-form-radio-4" th:field="*{inLeague}" value="0" type="radio">
+										<label for="demo-form-radio-4" ><span class="radiobtn_custom"></span><sapn th:text="#{common.no}" th:remove="tag"></sapn></label>
+									</div>
+								</div>
+							</div>
+							<div class="additional_radio">
+								<h3 class="copyright_title additional_title fl">해당 저작물은 한국음악저작권협회 또는 기타 신탁단체에서 관리 중인 저작물 입니까?</h3>
+								<div class="radiowrap fl">
+									<div class="radio">
+										<input id="demo-form-radio-7" value="1" type="radio" name="copyrighted">
+										<label for="demo-form-radio-7" ><span class="radiobtn_custom"></span><sapn th:text="#{common.yes}" th:remove="tag"></sapn></label>
+									</div>
+									<div class="radio">
+										<input id="demo-form-radio-8" value="0" type="radio" name="copyrighted">
+										<label for="demo-form-radio-8" ><span class="radiobtn_custom"></span><sapn th:text="#{common.no}" th:remove="tag"></sapn></label>
+									</div>
+								</div>
+							</div>
+							<div id="copyrighted" class="hide" style="clear:both; padding-left:10px;">
+								<p class="help-block" style="color: #f55a4e; font-weight: 700;">* 저작권이 등록된 저작물은 등록할 수 없습니다. </p>
+							</div>
+							<div class="additional_radio">
+								<h3 class="copyright_title additional_title fl">다른 서비스사(SP)에서 서비스 중인 저작물 입니까?</h3>
+								<div class="radiowrap fl">
+									<div class="radio">
+										<input id="demo-form-radio-9" value="1" type="radio" name="serviced">
+										<label for="demo-form-radio-9" ><span class="radiobtn_custom"></span><sapn th:text="#{common.yes}" th:remove="tag"></sapn></label>
+									</div>
+									<div class="radio">
+										<input id="demo-form-radio-10" value="0" type="radio" name="serviced">
+										<label for="demo-form-radio-10" ><span class="radiobtn_custom"></span><sapn th:text="#{common.no}" th:remove="tag"></sapn></label>
+									</div>
+								</div>
+							</div>
+							<div id="serviced" class="hide" style="clear:both; padding-left:10px;">
+								<p class="help-block mt0" style="color: #f55a4e; font-weight: 700;">* 타사에서 서비스중인 저작물은 등록할 수 없습니다. </p>
+							</div>
+							<div class="additional_radio">
+								<h3 class="copyright_title additional_title fl">현재 한국음악저작권협회 소속 회원이십니까?</h3>
+								<div class="radiowrap fl">
+									<div class="radio">
+										<input id="demo-form-radio-11" th:field="*{inCopyrighter}" value="1" type="radio" name="membered">
+										<label for="demo-form-radio-11" ><span class="radiobtn_custom"></span><sapn th:text="#{common.yes}" th:remove="tag"></sapn></label>
+									</div>
+									<div class="radio">
+										<input id="demo-form-radio-12" th:field="*{inCopyrighter}" value="0" type="radio" name="membered">
+										<label for="demo-form-radio-12" ><span class="radiobtn_custom"></span><sapn th:text="#{common.no}" th:remove="tag"></sapn></label>
+									</div>
+								</div>
+							</div>
+							<div id="copywriter_info" class="inputbox_wrap inputbox_wrap2 hide" style="padding-left:11px;">
+								<label style="font-size: 15px;">한국음악저작권협회 회원 본명(또는 활동명)과 신탁자코드를 입력하세요</label>
+								<ul>
+									<li class="w100p">
+										<div id="copyrighter-name-error" class="form-group inputbox fl w10p mr2p" th:classappend="${#fields.hasErrors('copyrighterName')} ? 'has-error' : ''">
+											<input th:type="text" th:field="*{copyrighterName}" class="form-control" placeholder="본명 / 예명"/>
+											<p th:if="${#fields.hasErrors('copyrighterName')}" th:id="error-subject" class="help-block" th:errors="*{copyrighterName}"></p>
+										</div>
+										<div id="copyrighter-code-error" class="form-group inputbox fl w10p" th:classappend="${#fields.hasErrors('copyrighterCode')} ? 'has-error' : ''">
+											<input id="copyrighter-code" th:type="text" th:field="*{copyrighterCode}" class="form-control" placeholder="신탁자코드"/>
+											<p id="regex_error" class="help-block hide" style="color: #f55a4e; font-weight: 700;">* 신탁자코드는 10자리 이내의 한글, 숫자, 알파벳, -, _ 로만 이루어져야 합니다.</p>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="membership_btn mt50">
+							<div class="btn_centerwrap btn_centerwrap2">
+								<button id="btn_save" class="btn btn-custom btn-dark h50" onclick="UPMUploadTrack.submit();return false;"><span th:text="#{button.save}" th:remove="tag"></span></button>
+								<button class="btn btn-custom2 h50" onclick="UPMUploadTrack.resetForm(); return false;"><span th:text="#{button.reset}" th:remove="tag"></span></button>
+							</div>
+						</div>
+					</form>
+					
+					<h2 class="page-title mt20" th:text="#{model.track.list}"></h2>
+					
+					<div id="added-tracklist" th:if="${tracks != null and tracks.size() gt 0}" class="musiclist_table mt20">
+						<table>
+							<tr>
+								<th th:text="#{model.track.number}"></th>
+								<th th:text="#{model.track.information}"></th>
+								<th th:text="#{model.track.title.select}"></th>
+								<th th:text="#{button.delete}"></th>
+							</tr>
+							<tr th:each="track,iter : ${tracks}" th:id="${track.id}" class="added-track just-list">
+								<td scope="row"><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+								<th>
+									<i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" width="60" height="60"/></i>
+									<p><span th:text="${track.subject}" th:remove="tag"></span></p>
+								</th>
+								<td th:onclick="@{${'UPMUploadTrack.titleTrack(' + track.id + ');return false'}}" class="title-track-set-td pointer">
+									<span id="track-title" class="glyphicon" th:classappend="${track.titleTrack} ? 'glyphicon-star' : 'glyphicon-star-empty'">&nbsp;</span>
+								</td>
+								<td th:onclick="@{${'UPMUploadTrack.deleteTrack(' + track.id + ');'}}" class="pointer">X</td>
+							</tr>
+						</table>
+					</div>
+					
+					<div th:unless="${tracks != null and tracks.size() gt 0}" class="list_none mt20">
+						<ul>
+							<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+							<li th:text="#{common.upload.request_track}"></li>
+						</ul>
+					</div>
+					
+					<div class="additional_wrap mb20">
+						<div class="additional_information clear">
+							<ul>
+								<li>업뮤직 음원 서비스의 질적 향상을 위해 등록 전 전문 심사단의 간단한 사전검증을 거친 후 음원이 등록 됨을 알려드립니다.</li>
+								<li>이에 대한 결과는 최대 3일 이내로 회원님의 업뮤직 UPS계정과 문자서비스를 이용하여 바로 확인 하실 수 있습니다.</li>
+								<li style="color: red" class="mb10">* 기본적으로 저작권신탁단체에 등록된 음원은 업로드가 불가능합니다.</li>
+							</ul>
+						</div>
+						<div class="membership_btn mt50">
+							<div class="btn_centerwrap">
+								<button class="btn btn-custom btn-dark h50" th:text="#{button.registration.complete}" onclick="UPMUploadTrack.complete(); return false;"></button>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		
+		<div th:replace="fragments/page/upload/modal_add_track_cooperator :: modal_track_add_cooperator('upload_track')"></div>
+		
+		<!--최신곡 리스트에 등록 팝업-->
+	    <div class="modal fade" id="popup_in_recent" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">안내</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<p class="judge_info">원할한 서비스 제공을 위해 서비스 게시 전 전문 심사단의 간단한 사전검증과 승인을 거친 후(최장 5일 이내) 해당 음원이 최신곡 리스트에 등록 됨을 알려드립니다.</p>
+						</div>
+						<div class="login_btn upload_btn mt10">
+							<button class="btn btn-custom3 h50 w100p"  data-dismiss="modal" >확인</button>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<!-- 최신곡 리스트에 등록 팝업 끝  -->
+		
+		<!--업리그 등록 팝업-->
+	    <div class="modal fade" id="popup_in_league" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">안내</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<p class="judge_info"><span th:text="${trackform.getArtistNick()}" th:remove="tag"></span>님이 해당 저작물의 권리자이어야 하며 이미 한국음악저작권협회 등 신탁단체에서 관리중인 저작물이거나 또는 서비스사(SP) , 유통사(CP)에서 서비스 중인 저작물은 원칙적으로 ‘업리그’ 등록이 불가능 함을 알려드립니다. 해당 규칙에 반하여 저작물 등록 시 이에 대한 법적 또는 이해 당사자간의 모든 문제에 대해서 해당 저작물을 업로드한 ‘<span th:text="${trackform.getArtistNick()}" th:remove="tag"></span>’에게 책임을 있음을 고지합니다<br>-업뮤직-</p>
+						</div>
+						<div class="login_btn upload_btn mt10">
+							<button class="btn btn-custom3 h50 w100p"  data-dismiss="modal" >확인</button>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<!-- 업리그 등록 팝업 끝  -->
+		
+		<!--뮤직스토어 등록 팝업-->
+	    <div class="modal fade" id="popup_in_store" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">안내</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<p class="judge_info"><span th:text="${trackform.getArtistNick()}" th:remove="tag"></span>님이 해당 저작물의 권리자이어야 하며 이미 한국음악저작권협회 등 신탁단체에서 관리중인 저작물이거나 또는 서비스사(SP) , 유통사(CP)에서 서비스 중인 저작물은 원칙적으로 ‘뮤직스토어’ 등록이 불가능 함을 알려드립니다. 해당 규칙에 반하여 저작물 등록 시 이에 대한 법적 또는 이해 당사자간의 모든 문제에 대해서 해당 저작물을 업로드한 ‘<span th:text="${trackform.getArtistNick()}" th:remove="tag"></span>’에게 책임을 있음을 고지합니다<br>-업뮤직-</p>
+						</div>
+						<div class="login_btn upload_btn mt10">
+							<button class="btn btn-custom3 h50 w100p"  data-dismiss="modal" >확인</button>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<!-- 뮤직스토어 등록 팝업 끝  -->
+		
+		<script type="text/javascript" th:inline="javascript">
+			/*<![CDATA[*/
+				var cooperatorCnt = 0;
+				var cooperatorRole = /*[[ ${cooperatorRoleMap} ]]*/;
+				var albumId = /*[[ ${trackform.musicAlbum.id} ]]*/;
+				var isSA = /*[[ ${isSA} ]]*/;
+				
+				var UPMUploadTrack = {
+					_config : {
+						loading : false
+					},
+					submit : function() {
+						if (UPMUploadTrack._config.loading) return;
+						UPMUploadTrack._config.loading = true;
+						UPMusic.startLoading();
+						document.getElementById("upload-track-form").submit();
+					},
+					showCooperatorModal : function(trackNo) {
+						currentTrackNo = trackNo;
+						$('#modal-add-track-cooperator').modal('show');
+					},				
+					addCooperatorCallback : function(memberId, memberNick) {
+						UPMusic.log("UPMUploadTrack.addCooperatorCallback : memberId is " + memberId + ", memberNick is " + memberNick);
+						if (!$('#track-cooperator-' + memberId).length) {
+							var cooperatorField = '<tr id="track-cooperator-' + memberId + '" class="added-cooperator">';
+							cooperatorField += UPMUploadTrack.renderCooperatorField(memberId, memberNick);
+							cooperatorField += '</div>';
+							$(cooperatorField).appendTo('#track-cooperator-table').fadeIn("slow");
+							cooperatorCnt++;
+						}
+					},
+					renderCooperatorField : function(memberId, memberNick) {
+						var cooperatorField = '<td>' + memberNick + '<input type="hidden" name="cooperators[' + cooperatorCnt + '].cooperatorId" value="' + memberId + '"/></td>';
+						cooperatorField += '<td class="p0"><select class="form-control w100p h100p mb0 bdrn"class="form-control w100p h100p mb0 bdrn" name="cooperators[' + cooperatorCnt + '].cooperatorRole">';
+						for (var key in cooperatorRole) {
+							if (cooperatorRole.hasOwnProperty(key)) {
+								cooperatorField += '<option value="' + key + '">' + cooperatorRole[key] + '</option>';
+							}
+						}
+						cooperatorField += '</select></td>';
+						cooperatorField += '<td class="p0 inputbox"><input type="number" id="track-distribution" class="form-control" name="cooperators[' + cooperatorCnt + '].distribution" onkeyup="UPMUploadTrack.calcDistribution();" min="0" max="100" value="0"/></td>';
+						cooperatorField += '<td><a id="remove-track-cooperator" onclick="UPMUploadTrack.removeCooperator(' + memberId + ');">X</a></td>';
+						return cooperatorField;
+					},
+					calcDistribution : function() {
+						var cooperatorsDistrib = 0;
+						$('#track-cooperator-table').find('input#track-distribution').each(function() {
+							if ($(this).val()) cooperatorsDistrib += parseInt($(this).val());
+						});
+						$('#track-distribution-myself').html(100 - cooperatorsDistrib);
+					},
+					removeCooperator : function(memberId) {
+						$('#track-cooperator-' + memberId).remove();
+						cooperatorCnt--;
+						UPMUploadTrack.calcDistribution();
+					},
+					titleTrack : function(trackId) {
+						var params = {};
+						UPMusic.ajaxPost(UPMusic._config._api_track + '/' + trackId + '/title', headers, params, UPMUploadTrack.titleTrackCallback);
+					},
+					titleTrackCallback : function(msg, obj) {
+						if (msg == 'true') {
+							$('.title-track-set-td').each(function(value) {
+								if ($(this).parents('tr').attr('id') == obj) {
+									$(this).find("#track-title").removeClass('glyphicon-star-empty').addClass('glyphicon-star');
+								} else if ($(this).find("#track-title").hasClass('glyphicon-star')) {
+									$(this).find("#track-title").removeClass('glyphicon-star').addClass('glyphicon-star-empty');
+								}
+							});
+						} else {
+							UPMusic.alert(msg);
+						}
+					},
+					editTrack : function(trackId) {
+						UPMUploadTrack.renderEditTrackPage(trackId);
+						$('#modal-edit-track').modal('show');
+					},
+					renderEditTrackPage : function(trackId) {
+						$.get('/component/music/track/' + trackId + '/edit', function(data) {
+							$('#edit-track-modal-body').html(data);
+						});
+					},
+					deleteTrack : function(trackId) {
+						UPMusic.confirm("정말 삭제하시겠습니까?", function() {
+							UPMUploadTrack.deleteTrackConfirm(trackId);
+						});
+					},
+					deleteTrackConfirm: function(trackId) {
+						if (UPMUploadTrack._config.loading) return;
+						UPMUploadTrack._config.loading = true;
+						var params = {ids : [trackId]};
+			  			UPMusic.ajaxDeleteItems(UPMusic._config._api_track + '/delete_tracks', headers, params, UPMUploadTrack.deleteTrackCallback);
+					},
+					deleteTrackCallback: function(msg, object) {
+						if (msg == 'true') {
+							$('tr#' + object).remove();
+						} else {
+							UPMusic.alert("삭제하지 못했습니다. 잠시 후 다시 시도하십시오.");
+						}
+						UPMUploadTrack._config.loading = false;
+					},
+					resetForm : function() {
+						$('#upload-track-form')[0].reset();
+						$("#track-theme-select").val('default');
+						$("#track-theme-select").selectpicker("refresh");
+						$("tr.added-cooperator").each(function() {
+							$(this).remove();
+						});
+						UPMUploadTrack.calcDistribution();
+					},
+					complete : function() {
+						// 폼에 입력값이 없는 경우엔 업로드 내역 페이지로 이동
+						if ($('tr.added-track').length) {
+							if (UPMUploadTrack._config.loading) return;
+							UPMUploadTrack._config.loading = true;
+							UPMusic.startLoading();
+							var params = {};
+							UPMusic.ajaxPost(UPMusic._config._api_album + '/' + albumId + '/complete', headers, params, UPMUploadTrack.completeCallback);
+						// 수록곡이 없는 경우 알림
+						} else {
+							UPMusic.alert("음원 리스트에 곡이 없습니다. 먼저 수록곡을 저장한 후에 완료하십시오");
+						}
+					},
+					completeCallback : function(msg, obj) {
+						if (msg == 'true') {
+							UPMusic.goto('/my_upm/upload');
+						} else {
+							UPMusic.alert(msg);
+						}
+						UPMUploadTrack._config.loading = false;
+						UPMusic.stopLoading();
+					}
+				};
+				var audio = document.createElement('audio');
+				$("#fileMultipart").change(function() {
+					if (this.files[0]) {
+						var fileURL = URL.createObjectURL(this.files[0]);
+						var filename = $(this).val().split('\\').pop();
+
+                        //확장자 체크
+                        if(filename.substring(filename.lastIndexOf(".")+1,filename.length).search("mp3") == -1){
+                            UPMusic.alert("음원 파일(mp3)만 업로드 가능합니다");
+                            $("#fileMultipart").val("");
+                            return;
+                        }
+
+						audio.src = fileURL;
+						audio.ondurationchange = function() {
+							var duration = Math.floor(this.duration);
+							$('input#input-duration').val(duration);
+							$('input#filename').val(filename);
+							var subject = filename.substring(0, filename.lastIndexOf('.'));
+							$('#subject').val(subject);
+						};
+					} else {
+						$('input#filename').val('');
+					}
+				});
+				$("#extraFileMultipart").change(function() {
+					if (this.files[0]) {
+						var filename = $(this).val().split('\\').pop();
+						$('input#extraSource').val(filename);
+					} else {
+						$('input#extraSource').val('');
+					}
+				});
+				
+				$(function() {
+					UPMUploadTrack.calcDistribution();
+					$("#modal-add-track-cooperator").on("hidden.bs.modal", function () {
+						$('#modal-add-track-cooperator #member-email-account').val('');
+						$('#modal-add-track-cooperator #search-member-result').html('');
+					});
+					
+					$('#demo-form-radio-1').prop('checked', false);
+					$('#demo-form-radio-2').prop('checked', false);
+					$('#demo-form-radio-3').prop('checked', false);
+					$('#demo-form-radio-4').prop('checked', false);
+					$('#demo-form-radio-5').prop('checked', false);
+					$('#demo-form-radio-6').prop('checked', false);
+					$('#demo-form-radio-7').prop('checked', false);
+					$('#demo-form-radio-8').prop('checked', false);
+					$('#demo-form-radio-9').prop('checked', false);
+					$('#demo-form-radio-10').prop('checked', false);
+					$('#demo-form-radio-11').prop('checked', false);
+					$('#demo-form-radio-12').prop('checked', false);
+
+					$('#demo-form-radio-1').on('change', function() {
+						if ($('#demo-form-radio-1').prop('checked')) {
+							$('#popup_in_recent').modal('show');
+                            $('#btn_save').attr('disabled',false);
+						}
+					});
+					$('#demo-form-radio-3').on('change', function() {
+						if ($('#demo-form-radio-3').prop('checked')) {
+							$('#popup_in_league').modal('show');
+                            $('#btn_save').attr('disabled',false);
+						}
+					});
+                    $('#demo-form-radio-2').on('change', function() {
+                        if ($('#demo-form-radio-2').prop('checked') && $('#demo-form-radio-4').prop('checked')) {
+                            UPMusic.alert('최신곡, 업리그 중 한 가지 이상을 선택해주세요');
+                            $('#btn_save').attr('disabled',true);
+                        }
+                    });
+                    $('#demo-form-radio-4').on('change', function() {
+                        if ($('#demo-form-radio-2').prop('checked') && $('#demo-form-radio-4').prop('checked')) {
+                            UPMusic.alert('최신곡, 업리그 중 한 가지 이상을 선택해주세요');
+                            $('#btn_save').attr('disabled',true);
+                        }
+                    });
+
+					/*
+					$('#demo-form-radio-5').on('change', function() {
+						if ($('#demo-form-radio-5').prop('checked')) {
+							$('#popup_in_store').modal('show');
+						}
+					});
+					*/
+
+                    $('#demo-form-radio-7').on('change', function() {
+                        if ($('#demo-form-radio-7').prop('checked')) {
+                            $('#copyrighted').removeClass('hide');
+                            $('#btn_save').attr('disabled',true);
+                        }
+                    });
+                    $('#demo-form-radio-8').on('change', function() {
+                        if ($('#demo-form-radio-8').prop('checked')) {
+                            $('#copyrighted').addClass('hide');
+                            if($('#demo-form-radio-10').prop('checked')){
+                                $('#btn_save').attr('disabled',false);
+                            }
+                        }
+                    });
+
+                    $('#demo-form-radio-9').on('change', function() {
+                        if ($('#demo-form-radio-9').prop('checked')) {
+                            $('#serviced').removeClass('hide');
+                            $('#btn_save').attr('disabled',true);
+                        }
+                    });
+                    $('#demo-form-radio-10').on('change', function() {
+                        if ($('#demo-form-radio-10').prop('checked')) {
+                            $('#serviced').addClass('hide');
+                            if($('#demo-form-radio-8').prop('checked')){
+                                $('#btn_save').attr('disabled',false);
+                            }
+                        }
+                    });
+
+                    $('#demo-form-radio-11').on('change', function() {
+                        if ($('#demo-form-radio-11').prop('checked')) {
+							$('#copywriter_info').removeClass('hide');
+                        }
+                    });
+                    $('#demo-form-radio-12').on('change', function() {
+                        if ($('#demo-form-radio-12').prop('checked')) {
+							$('#copywriter_info').addClass('hide');
+                        }
+                    });
+					
+					$('#upload-track-form').submit(function() {
+						if (isSA && $('tr.added-track').length) {
+							UPMusic.alert('싱글앨범의 음원은 최대 1곡까지 등록 가능합니다.');
+							return false;
+						}
+						return true;
+						/* if ($('#upload-track-form input#subject').val()) {
+							var params = {
+								subject: $('#upload-track-form input#subject').val()
+							};
+				  			UPMusic.ajaxPost(UPMusic._config._api_track + '/check_subject', headers, params, UPMusic.checkCallback);
+						}
+						var r = confirm("Duplicated!");
+						return r; */
+					});
+				});
+				
+				$(document).ready(function(){
+                    var regex = /^([A-Za-zㄱ-ㅎ가-힣0-9]|[\-]|[\_]){0,10}$/g;
+				    $('input#subject').keyup(function(){
+				        if ($(this).val().length > 50) {
+				            UPMusic.alert('50자를 넘을 수 없습니다');
+				            $(this).val($(this).val().substr(0, 50));
+				        }
+				    });
+					$('#copyrighter-code').keyup(function () {
+					    var data = $(this).val();
+						if(!data.match(regex)){
+							$('#regex_error').removeClass('hide');
+                            $('#btn_save').attr('disabled',true);
+						} else {
+                            $('#regex_error').addClass('hide');
+                            $('#btn_save').attr('disabled',false);
+						}
+                    });
+				    if($('#copyrighter-name-error').hasClass('has-error') || $('#copyrighter-code-error').hasClass('has-error')){
+                        $('#demo-form-radio-11').prop('checked',true);
+                        $('#copywriter_info').removeClass('hide');
+					}
+				});
+			/*]]>*/
+		</script>
+	</div>
+
+</body>
+</html>

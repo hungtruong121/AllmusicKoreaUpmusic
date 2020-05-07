@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+<head>
+</head>
+<link rel="stylesheet" type="text/css" th:href="@{/plugins/unitegallery/css/unitegallery.min.css}"/>
+<script th:src="@{/plugins/unitegallery/js/unitegallery.min.js}"></script>
+<script th:src="@{/plugins/unitegallery/themes/slider/ug-theme-slider.js}"></script>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 크라우드 펀딩 -->
+			<div class="nl_panel pdb0 pdt0">
+				<ul class="nav nav-tabs tabType04">
+					<li class="active"><a href="#cloud-1">홈</a></li>
+					<li class="making"><a id="new_project" href="#cloud-2" data-toggle="tab">신규</a></li>
+					<li class="making"><a id="hot_project" href="#cloud-3" data-toggle="tab">인기</a></li>
+					<li class="making"><a id="infomation" href="#cloud-4" data-toggle="tab">소식</a></li>
+				</ul>
+			</div>
+			<div class="tab-content">
+				<div class="tab-pane active" id="cloud-1">
+					<!-- 홈 -->
+					<div class="cloudFunding_top">
+			            <p class="colBlue home_cmt">전세계인과 직접 참여하고 함께 나누는 참여형 프로젝트</p>
+			            <div class="pad-all">
+							<div class="swiper-container fundingSwiper">
+								<div class="swiper-wrapper funding_banner">
+									<div class="swiper-slide" th:href="${banner.link}" th:each="banner : ${bannerList}" th:style="'background:url(' +@{${banner.getMobileImgUrl()}}+') center center no-repeat; background-size: cover;'"></div>
+								</div>
+								<!-- Add Arrows -->
+								<div class="swiper-button-next"></div>
+								<div class="swiper-button-prev"></div>
+							</div>
+							<!--
+			                <div id="demo-gallery-2" style="display:none;">
+			                    <a th:href="${banner.link}" th:each="banner : ${bannerList}">
+			                        <img alt="제목입력"
+			                             th:src="${banner.getMobileImgUrl()}"
+			                             th:data-image="${banner.getMobileImgUrl()}"
+			                             data-description="<span class='gallery_open'>OPEN</span> 2018-04-02" >
+			                    </a>
+			                </div>
+			                -->
+			            </div>
+						<div class="cloudFunding">
+							<!-- 신규 -->
+							<div class="nl_panel" th:each="newProject : ${newProjectList.content}">
+								<a th:href="@{${newProject.getDetailUrl()}}">
+								<div class="ct_title ofh mb_10">
+									<h2 class="content_title">신규 프로젝트</h2>
+								</div>
+								<div class="newProject">
+									<div class="img" th:style="'background:url(' +@{${newProject.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+										<!-- <p><img th:src="${newProject.getThumbnailImgUrl()}" alt="" /></p> -->
+									</div>
+									<div class="info">
+										<p class="title">
+											<span class="artist" th:text="${newProject.artistNick}"></span>
+											<span class="sj" th:text="${newProject.subject}"></span>
+										<p th:text="${newProject.attainmentPrice} + 원"></p>
+										</p>
+										<div class="graphBox">
+											<p class="l">
+												<span th:text="${newProject.getPercent()}">23%</span>
+												<span class="small">
+													(<span th:text="${newProject.joinCnt}"></span> 득표)
+												</span>
+											</p>
+											<p class="r">
+												남은 기간 <span th:text="${newProject.getDateTerm()} + 일"></span>
+											</p>
+											<div class="graph_bg">
+												<span th:style="'width: ' + @{${newProject.getPercentForLoadingBar()}} +';'" class="funding_bar"></span>
+											</p>
+										</div>
+									</div>
+								</div>
+								</a>
+							</div>
+							<!-- //신규 -->
+
+							<!-- 인기 -->
+							<div class="ct_title ofh mb_10 mt_20">
+								<h2 class="content_title">인기 프로젝트</h2>
+							</div>
+							<dl class="popularProject">
+								<dd th:each="hotProject : ${hotProjectMenuListMobile}">
+									<a th:href="@{${hotProject.getDetailUrl()}}">
+									<div class="img" th:style="'background:url(' +@{${hotProject.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+										<!-- <img th:src="${hotProject.getThumbnailImgUrl()}" /> -->
+										<span class="dday">
+											남은 기간 <span th:text="${hotProject.getDateTerm()} + 일"></span>
+										</span>
+									</div>
+									<div class="info">
+										<p class="title">
+											<span class="artist" th:text="${hotProject.artistNick}"></span>
+											<span class="sj" th:text="${hotProject.subject}"></span>
+											<p th:text="${hotProject.attainmentPrice} + 원"></p>
+										</p>
+
+										<div class="graphBox">
+											<p class="l">
+												<span th:text="${hotProject.getPercent()}"></span>
+												<span class="small">
+													(<span th:text="${hotProject.joinCnt}"></span> 득표)
+												</span>
+											</p>
+											<div class="graph_bg">
+												<span th:style="'width: ' + @{${hotProject.getPercentForLoadingBar()}} +';'" class="funding_bar"></span>
+											</div>
+										</div>
+									</div>
+									</a>
+								</dd>
+							</dl>
+						</div>
+			        </div>
+				</div>
+					<!-- //홈 -->
+				</div>
+				<div class="tab-pane" id="cloud-2">
+					<!-- 신규프로젝트 -->
+					<div class="nl_panel">
+
+						<div class="ct_title ofh mb_10">
+							<h2 class="content_title">신규 프로젝트</h2>
+						</div>
+
+						<dl class="popularProject">
+							<dd th:each="newProject : ${newProjectMenuListMobile}">
+								<a th:href="@{${newProject.getDetailUrl()}}">
+								<div class="img" th:style="'background:url(' +@{${newProject.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+									<!-- <img th:src="${newProject.getThumbnailImgUrl()}" /> -->
+									<span class="dday">
+										남은 기간 <span th:text="${newProject.getDateTerm()} + 일"></span>
+									</span>
+								</div>
+								<div class="info">
+									<p class="title">
+										<span class="artist" th:text="${newProject.artistNick}"></span>
+										<span class="sj" th:text="${newProject.subject}"></span>
+									<p th:text="${newProject.attainmentPrice} + 원"></p>
+									</p>
+
+									<div class="graphBox">
+										<p class="l">
+											<span th:text="${newProject.getPercent()}"></span>
+											<span class="small">
+												(<span th:text="${newProject.joinCnt}"></span> 득표)
+											</span>
+										</p>
+										<div class="graph_bg">
+											<span th:style="'width: ' + @{${newProject.getPercentForLoadingBar()}} +';'" class="funding_bar"></span>
+										</div>
+									</div>
+								</div>
+								</a>
+							</dd>
+						</dl>
+					</div>
+					<div class="h80"></div>
+					<!-- //신규프로젝트 -->
+				</div>
+				<div class="tab-pane" id="cloud-3">
+					<!-- 인기프로젝트 -->
+					<div class="nl_panel">
+
+						<div class="ct_title ofh mb_10">
+							<h2 class="content_title">인기 프로젝트</h2>
+						</div>
+
+						<dl class="popularProject">
+							<dd th:each="hotProject : ${hotProjectMenuListMobile}">
+								<a th:href="@{${hotProject.getDetailUrl()}}">
+								<div class="img" th:style="'background:url(' +@{${hotProject.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+									<!-- <img th:src="${hotProject.getThumbnailImgUrl()}" /> -->
+									<span class="dday">
+										남은 기간 <span th:text="${hotProject.getDateTerm()} + 일"></span>
+									</span>
+								</div>
+								<div class="info">
+									<p class="title">
+										<span class="artist" th:text="${hotProject.artistNick}"></span>
+										<span class="sj" th:text="${hotProject.subject}"></span>
+										<span th:text="${hotProject.attainmentPrice} + 원"></span>
+									</p>
+
+									<div class="graphBox">
+										<p class="l">
+											<span th:text="${hotProject.getPercent()}"></span>
+											<span class="small">
+												(<span th:text="${hotProject.joinCnt}"></span> 득표)
+											</span>
+										</p>
+										<div class="graph_bg">
+											<span th:style="'width: ' + @{${hotProject.getPercentForLoadingBar()}} +';'" class="funding_bar"></span>
+										</div>
+									</div>
+								</div>
+								</a>
+							</dd>
+						</dl>
+					</div>
+					<div class="h80"></div>
+					<!-- //인기프로젝트 -->
+				</div>
+				<div class="tab-pane" id="cloud-4">
+					<!-- 프로젝트소식 -->
+					<div class="nl_panel">
+						<div class="ct_title ofh mb_10">
+							<h2 class="content_title">가장 최근 소식</h2>
+						</div>
+
+						<div class="projectNewsTop" th:each="newProjectNews : ${newProjectNewsList.content}">
+							<a th:href="${newProjectNews.getDetailUrl()}">
+							<div class="img" th:style="'background:url(' +@{${newProjectNews.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+								<!-- <img th:src="${newProjectNews.getThumbnailImgUrl()}" alt="" /> -->
+							</div>
+							<div class="info">
+								<p class="title" th:text="${newProjectNews.subject}"></p>
+								<!-- <p class="writing clamp3">아이돌 그룹 워너원이 월드 투어 콘서트의 화려한 막을 올린다. 워너원 측은 오는 6월 1일부터 3일까지 고척 스카이돔에서 펼쳐지는 월드 투어 ‘Wanna One World Tour ONE: THE아이돌 그룹 워너원이 월드 투어 콘서트의 화려한 막을 올린다. 워너원 측은 오는 6월 1일부터 3일까지 고척 스카이돔에서 펼쳐지는 월드 투어 ‘Wanna One World Tour ONE: THE WO...>
+								</p> -->
+							</div>
+							</a>
+						</div>
+					</div>
+
+					<div class="nl_panel">
+						<div class="ct_title ofh mb_10">
+							<h2 class="content_title">소식</h2>
+						</div>
+
+						<dl class="projectNews">
+							<dd th:each="projectNews : ${projectNewsList.content}">
+								<a th:href="${projectNews.getDetailUrl()}">
+								<div class="img" th:style="'background:url(' +@{${projectNews.getThumbnailImgUrl()}}+') center center no-repeat; background-size: cover;'">
+									<!-- <img th:src="${projectNews.getThumbnailImgUrl()}" alt="" /> -->
+								</div>
+								<div class="info">
+									<p class="title clamp" th:text="${projectNews.subject}">워너원 메인 포스터 공개!</p>
+								</div>
+								</a>
+							</dd>
+						</dl>
+					</div>
+					<div class="h80"></div>
+					<!-- //프로젝트소식 -->
+				</div>
+			</div>
+			<!-- //end tab-content -->
+			<!-- //end 크라우드 펀딩 -->
+			<script>
+		       $(document).on('nifty.ready', function () {
+		           /*
+					$("#demo-gallery-2").unitegallery({
+						//slider_transition: "fade",
+						slider_enable_text_panel: true,
+						slider_enable_bullets: true
+					});
+					*/
+		       });
+		   </script>
+
+
+		</div>
+		<!-- //end content -->
+	</div>
+</body>
+</html>

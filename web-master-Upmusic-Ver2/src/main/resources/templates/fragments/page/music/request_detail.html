@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title" th:text="#{nav.music.store}"></h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="producing_listhead">
+							<p class="content_title2"><span th:text="#{common.request.music.detail.description_1}" th:remove="tag"></span> <span th:text="#{common.request.music.description_2}"></span></p>
+							<ul class="hits_wrap mt30">
+								<li><span th:text="#{model.request.hits}" th:remove="tag"></span> : <span th:text="${request.hitCnt}" th:remove="tag"></span><span th:text="#{common.times}" th:remove="tag"></span></li>
+								<li><span th:text="#{button.registration}" th:remove="tag"></span> : <span th:text="${request.formattedTime()}" th:remove="tag"></span></li>
+							</ul>
+						</div>
+						<div class="album_infomation">
+							<div class="album_img producing_price_profile">
+								<a th:href="@{${request.getMember().getUrl()}}">
+									<img th:src="@{${request.getMember().getProfileImageUrl()}}" alt="" />
+								</a>
+							</div>
+							<div class="album_infotext producing_price_infotext">
+								<table>
+									<colgroup>
+										<col width="10%"/>
+										<col width="15%"/>
+										<col width="10%"/>
+										<col width="15%"/>
+										<col width="10%"/>
+										<col width="15%"/>
+										<col width="10%"/>
+										<col width="15%"/>
+									</colgroup>
+									<tr>
+										<td><span th:text="#{model.member.nick}" th:remove="tag"></span></td>
+										<td>
+											<a th:href="@{${request.getMember().getUrl()}}">
+												<span th:text="${request.getMember().nick}" th:remove="tag"></span>
+											</a>
+										</td>
+										<td><span th:text="#{model.member.phoneNumber}" th:remove="tag"></span></td>
+										<td><span th:text="${request.getMember().getPhoneNumber()}" th:remove="tag"></span></td>
+										<td><span th:text="#{model.member.email}" th:remove="tag"></span></td>
+										<td><span th:text="${request.getMember().getEmail()}" th:remove="tag"></span></td>
+									</tr>
+									<tr>
+										<td><span th:text="#{model.request.price}" th:remove="tag"></span></td>
+										<td colspan="5"><span th:text="${request.getFormattedPrice()}" th:remove="tag"></span></td>
+									</tr>
+								</table>
+								<div class="casting_coment_field">
+									<p class="prpducing_price_info" th:utext="${#strings.replace( #strings.escapeXml( request.getDescription() ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+								</div>
+								<div class="commerce_btn fl mt30 w300">
+									<ul>
+										<li th:onclick="@{${'UPMusic.goto(&quot;/music/store#store-request&quot;);'}}"><i><img th:src="@{/img/list_icon.png}" alt=""></i><span th:text="#{button.list}" th:remove="tag"></span></li>
+										<li onclick="UPMShareModal.showShareModal(null);"><i><img th:src="@{/img/share_icon.png}" alt="" /></i><span th:text="#{button.share}" th:remove="tag"></span></li>
+									</ul>
+								</div>
+								<div th:if="${isOwner}" class="commerce_btn commerce_btn_ver2 mt30 w300">
+									<ul>
+										<li th:onclick="@{${'UPMusic.goto(&quot;' + request.getUrl() + '/edit&quot;);'}}"><i><img th:src="@{/img/change_icon.png}" alt=""></i><span th:text="#{button.modify}" th:remove="tag"></span></li>
+										<li onclick="UPMRequestDetail.deleteRequest();"><i><img th:src="@{/img/delete_icon.png}" alt=""></i><span th:text="#{button.delete}" th:remove="tag"></span></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div th:replace="fragments/common/list_comment :: list_comment(${'/api/store/request/' + request.id}, ${requestComments}, ${currentUserId}, ${paginationUrl})"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var requestId = /*[[ ${request.id} ]]*/;
+			var UPMRequestDetail = {
+				deleteRequest: function() {
+					UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+						UPMusic.ajaxDelete(UPMusic._config._api_request + '/' + requestId, headers, UPMRequestDetail.deleteRequestCallback);
+				    });
+				},
+				deleteRequestCallback: function(msg, object) {
+					if (msg == 'true') {
+						window.location.href = '/music/store#store-request';
+					} else {
+						UPMusic.alert("삭제하지 못했습니다");
+					}
+				}
+			};
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

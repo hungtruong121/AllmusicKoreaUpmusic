@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title" th:text="#{nav.my_upm.profile}"></h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="member_list clear">
+							<p class="content_title2 mb15"><span th:text="#{${member.getGrade()}}" th:remove="tag"></span> <span th:text="#{nav.my_upm.profile}" th:remove="tag"></span></p>
+							<div class="crowd_newproject_wrap">
+								<div class="producing_profile profile_profile" th:style="@{${'background-image: url(' + member.getProfileImageUrl() + ');'}}"></div>
+								<div class="producing_info crowd_info profile_info">
+									<div class="producing_infowrap">
+										<h3 class="crowd_title crowd_title2" th:text="${member.nick}"></h3>
+										<p class="profile_question mt10"><span th:text="#{model.member.createdAt}" th:remove="tag"></span>: <span class="profile_answer" th:text="${member.formattedDay()}"></span></p>
+										<p class="profile_question mt10"><span th:text="#{common.upload}" th:remove="tag"></span>:
+										<span class="profile_answer"><span th:text="#{common.source.music}" th:remove="tag"></span> <span th:text="${member.trackCnt}" th:revmoe="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></span> ㅣ 
+										<span class="profile_answer"><span th:text="#{common.source.video}" th:remove="tag"></span> <span th:text="${member.videoCnt}" th:revmoe="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></span></p>
+										<p class="profile_question mt10"><span th:text="#{common.grade}" th:remove="tag"></span>: <span class="profile_answer" th:text="#{${member.getGrade()}}"></span></p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="public_project_wrap mt30">
+							<div th:if="${memberTracks != null and 0 < memberTracks.size()}">
+								<h3 class="content_title2 mb15">
+									<a th:href="@{${member.getUrl() + '/tracks'}}"><span th:text="#{model.member.track}" th:remove="tag"></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+								</h3>
+								<div th:replace="fragments/common/list_track_default :: list_track('member-tracks-fragment', ${memberTracks}, null)"></div>
+							</div>
+						</div>
+						<div class="public_project_wrap">
+							<div th:if="${memberAlbums != null and 0 < memberAlbums.size()}">
+								<h3 class="content_title2 mb15">
+									<a th:href="@{${member.getUrl() + '/albums'}}"><span th:text="#{model.member.album}" th:remove="tag"></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+								</h3>
+								<div th:replace="fragments/common/list_album :: list_album('member-albums-fragment', ${memberAlbums}, null)"></div>
+							</div>
+						</div><!--  public_project_wrap	 -->
+						<div class="public_project_wrap">
+							<div th:if="${memberVideos != null and 0 < memberVideos.size()}" class="producing_list">
+								<h3 class="content_title2 mb15">
+									<a th:href="@{${member.getUrl() + '/videos'}}"><span th:text="#{model.member.video}" th:remove="tag"></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+								</h3>
+								<div th:replace="fragments/common/list_video :: list_video('member-videos-fragment', ${memberVideos})"></div>
+							</div>
+						</div><!--  public_project_wrap	 -->
+						<div class="public_project_wrap mb0">
+							<div th:if="${memberStoreTracks != null and 0 < memberStoreTracks.size()}">
+								<h3 class="content_title2 mb15">
+									<a th:href="@{${member.getUrl() + '/store_tracks'}}"><span th:text="#{nav.music.store}" th:remove="tag"></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a>
+								</h3>
+								<div th:replace="fragments/common/list_track_store :: list_track('member-stores-fragment', ${memberStoreTracks}, null)"></div>
+							</div>
+						</div><!--  public_project_wrap	 -->
+					</div>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMArtistDetail = {
+				likeArtist : function() {
+					UPMLoginModal.showModal();
+				}
+			};
+		</script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var memberId = /*[[ ${member.id} ]]*/;
+			
+			var UPMArtistDetail = {
+				_config : {
+					loading : false
+				},
+				likeArtist : function() {
+					if (UPMArtistDetail._config.loading) return;
+					UPMArtistDetail._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_member + '/' + memberId + '/like_from_list', headers, params, UPMArtistDetail.likeArtistCallback);
+				},
+				likeArtistCallback: function(msg, object) {
+					if (msg == 'true') {
+						$('#member-detail-heart').addClass("feedbtn_on").children("").children("img").attr("src","/img/afeedbtn_2.png");
+					} else if (msg == 'false') {
+						$('#member-detail-heart').removeClass("feedbtn_on").children("").children("img").attr("src","/img/feedbtn_2.png");
+					} else {
+						UPMusic.alert(msg);
+					}
+					$('#member-detail-heart-cnt').html(object[1]);
+					UPMArtistDetail._config.loading = false;
+				}
+			};
+			
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+    <div class="subpage_wrap">
+        <div class="production_section1 section">
+            <h2 class="page-title fl">관리자 업로드 관리</h2>
+            <a th:href="@{/admin/music/music}"><button class="btn btn-custom2 fr"><i><img src="img/add-event.png" alt="" /></i> 음원 등록</button></a>
+            <a th:href="@{/admin/music/video}"><button class="btn btn-custom2 fr"><i><img src="img/add-event.png" alt="" /></i> 영상 등록</button></a>
+            <div class="tab_design clear">
+                <ul>
+                    <li id="musicAll">전체
+                        <div class="tab_line tab_line"></div>
+                    </li>
+                    <li id="upleague">최신곡 / 업리그</li>
+                    <li id="musicStore">뮤직스토어</li>
+                </ul>
+            </div>
+            <div class="tab_contentwrap">
+                <div class="tab_content active">
+                    <div class="accordion_btn"></div>
+                    <div class="genre_listcontent">
+                        <div id="uploaded-track-list" class="musiclist_table musiclist_table_hover2">
+                            <table id="musicTable">
+                                <tr>
+                                    <th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+                                    <th><span th:text="#{model.track.information}" th:remove="tag"></span></th>
+                                    <th>재생</th>
+                                    <th>좋아요</th>
+                                    <th>생성일시</th>
+                                    <th>
+                                        <input id="selectAll" type="checkbox" class="checkbox-checked"/>
+                                        <label for="selectAll"><span class="checkbox-custom"></span></label>
+                                    </th>
+                                </tr>
+                                <tr th:each="track, iter : ${tracksAll}" th:id="${track.id}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + track.getAdminUrl() + '&quot;);'}}">
+                                    <td><span th:text="${tracksAll.number * tracksAll.size + iter.index + 1}" th:remove="tag"></span></td>
+                                    <th>
+                                        <a th:href="@{${track.getAdminUrl()}}"><i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></a>
+                                        <p>
+                                            <a th:href="@{${track.getAdminUrl()}}"><span th:text="${track.subject}" th:remove="tag"></span></a><br />
+                                            <b><a th:href="@{${track.getArtistUrl()}}"><span th:text="${track.getArtistNick()}" th:remove="tag"></span></a></b>
+                                        </p>
+                                    </th>
+                                    <td><span th:text="${track.getPlayCnt()}" th:remove="tag"></span></td>
+                                    <td><span th:text="${track.getHeartCnt()}" th:remove="tag"></span></td>
+                                    <td><span th:text="${track.formattedTime()}" th:remove="tag"></span></td>
+                                    <td onclick="event.cancelBubble=true;" name="cc">
+                                        <input th:id="@{${track.getId()}}" th:value="@{${track.getId()}}" type="checkbox" class="checkbox-checked"/>
+                                        <label th:for="@{${track.getId()}}"><span class="checkbox-custom"></span></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div th:if="${tracksAll != null and tracksAll.totalPages gt 0}" class="panel-body text-center">
+                        <ul class="pagination">
+                            <li th:class="${tracksAll.number eq 0} ? 'disabled' : ''">
+                                <a class="demo-pli-arrow-left" th:if="${not tracksAll.first}" th:href="@{${'/admin/music/upload_admin'}(page=${tracksAll.number-1})}"></a>
+                                <a class="demo-pli-arrow-left" th:if="${tracksAll.first}" href="javascript:void(0);"></a>
+                            </li>
+                            <li th:each="pageNo : ${#numbers.sequence(0, tracksAll.totalPages - 1)}" th:class="${tracksAll.number eq pageNo}? 'active' : ''">
+                                <a th:if="${tracksAll.number eq pageNo}" href="javascript:void(0);">
+                                    <span th:text="${pageNo + 1}"></span>
+                                </a>
+                                <a th:if="${not (tracksAll.number eq pageNo)}" th:href="@{${'/admin/music/upload_admin'}(page=${pageNo})}">
+                                    <span th:text="${pageNo + 1}"></span>
+                                </a>
+                            </li>
+                            <li th:class="${tracksAll.number + 1 ge tracksAll.totalPages} ? 'disabled' : ''">
+                                <a class="demo-pli-arrow-right" th:if="${not tracksAll.last}" th:href="@{${'/admin/music/upload_admin'}(page=${tracksAll.number+1})}"></a>
+                                <a class="demo-pli-arrow-right" th:if="${tracksAll.last}" href="javascript:void(0);"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tab_content">
+                    <div class="accordion_btn"></div>
+                    <div class="genre_listcontent">
+                        <div id="uploaded-track-list" class="musiclist_table musiclist_table_hover2">
+                            <table id="musicTable">
+                                <tr>
+                                    <th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+                                    <th><span th:text="#{model.track.information}" th:remove="tag"></span></th>
+                                    <th>재생</th>
+                                    <th>좋아요</th>
+                                    <th>생성일시</th>
+                                    <th>
+                                        <input id="selectAll2" type="checkbox" class="checkbox-checked"/>
+                                        <label for="selectAll2"><span class="checkbox-custom"></span></label>
+                                    </th>
+                                </tr>
+                                <tr th:each="track, iter : ${tracksUpleague}" th:id="${track.id}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + track.getAdminUrl() + '&quot;);'}}">
+                                    <td><span th:text="${tracksUpleague.number * tracksUpleague.size + iter.index + 1}" th:remove="tag"></span></td>
+                                    <th>
+                                        <a th:href="@{${track.getAdminUrl()}}"><i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></a>
+                                        <p>
+                                            <a th:href="@{${track.getAdminUrl()}}"><span th:text="${track.subject}" th:remove="tag"></span></a><br />
+                                            <b><a th:href="@{${track.getArtistUrl()}}"><span th:text="${track.getArtistNick()}" th:remove="tag"></span></a></b>
+                                        </p>
+                                    </th>
+                                    <td><span th:text="${track.getPlayCnt()}" th:remove="tag"></span></td>
+                                    <td><span th:text="${track.getHeartCnt()}" th:remove="tag"></span></td>
+                                    <td><span th:text="${track.formattedTime()}" th:remove="tag"></span></td>
+                                    <td onclick="event.cancelBubble=true;" name="cc2">
+                                        <input th:id="@{${track.getId()}}" th:value="@{${track.getId()}}" type="checkbox" class="checkbox-checked"/>
+                                        <label th:for="@{${track.getId()}}"><span class="checkbox-custom"></span></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div th:if="${tracksUpleague != null and tracksUpleague.totalPages gt 0}" class="panel-body text-center">
+                        <ul class="pagination">
+                            <li th:class="${tracksUpleague.number eq 0} ? 'disabled' : ''">
+                                <a class="demo-pli-arrow-left" th:if="${not tracksUpleague.first}" th:href="@{${'/admin/music/upload_admin'}(page=${tracksUpleague.number-1})}"></a>
+                                <a class="demo-pli-arrow-left" th:if="${tracksUpleague.first}" href="javascript:void(0);"></a>
+                            </li>
+                            <li th:each="pageNo : ${#numbers.sequence(0, tracksUpleague.totalPages - 1)}" th:class="${tracksUpleague.number eq pageNo}? 'active' : ''">
+                                <a th:if="${tracksUpleague.number eq pageNo}" href="javascript:void(0);">
+                                    <span th:text="${pageNo + 1}"></span>
+                                </a>
+                                <a th:if="${not (tracksUpleague.number eq pageNo)}" th:href="@{${'/admin/music/upload_admin'}(page=${pageNo})}">
+                                    <span th:text="${pageNo + 1}"></span>
+                                </a>
+                            </li>
+                            <li th:class="${tracksUpleague.number + 1 ge tracksUpleague.totalPages} ? 'disabled' : ''">
+                                <a class="demo-pli-arrow-right" th:if="${not tracksUpleague.last}" th:href="@{${'/admin/music/upload_admin'}(page=${tracksUpleague.number+1})}"></a>
+                                <a class="demo-pli-arrow-right" th:if="${tracksUpleague.last}" href="javascript:void(0);"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tab_content">
+                    <div class="accordion_btn"></div>
+                    <div class="genre_listcontent">
+                        <div id="uploaded-track-list" class="musiclist_table musiclist_table_hover2">
+                            <table id="musicTable">
+                                <tr>
+                                    <th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+                                    <th><span th:text="#{model.track.information}" th:remove="tag"></span></th>
+                                    <th>재생</th>
+                                    <th>좋아요</th>
+                                    <th>생성일시</th>
+                                    <th>
+                                        <input id="selectAll3" type="checkbox" class="checkbox-checked"/>
+                                        <label for="selectAll3"><span class="checkbox-custom"></span></label>
+                                    </th>
+                                </tr>
+                                <tr th:each="track, iter : ${tracksMusicStore}" th:id="${track.id}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + track.getAdminUrl() + '&quot;);'}}">
+                                    <td><span th:text="${tracksMusicStore.number * tracksMusicStore.size + iter.index + 1}" th:remove="tag"></span></td>
+                                    <th>
+                                        <a th:href="@{${track.getAdminUrl()}}"><i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></a>
+                                        <p>
+                                            <a th:href="@{${track.getAdminUrl()}}"><span th:text="${track.subject}" th:remove="tag"></span></a><br />
+                                            <b><a th:href="@{${track.getArtistUrl()}}"><span th:text="${track.getArtistNick()}" th:remove="tag"></span></a></b>
+                                        </p>
+                                    </th>
+                                    <td><span th:text="${track.getPlayCnt()}" th:remove="tag"></span></td>
+                                    <td><span th:text="${track.getHeartCnt()}" th:remove="tag"></span></td>
+                                    <td><span th:text="${track.formattedTime()}" th:remove="tag"></span></td>
+                                    <td onclick="event.cancelBubble=true;" name="cc3">
+                                        <input th:id="@{${track.getId()}}" th:value="@{${track.getId()}}" type="checkbox" class="checkbox-checked"/>
+                                        <label th:for="@{${track.getId()}}"><span class="checkbox-custom"></span></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div th:if="${tracksMusicStore != null and tracksMusicStore.totalPages gt 0}" class="panel-body text-center">
+                        <ul class="pagination">
+                            <li th:class="${tracksMusicStore.number eq 0} ? 'disabled' : ''">
+                                <a class="demo-pli-arrow-left" th:if="${not tracksMusicStore.first}" th:href="@{${'/admin/music/upload_admin'}(page=${tracksMusicStore.number-1})}"></a>
+                                <a class="demo-pli-arrow-left" th:if="${tracksMusicStore.first}" href="javascript:void(0);"></a>
+                            </li>
+                            <li th:each="pageNo : ${#numbers.sequence(0, tracksMusicStore.totalPages - 1)}" th:class="${tracksMusicStore.number eq pageNo}? 'active' : ''">
+                                <a th:if="${tracksMusicStore.number eq pageNo}" href="javascript:void(0);">
+                                    <span th:text="${pageNo + 1}"></span>
+                                </a>
+                                <a th:if="${not (tracksMusicStore.number eq pageNo)}" th:href="@{${'/admin/music/upload_admin'}(page=${pageNo})}">
+                                    <span th:text="${pageNo + 1}"></span>
+                                </a>
+                            </li>
+                            <li th:class="${tracksMusicStore.number + 1 ge tracksMusicStore.totalPages} ? 'disabled' : ''">
+                                <a class="demo-pli-arrow-right" th:if="${not tracksMusicStore.last}" th:href="@{${'/admin/music/upload_admin'}(page=${tracksMusicStore.number+1})}"></a>
+                                <a class="demo-pli-arrow-right" th:if="${tracksMusicStore.last}" href="javascript:void(0);"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="commerce_btn commerce_btn_ver2 mt30 w300">
+                <ul>
+                    <li id="deleteButton"><i>V</i>삭제</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function () {
+            $('#musicAll').on('click',function () {
+                $('[name=cc2]').children('input').prop('checked',false);
+                $('#selectAll2').prop('checked', false);
+                $('[name=cc3]').children('input').prop('checked',false);
+                $('#selectAll3').prop('checked', false);
+            });
+            $('#musicStore').on('click',function () {
+                $('[name=cc]').children('input').prop('checked',false);
+                $('#selectAll').prop('checked', false);
+                $('[name=cc2]').children('input').prop('checked',false);
+                $('#selectAll2').prop('checked', false);
+            });
+            $('#upleague').on('click',function () {
+                $('[name=cc]').children('input').prop('checked',false);
+                $('#selectAll').prop('checked', false);
+                $('[name=cc3]').children('input').prop('checked',false);
+                $('#selectAll3').prop('checked', false);
+            });
+            $('#selectAll').click(function () {
+                if($('#selectAll').prop('checked')){
+                    $('[name=cc]').children('input').prop('checked',true);
+                } else {
+                    $('[name=cc]').children('input').prop('checked',false);
+                }
+            });
+            $('[name=cc]').click(function () {
+                if(!$(this).children('input').prop('checked')){
+                    $(this).children('input').prop('checked', true);
+                } else {
+                    $(this).children('input').prop('checked', false);
+                    if($('#selectAll').prop('checked')){
+                        $('#selectAll').prop('checked', false);
+                    }
+                }
+            });
+            $('#selectAll2').click(function () {
+                if($('#selectAll2').prop('checked')){
+                    $('[name=cc2]').children('input').prop('checked',true);
+                } else {
+                    $('[name=cc2]').children('input').prop('checked',false);
+                }
+            });
+            $('[name=cc2]').click(function () {
+                if(!$(this).children('input').prop('checked')){
+                    $(this).children('input').prop('checked', true);
+                } else {
+                    $(this).children('input').prop('checked', false);
+                    if($('#selectAll2').prop('checked')){
+                        $('#selectAll2').prop('checked', false);
+                    }
+                }
+            });
+            $('[name=cc3]').click(function () {
+                if(!$(this).children('input').prop('checked')){
+                    $(this).children('input').prop('checked', true);
+                } else {
+                    $(this).children('input').prop('checked', false);
+                    if($('#selectAll3').prop('checked')){
+                        $('#selectAll3').prop('checked', false);
+                    }
+                }
+            });
+            $('#deleteButton').on('click', function () {
+                var ids = [];
+                $('#musicTable :checked').each(function () {
+                    if($.isNumeric($(this).val())) {
+                        ids.push($(this).val());
+                    }
+                });
+                UPMusicAdmin.deleteTracks(ids);
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

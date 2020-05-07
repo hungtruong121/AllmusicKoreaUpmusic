@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>이메일 인증</title>
+	
+	<link href="https://cdn.rawgit.com/openhiun/hangul/14c0f6faa2941116bb53001d6a7dcd5e82300c3f/nanumbarungothic.css" rel="stylesheet">
+	<link href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" rel="stylesheet" >
+</head>
+<body style="box-sizing:border-box; margin: 0; padding: 0; font-family: 'NanumBarunGothic';">
+	<div style="width:100%; max-width:700px; min-width:320px; border: 1px solid #e9e9ea; box-sizing:border-box;">
+		<header style="width:100%; max-width:700px; height:75px; background-color:#101421; border-bottom:2px solid #000; padding:17.5px 50px 0 40px; box-sizing:border-box; text-align: center;">
+			<img src="https://upmusic.azurewebsites.net/img/logo.png" alt="" style="width:50%; min-width:100px; max-width: 160px; margin-top: -5px;">
+		</header>
+		<section style="width:100%; background:url('https://upmusic.azurewebsites.net/img/email_bg.png') 0 0 repeat; -webkit-background-size:; background-size:100%; overflow: hidden;">
+			<h2 style="color: #333; font-size:22px; text-align: center; margin-top:8%; font-weight:900; font-family: 'NanumSquare', sans-serif;">요청하신 인증번호를 확인해주세요.</h2>
+			<ul style="width: 100%; height:150px ; text-align: center; list-style: none; padding: 0 30px; box-sizing:border-box; margin-top: 5%;">
+				<li style="width:15%; padding: 35px 0; margin-left: 0; margin-right: 2%; float: left; background-color: #ecedf1; color: #647bdc; font-weight:600; font-size:4em; box-sizing: border-box;" th:text="${message[0]}"></li>
+				<li style="width:15%; padding: 35px 0; margin-left: 0; margin-right: 2%; float: left; background-color: #ecedf1; color: #647bdc; font-weight:600; font-size:4em; box-sizing: border-box;" th:text="${message[1]}"></li>
+				<li style="width:15%; padding: 35px 0; margin-left: 0; margin-right: 2%; float: left; background-color: #ecedf1; color: #647bdc; font-weight:600; font-size:4em; box-sizing: border-box;" th:text="${message[2]}"></li>
+				<li style="width:15%; padding: 35px 0; margin-left: 0; margin-right: 2%; float: left; background-color: #ecedf1; color: #647bdc; font-weight:600; font-size:4em; box-sizing: border-box;" th:text="${message[3]}"></li>
+				<li style="width:15%; padding: 35px 0; margin-left: 0; margin-right: 2%; float: left; background-color: #ecedf1; color: #647bdc; font-weight:600; font-size:4em; box-sizing: border-box;" th:text="${message[4]}"></li>
+				<li style="width:15%; padding: 35px 0; margin-left: 0; float: left; background-color: #ecedf1; color: #647bdc; font-weight:600; font-size:4em; box-sizing: border-box;" th:text="${message[5]}"></li>
+			</ul>
+			<p style="font-size:12px; color: #7a878e; text-align: center; margin: 8% 0; padding: 0 50px; box-sizing:border-box; clear: both;">기타 문의 사항이 있으신 경우 support@glosfer.com으로 부탁드립니다.<br />
+				감사합니다.</p>
+		</section>
+		<footer style="width:100%; background-color:#3a3f50; overflow: hidden;">
+			<ul style="text-align: center; margin: 20px 0 15px;">
+				<li style="display:inline-block; color:#FFF; margin-right:10px; font-size:13px;">GLOSFER</li>
+				<li style="display:inline-block; color:#FFF; margin-right:10px; font-size:13px;">서울시 광진구 중곡동 162-3 희재빌딩 4층</li>
+				<li style="display:inline-block; color:#FFF; margin-right:10px; font-size:13px;">대표이사:김태원</li>
+				<li style="display:inline-block; color:#FFF; margin-right:10px; font-size:13px;">사업자등록번호:1234-24-142322</li>
+				<li style="display:inline-block; color:#FFF; font-size:13px;">이메일:glosfer@glosfer.com</li>
+			</ul>
+			<h5 style="font-size:12px; font-weight:normal; color:#95979e; text-align: center; padding-bottom: 20px; box-sizing: border-box; margin: 0;">© 2018 GLOSFER corp.</h5>
+		</footer>
+	</div>
+</body>
+</html>

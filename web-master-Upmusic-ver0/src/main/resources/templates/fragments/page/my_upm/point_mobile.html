@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 리워드 정산내역 -->
+			<div class="nl_panel">
+				<div class="reward_ba_top">
+					<ul>
+						<li class="upPoint">
+							<p class="point"><span th:text="${member.getUpmPointString()}" th:remove="tag"></span> P</p>
+							<p class="title">업뮤직 포인트</p>
+						</li>
+						<li class="usePoint">
+							<p class="point"><span th:text="${member.getChargePointString()}" th:remove="tag"></span> P</p>
+							<p class="title">충전 포인트</p>
+						</li>
+						<li class="usePoint">
+							<p class="point"><span th:text="${member.getUsablePointString()}" th:remove="tag"></span> P</p>
+							<p class="title">리워드 포인트</p>
+						</li>
+						<li class="fundingPoint">
+							<p class="point"><span th:text="${member.getFundingPointString()}" th:remove="tag"></span> P</p>
+							<p class="title">펀딩 포인트</p>
+						</li>
+					</ul>
+					<p class="colBlue mt_5 lts-8">* 업뮤직 포인트 중 10%는 크라우드 펀딩에만 사용할 수 있습니다.</p>
+				</div>
+
+				<div class="calendarBox">
+					<p>
+						<span onclick="$('#reward-datetimepicker').datepicker('show');" class="ico_calendar"></span>
+						<span class="date"><input id="reward-datetimepicker" th:type="text" class="form-control reward-mon-datepicker" th:onchange="@{${'UPMPoint.changeMonth(this.value);'}}" readonly /></span>
+						<span onclick="$('#reward-datetimepicker').datepicker('show');" class="ico_circle_arrowDown"></span>
+					</p>
+				</div>
+				
+				<div id="transaction-list">
+				</div>
+				
+				<div class="h80"></div>
+				
+			</div>
+			<!-- //end 리워드 정산내역 -->
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		var UPMPoint = {
+			_config : {
+				date : '',
+				totalPage : 0,
+				page : 0,
+				loading : false,
+				transactionId : 0
+			},
+			changeMonth: function(date) {
+				UPMPoint.loadTransaction(date);
+			},
+			loadTransaction : function(date) {
+                UPMPoint._config.type = 'all';
+				UPMusic.log("UPMReward.loadTransaction : date is " + date);
+				UPMPoint._config.date = date;
+				$.get('/component/my_upm/point/all/' + date, function(data) {
+					$('#transaction-list').html(data);
+				});
+			},
+			appendPage : function() {
+				UPMusic.log("UPMReward.appendPage");
+				UPMPoint._config.page++;
+				$.get('/component/my_upm/point/all/' + UPMPoint._config.date + '?page=' + UPMPoint._config.page, function(data) {
+					$('#transaction-list dl').append(data);
+				});
+				if (UPMPoint._config.page + 1 >= UPMPoint._config.totalPage) {
+					$('#transaction-page-btn').remove();
+				}
+			},
+			removeTransaction : function(transactionId) {
+				UPMPoint._config.transactionId = transactionId;
+				UPMusic.confirm("정말 삭제하시겠습니까?", function() {
+					UPMPoint.removeConfirm();
+				});
+			},
+			removeConfirm: function() {
+				if (UPMPoint._config.loading) return;
+				UPMPoint._config.loading = true;
+	  			UPMusic.ajaxDeleteItems(UPMusic._config._api_transaction + '/' + UPMPoint._config.transactionId + '/remove', headers, {}, UPMPoint.removeCallback);
+			},
+			removeCallback: function(msg, object) {
+				if (msg == 'true') {
+					$('dd#' + UPMPoint._config.transactionId).remove();
+				} else {
+					UPMusic.alert("내역을 제거하지 못했습니다. 잠시 후 다시 시도하십시오.");
+				}
+				UPMPoint._config.loading = false;
+			}
+		};
+		$(function() {
+			$('#reward-datetimepicker').datepicker({
+                format: 'yyyy-mm',
+                changeMonth: true,
+                changeYear: true,
+                startView: 1,
+                minViewMode: 1,
+                language: "ko"
+            }).on('changeMonth', function(e){
+            	$(this).keyup();
+                $(this).datepicker('hide');
+            });
+			$('#reward-datetimepicker').datepicker('update', new Date());
+		});
+		</script>
+	</div>
+
+</body>
+</html>

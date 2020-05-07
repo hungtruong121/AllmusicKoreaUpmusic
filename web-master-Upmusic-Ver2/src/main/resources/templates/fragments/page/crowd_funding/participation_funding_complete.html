@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+
+    <div class="subpage_wrap section">
+			<h2 class="page-title">펀딩 완료</h2>
+			<ul class="pageStep">
+				<li class="t01">
+					<img src="/img/ico_step01.png" />
+					<span>리워드 선택</span>
+					<img src="/img/ico_arr01.png" class="arr" />
+				</li>
+				<li class="t02">
+					<img src="/img/ico_step02.png" />
+					<span>포인트 결제</span>
+					<img src="/img/ico_arr01.png" class="arr" />
+				</li>
+				<li class="t03 on">
+					<img src="/img/ico_step03.png" />
+					<span>펀딩 완료</span>
+				</li>
+			</ul>
+
+			<!-- -->
+			<div class="fCompleteBox">
+				<img src="/img/etc_complete01.png" />
+				<span>“ 펀딩이 완료되었습니다.”</span>
+			</div>
+			<div class="nbox">
+				<p class="content_title2 clear">결제 내역 <span>* 프로젝트 목표 달성 성공시 리워드를 지급합니다.  프로젝트 목표 달성 실패시 지급된 업뮤직 포인트는 환불 처리 됩니다.</span></p>
+				<table class="payTable">
+					<colgroup>
+						<col width="150" />
+						<col width="" />
+					</colgroup>
+					<tr>
+						<th>펀딩 프로젝트</th>
+						<td th:text="${result.crowdFunding.subject}"></td>
+					</tr>
+					<tr>
+						<th>펀딩 날짜</th>
+						<td th:text="${result.getCreateAtFormat()}"></td>
+					</tr>
+					<tr>
+						<th>펀딩 번호</th>
+						<td th:text="${result.crowdFundingJoinId}"></td>
+					</tr>
+				</table>
+
+
+
+				<p class="content_title2 clear">포인트 <span>* 후원을 진행할 때 펀딩 포인트가 우선적으로 소모됩니다. </span></p>
+				<div class="inputbox_wrap inputbox_wrap2 t02">
+					<ul>
+						<li>
+							<div class="items bg03">
+								<!-- <p class="t01"><span th:text="${currentUser.fundingPoint}"></span> P</p> -->
+								<p class="t01"><span th:text="${useFundingPoint}"></span> P</p>
+								<p class="t02">펀딩 포인트</p>
+							</div>
+						</li>
+						<li>
+							<div class="items bg02">
+								<!-- <p class="t01"><span th:text="${currentUser.getUsablePoint()}"></span> P</p> -->
+								<p class="t01"><span th:text="${useUsablePoint}"></span> P</p>
+								<p class="t02">사용가능 포인트</p>
+							</div>
+						</li>
+						<li>
+							<div class="items bg04">
+								<p class="t01"><span th:text="${point}"></span> P</p>
+								<p class="t02">최종펀딩 포인트</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="membership_btn mt50">
+				<form action="#" th:action="@{/crowd_funding/participation/funding_result}" role="form" method="get">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom2 h50" type="button" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/participation&quot;);'}}">홈</button>
+					<button class="btn btn-custom btn-dark h50" type="submit">내 펀딩 내역</button>
+				</div>
+				</form>
+			</div>
+			<!-- -->
+
+
+		</div><!-- subpage_wrap	 -->
+
+     <script type="text/javascript" th:inline="javascript">
+
+
+	</script>
+
+  </div>
+
+</body>
+</html>

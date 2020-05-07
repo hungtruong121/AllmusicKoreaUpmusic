@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl mb20">프로젝트 관리</h2>
+				<a th:href="@{/admin/crowd_funding/project_insertForm}"><button class="btn btn-custom2 fr"><i><img src="img/add-event.png" alt="" /></i> 프로젝트 등록</button></a>
+				<div class="FAQ_search_wrap clear">
+					<form th:action="@{/admin/crowd_funding/project}" role="form" method="get" id="form">
+						<div class="inputbox clear">
+							<label class="input_title">프로젝트 기간</label>
+							<div class="project_datepicker">
+								<input type="text" class="form-control datepicker" name="openAt" id=openAt placeholder="프로젝트 시작일" autocomplete="off">
+								<input type="text" class="form-control datepicker" name="closeAt" id=closeAt placeholder="프로젝트 종료일" autocomplete="off">
+							</div>
+						</div>
+						<div class="inputbox w19p fl mr1p">
+							<label class="input_title">검색</label>
+							<select class="selectpicker clear w100p" name="searchColumn" id="searchColumn">
+								<option value="subject">프로젝트 명</option>
+								<option value="email">아이디</option>
+								<option value="nick">닉네임</option>
+							</select>
+						</div>
+						<div class="inputbox w80p fl">
+							<label class="input_title db"></label>
+							<input type="text" name="searchValue" placeholder="검색어를 입력하세요." class="form-control w80p fl clear mr1p mt18" value="">
+							<button class="btn btn-custom2 fl h50 w19p p60 mt18" type="submit">검색</button>
+						</div>
+					</form>
+				</div>
+				<div class="tab_contentwrap clear">
+					<div class="tab_content active">
+						<div class="accordion_btn"></div>
+						<div class="genre_listcontent">
+							<div id="uploaded-track-list" class="musiclist_table musiclist_table_hover2">
+								<table id="projectTable" class="tablesorter">
+									<thead>
+										<tr>
+											<th>No.</th>
+											<th class="sorter-false">프로젝트 명</th>
+											<th class="sorter-false">이메일 아이디</th>
+											<th class="sorter-false">아티스트 닉네임</th>
+											<th class="sorter-false">목표금액</th>
+											<th class="sorter-false">달성금액</th>
+											<th>달성률</th>
+											<th>진행 상태</th>
+											<th class="sorter-false">작성자</th>
+											<th>등록일자</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="project, iter : ${projectList.content}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;' + project.getAdminDetailUrl() + '&quot;);'}}">
+											<td><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+											<td th:text="${project.subject}"></td>
+											<td th:text="${project.artistMember.email}"></td>
+											<td th:text="${project.artistNick}"></td>
+											<td th:text="${project.targetPrice}"></td>
+											<td th:text="${project.attainmentPrice}"></td>
+											<td th:text="${project.getPercent()}"></td>
+											<td th:text="${project.getProjectProgress()}"></td>
+											<td th:text="${project.member.nick}"></td>
+											<td th:text="${project.getOpenAtFormat()}"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div th:if="${projectList != null and projectList.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${projectList.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not projectList.first}" th:href="@{${'/admin/crowd_funding/project'}(page=${projectList.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${projectList.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, projectList.totalPages - 1)}" th:class="${projectList.number eq pageNo}? 'active' : ''">
+						            <a th:if="${projectList.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (projectList.number eq pageNo)}" th:href="@{${'/admin/crowd_funding/project'}(page=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${projectList.number + 1 ge projectList.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not projectList.last}" th:href="@{${'/admin/crowd_funding/project'}(page=${projectList.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${projectList.last}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+            $(function() {
+                $("#projectTable").tablesorter();
+                
+                $('.datepicker').datepicker({
+                    format : 'yyyy-mm-dd',
+                    autoclose : true,
+                    //orientation: "bottom auto"
+                });
+            });
+		</script>
+	</div>
+</body>
+</html>

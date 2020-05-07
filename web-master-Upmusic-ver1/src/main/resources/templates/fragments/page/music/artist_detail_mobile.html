@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content" class="pd0">
+		<div id="content" class="mb_80">
+			<!-- profile top -->
+			<div class="profileTop">
+				<p class="info_top_bg"><img th:src="${artist.getProfileImageUrl()}" alt="" /></p>
+				<div class="blackImg"></div>
+				<p class="userImg"><img th:src="${artist.getProfileImageUrl()}" alt="" /></p>
+				<div class="userInfo">
+					<p class="name" th:text="${artist.nick}"></p>
+					<p class="date"><span th:text="#{model.member.createdAt}" th:remove="tag"></span>:<span th:text="${artist.formattedDay()}" th:remove="tag"></span></p>
+					<p class="rating">등급:<span th:text="#{${artist.getGrade()}}" th:remove="tag"></span></p>
+					<!--
+					<div class="commerce_btn like_event mt15">
+						<ul>
+							<li onclick="UPMShareModal.showShareModal(null);"><i><img th:src="@{/img/share_icon.png}" alt=""></i><span th:text="#{button.share}" th:remove="tag"></span></li>
+							<li th:if="${isOwner}" th:onclick="@{${'UPMusic.goto(&quot;' + artist.getUrl() + '/edit&quot;);'}}"><i><img th:src="@{/img/change_icon.png}" alt=""></i><span th:text="#{button.modify}" th:remove="tag"></span></li>
+							<li th:if="${likedArtist}" id="artist-detail-heart" onclick="UPMArtistDetail.likeArtist();" class="feedbtn_on">
+								<i><img th:src="@{/img/afeedbtn_2.png}" class="w19" alt=""></i><span th:text="#{common.like}" th:remove="tag"></span><span id="artist-detail-heart-cnt" th:text="${artist.heartCnt}"></span>
+							</li>
+							<li th:unless="${likedArtist}" id="artist-detail-heart" onclick="UPMArtistDetail.likeArtist();">
+								<i><img th:src="@{/img/feedbtn_2.png}" class="w19" alt=""></i><span th:text="#{common.like}" th:remove="tag"></span><span id="artist-detail-heart-cnt" th:text="${artist.heartCnt}"></span>
+							</li>
+						</ul>
+					</div>
+					 -->
+				</div>
+				<!--  20181227 edit -->
+				<div class="icoBox">
+					<ul>
+						<li class="share off" onclick="UPMShareModal.showShareModal(null);">공유</li>
+						<li th:if="${likedArtist}" id="artist-detail-heart" onclick="UPMArtistDetail.likeArtist();" class="feedbtn_on like_artist_heart">
+							<i><img th:src="@{/img/afeedbtn_2.png}" class="w19" alt=""></i><p id="artist-detail-heart-cnt" th:text="${artist.heartCnt}"></p>
+						</li>
+						<li th:unless="${likedArtist}" id="artist-detail-heart" class="like_artist_heart" onclick="UPMArtistDetail.likeArtist();">
+							<i><img th:src="@{/img/feedbtn_2.png}" class="w19" alt=""></i><p id="artist-detail-heart-cnt" th:text="${artist.heartCnt}"></p>
+						</li>
+						<li th:if="${isOwner}" class="comment off" th:onclick="@{${'UPMusic.goto(&quot;' + artist.getUrl() + '/edit&quot;);'}}">편집</li>
+					</ul>
+				</div>
+				<div class="infoBottom">
+					<p class="music"><span th:text="#{common.source.music}" th:remove="tag"></span> <span th:text="${artistTracksCnt}" th:revmoe="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></p>
+					<p class="video"><span th:text="#{common.source.video}" th:remove="tag"></span> <span th:text="${artistVideosCnt}" th:revmoe="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></p>
+				</div>
+			</div>
+			<!-- //end profile top -->
+			
+			<div class="nl_panel pdb0 pdt0">
+				<ul class="nav nav-tabs tabType03">
+					<li class="active"><a><span th:text="#{model.member.track}" th:remove="tag"></span></a></li>
+					<li class="making"><a><span th:text="#{model.member.album}" th:remove="tag"></span></a></li>
+					<li class="making"><a><span th:text="#{model.member.video}" th:remove="tag"></span></a></li>
+					<li class="making"><a><span th:text="#{nav.music.store}" th:remove="tag"></span></a></li>
+				</ul>
+			</div>
+			<div class="tab-content">
+				<div class="tab-pane active" id="profile-1">
+					<!-- 음원 -->
+					<div th:replace="fragments/common/list_track_default_mobile :: list_track('artist-tracks-fragment', ${artistTracks}, ${paginationUrl})"></div>
+					<!-- //end 음원 -->
+				</div>
+
+				<div class="tab-pane" id="profile-2">
+					<!-- 앨범 -->
+					<div th:replace="fragments/common/list_album_mobile :: list_album('artist-albums-fragment', ${artistAlbums}, ${albumPaginationUrl})"></div>
+					<!-- //end 앨범 -->
+				</div>
+
+				<div class="tab-pane" id="profile-3">
+					<!-- 비디오 -->
+					<div class="nl_panel">
+						<div class="ct_title ofh">
+							<h2 class="content_title">비디오 리스트</h2>
+						</div>
+					</div>
+					<div th:replace="fragments/common/list_video_mobile :: list_video('artist-videos-fragment', ${artistVideos}, ${videoPaginationUrl})"></div>
+					<!-- //end 비디오 -->
+				</div>
+
+				<div class="tab-pane" id="profile-4">
+					<!-- 뮤직스토오 -->
+					<div th:replace="fragments/common/list_track_default_mobile :: list_track('artist-stores-fragment', ${artistStoreTracks}, ${storePaginationUrl})"></div>
+					<!-- //end 뮤직스토어 -->
+				</div>
+				
+			</div>
+		</div>
+
+		<!-- header color -->
+		<script type="text/javascript" th:inline="javascript">
+			// Hide Header on on scroll down
+			var didScroll; var lastScrollTop = 0; 
+			var delta = 5; var navbarHeight = $('header').outerHeight(); 
+			$(window).scroll(function(event){ 
+				didScroll = true; 
+				});
+
+			setInterval(function() { 
+				if (didScroll) { 
+					hasScrolled(); 
+					didScroll = false; 
+				}
+			}, 250); 
+			/*
+			function hasScrolled() { 
+				var st = $(this).scrollTop(); 
+				
+				// Make sure they scroll more than delta 
+				if(Math.abs(lastScrollTop - st) <= delta) return; 
+				
+				// If they scrolled down and are past the navbar, add class .nav-up. 
+				// This is necessary so you never see what is "behind" the navbar. 
+				if (st > lastScrollTop && st > navbarHeight){ 
+					// Scroll Down 
+					$('.topNavibar').removeClass('nav-down').addClass('nav-up'); 
+				} else { 
+					// Scroll Up 
+					if(st + $(window).height() < $(document).height()) { 
+						$('.topNavibar').removeClass('nav-up').addClass('nav-down'); } 
+					} 
+				lastScrollTop = st; 
+			}*/
+
+			//jm 헤더수정
+			$(document).ready(function () {
+				var numHeight = $(".nav-tabs").offset().top;
+				$(window).resize(function () {
+					numHeight = $(".nav-tabs").offset().top;
+                })
+                $(window).scroll(function(){
+                    ws = $(window).scrollTop();
+					if( ws > numHeight ){
+						$('.topNavibar').removeClass('nav-down');
+					}else if( ws < numHeight ){
+						$('.topNavibar').addClass('nav-down');
+					}
+                });
+            });
+
+
+		</script>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMArtistDetail = {
+				likeArtist : function() {
+					UPMusic.alert(msgUserAfterLogin);
+				}
+			};
+		</script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var artistId = /*[[ ${artist.id} ]]*/;
+			
+			var UPMArtistDetail = {
+				_config : {
+					loading : false
+				},
+				likeArtist : function() {
+					if (UPMArtistDetail._config.loading) return;
+					UPMArtistDetail._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_artist + '/' + artistId + '/like_from_list', headers, params, UPMArtistDetail.likeArtistCallback);
+				},
+				likeArtistCallback: function(msg, object) {
+					if (msg == 'true') {
+						$('#artist-detail-heart').addClass("feedbtn_on").children("").children("img").attr("src","/img/afeedbtn_2.png");
+						$('#artist-detail-heart-cnt').html(object[1]);
+					} else if (msg == 'false') {
+						$('#artist-detail-heart').removeClass("feedbtn_on").children("").children("img").attr("src","/img/feedbtn_2.png");
+						$('#artist-detail-heart-cnt').html(object[1]);
+					} else {
+						UPMusic.alert(msg);
+					}
+					UPMArtistDetail._config.loading = false;
+				}
+			};
+
+			var UPMListTrackAnonymous = {
+				appendPage: function(elementId, paginationUrl, page, totalPages) {
+					var url = paginationUrl + '?page=' + page + '&&artist_id=' + [[${artist.Id}]];
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.track-list').append(data);
+					});
+					if (page + 1 >= totalPages) {
+						$('#' + elementId + ' #list-more-button').remove();
+					} else {
+						var moreButton = '<p><a onclick="UPMListTrackAnonymous.appendPage(\'' + elementId + '\', \'' + paginationUrl + '\', ' + (page + 1) + ', ' + totalPages + ');">SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i></a></p>';
+						$('#' + elementId + ' #list-more-button').html(moreButton);
+					}
+				}
+			};
+
+			var UPMListAlbumAnonymous = {
+				appendPage: function(elementId, paginationUrl, page, totalPages) {
+					var url = paginationUrl + '?page=' + page + '&&artist_id=' + [[${artist.Id}]];
+
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.album-list').append(data);
+					});
+
+					if (page + 1 >= totalPages) {
+						$('#' + elementId + ' #list-more-button').remove();
+					} else {
+						var moreButton = '<p><a onclick="UPMListAlbumAnonymous.appendPage(\'' + elementId + '\', \'' + paginationUrl + '\', ' + (page + 1) + ', ' + totalPages + ');">SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i></a></p>';
+						$('#' + elementId + ' #list-more-button').html(moreButton);
+					}
+				}
+			};
+
+			var UPMListVideoAnonymous = {
+				appendPage: function(elementId, paginationUrl, page, totalPages) {
+					var url = paginationUrl + '?page=' + page + '&&artist_id=' + [[${artist.Id}]];
+
+					$.get(url, function(data) {
+						$('#' + elementId ).append(data);
+					});
+					if (page + 1 >= totalPages) {
+						$('.videoListType_02 #list-more-button').remove();
+					} else {
+						var moreButton = '<p><a onclick="UPMListVideoAnonymous.appendPage(\'' + elementId + '\', \'' + paginationUrl + '\', ' + (page + 1) + ', ' + totalPages + ');">SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i></a></p>';
+						$('.videoListType_02 #list-more-button').html(moreButton);
+					}
+				}
+			};
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

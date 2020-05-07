@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<title th:text="#{common.app.title}"></title>
+</head>
+
+<body>
+	<header th:fragment="header">
+		<h1><a href="/"><img th:src="@{/img/logo.png}" alt="" /></a></h1>
+		<div class="search_input">
+			<img th:src="@{/img/search_input.png}" alt="" />
+			<input id="upm-search-input" type="text" placeholder="Music Search.." />
+		</div>
+		<div class="login_wrap">
+			<dl sec:authorize="isAnonymous()">
+				<dt class="login-button"><a onclick="UPMLoginModal.showModal();"><i><img th:src="@{/img/logout.png}" alt="" /></i><span th:text="#{button.login}"></span></a></dt>
+			</dl>
+			<dl sec:authorize="isAuthenticated()">
+				<dt sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}"><span th:text="#{button.admin}"></span></a></dt>
+				<!-- <dt><a th:href="@{/admin}"><span th:text="#{button.admin}"></span></a></dt> -->
+				<dt onclick="javascript:window.open('/pay','_blank','width=450,height=790, toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,left=150,top=150');"><i><img th:src="@{/img/pay_icon0.png}" alt="" /></i><span th:text="#{button.pay}"></span></dt>
+				<dt data-target="#modal-upload" data-toggle="modal"><i><img th:src="@{/img/upload.png}" alt="" /></i><span th:text="#{button.upload}"></span></dt>
+				<dt><a th:href="@{/auth/logout}"><i><img th:src="@{/img/logout.png}" alt="" /></i><span th:text="#{button.logout}"></span></a></dt>
+				<dd th:onclick="@{${'UPMusicCommon.openPlayer(&quot;' + #request.contextPath + '/player&quot;);'}}"><img th:src="@{/img/header_play.png}" alt="" /><span th:text="#{button.player}"></span></dd>
+			</dl>
+			<div sec:authorize="isAuthenticated()" th:if="${currentUser != null}">
+				<!--<button id="button-upm-player" th:onclick="@{${'UPMusicCommon.openPlayerByclass="pd5 col_gray"Function(&quot;' + #request.contextPath + '/player&quot;, ' + currentUser.id + ');'}}" class="hidden"></button>-->
+				<button id="button-upm-player" th:onclick="@{${'UPMusicCommon.openPlayer(&quot;' + #request.contextPath + '/player&quot;);'}}" class="hidden"></button>
+			</div>
+		</div>
+	</header>
+</body>
+
+</html>

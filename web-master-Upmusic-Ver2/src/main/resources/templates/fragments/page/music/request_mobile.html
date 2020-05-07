@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 제작의뢰 등록 -->					
+			<form id="create-request" action="#" th:action="@{/music/store/request}" th:object="${requestform}" method="POST" class="form-inline" role="form">
+				<div class="nl_panel">
+					<div class="memberJoin_box">
+						<div class="form-group">
+							<label class="control-label" th:text="#{model.member.nick}"></label>
+							<input type="text" th:value="${requestform.getMember().getNick()}" class="form-control" onkeypress="return event.keyCode != 13;" readonly>
+						</div>
+						<div class="form-group">
+							<label class="control-label" th:text="#{model.member.email}"></label>
+							<input type="text" th:value="${requestform.getMember().getEmail()}" class="form-control" onkeypress="return event.keyCode != 13;" readonly>
+						</div>
+						<div class="form-group">
+							<label class="control-label" th:text="#{model.member.phoneNumber}"></label>
+							<input type="text" th:value="${requestform.getMember().getPhoneNumber()}" class="form-control" onkeypress="return event.keyCode != 13;" readonly>
+						</div>
+						<div id="form-group-price" class="form-group" th:classappend="${#fields.hasErrors('price')} ? 'has-error' : ''">
+							<label class="control-label" th:text="#{model.request.price}"></label>
+							<input th:field="*{price}" th:type="number" th:placeholder="#{model.request.price.placeholder}" onkeypress="return event.keyCode != 13;" class="form-control"/>
+							<div class="checkbox">
+								<input id="demo-form-inline-checkbox" name="discussion" value="1" class="checkbox-checked" type="checkbox">
+								<label for="demo-form-inline-checkbox"><span class="checkbox-custom"></span> &nbsp;<span th:text="#{model.request.price.discussion}" th:remove="tag"></span></label>
+							</div>
+							<p th:if="${#fields.hasErrors('price')}" th:id="error-price" class="help-block" th:errors="*{price}"></p>
+						</div>
+						<div class="form-group" th:classappend="${#fields.hasErrors('description')} ? 'has-error' : ''">
+					    	<label class="control-label" th:text="#{model.request.description}"></label>
+							<textarea class="form-control masage_input" th:field="*{description}" th:placeholder="#{model.request.description.placeholder}" rows="13"></textarea>
+							<p th:if="${#fields.hasErrors('description')}" th:id="error-description" class="help-block" th:errors="*{description}"></p>
+						</div>
+					</div><!-- //memberJoin_box -->
+				</div>
+				<div class="btn_box">
+					<button class="btn btn-block btn-lg btn-dark" onclick="UPMusic.startLoading();UPMCreateRequest.submit();return false;">
+						<span th:text="#{button.registration}" th:remove="tag"></span>
+					</button>
+				</div>
+			</form>
+			<!-- //end 제작의뢰 등록 -->
+			
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+			var UPMCreateRequest = {
+				_config : {
+					loading : false
+				},
+				submit : function() {
+					if (UPMCreateRequest._config.loading) return;
+					UPMCreateRequest._config.loading = true;
+					document.getElementById("create-request").submit();
+				}
+			};
+		</script>
+	</div>
+
+</body>
+</html>

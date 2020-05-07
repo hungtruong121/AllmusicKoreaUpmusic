@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_crop_image">
+			<div class="modal fade" id="modal-cropper-pop" role="dialog"
+				tabindex="-1" aria-labelledby="demo-default-modal"
+				aria-hidden="true">
+				<div class="modal-dialog cropper_pop">
+					<div class="modal-content" style="width: 100%">
+						<div class="modal-header login_header">
+							<h2 class="modal_title">이미지 영역 선택</h2>
+							<img th:src="@{/img/close.png}" class="close" alt=""
+								data-dismiss="modal" />
+						</div>
+						<div class="modal-body login_body">
+							<div class="login_body1">
+								<img id="modal-preview" class="cropit-preview" />
+							</div>
+							<div class="login_btn upload_btn mt10">
+								<button class="btn btn-custom3 h50 w100p"
+									onclick="UPMCropImageModal.cropIt();" th:text="#{button.ok}"></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<link rel="stylesheet" type="text/css"
+				th:href="@{/plugins/cropper/cropper.min.css}">
+			<script th:src="@{/plugins/cropper/canvas.blob.js}"></script>
+			<script th:src="@{/plugins/cropper/cropper.min.js}"></script>
+			<script th:src="@{/plugins/cropper/jquery-cropper.min.js}"></script>
+			<script type="text/javascript" th:inline="javascript">
+			var UPMCropImageModal = {
+					
+				_config : {
+					cropper : null,
+					imageBlob : null
+				},
+				showModal : function(e, ratio) {
+					if (UPMCropImageModal._config.cropper != null) {
+						$('#modal-preview').cropper('destroy');
+					}
+					$('#modal-preview').attr('src', e.target.result);
+					$('#modal-cropper-pop').modal({
+					    backdrop: 'static',
+					    keyboard: false
+					});
+				    $('#modal-cropper-pop').modal('show');
+				    var $image = $('#modal-preview');
+				    $image.cropper({
+				    	viewMode: 1,
+						aspectRatio: ratio,
+						minContainerWidth: 250,
+						minContainerHeight: 150,
+						minCanvasWidth: 150,
+						minCanvasHeight: 150,
+						crop: function(event) {
+							console.log(event.detail.x);
+							console.log(event.detail.y);
+							console.log(event.detail.width);
+							console.log(event.detail.height);
+							console.log(event.detail.rotate);
+							console.log(event.detail.scaleX);
+							console.log(event.detail.scaleY);
+						}
+				    });
+				    UPMCropImageModal._config.cropper = $image.data('cropper');
+				},
+				cropIt: function() {
+					UPMusic.log('CROP IT');
+					var filename = $("#cropit-image-input").val().split('\\').pop();
+					filename = "cropped_" + filename; 
+					$('input#imageFilename').val(filename);
+					UPMCropImageModal._config.cropper.getCroppedCanvas().toBlob(function (blob) {
+						UPMCropImageModal._config.imageBlob = blob;
+						$('#modal-cropper-pop').modal('hide');
+						$('#modal-preview').attr('src', null);
+					});
+					$("img.img_profile").attr('src', UPMCropImageModal._config.cropper.url);
+					},
+			};
+	    </script>
+		</div>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+		<title></title>
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-select/bootstrap-select.min.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/nifty.min.css}">
+		<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo-icons.min.css}">
+		<!--지민-->
+		<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/swiper.min.css}">
+
+		<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/plugins/pace/pace.min.css}">
+		<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo.min.css}">
+
+		<script th:src="@{/js/jquery.min.js}"></script>
+		<script th:src="@{/js/bootstrap.min.js}"></script>
+		<script th:src="@{/plugins/bootstrap-select/bootstrap-select.min.js}"></script>
+		<script th:src="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+		<script th:src="@{/js/swiper.min.js}"></script>
+		<script th:src="@{/plugins/pace/pace.min.js}"></script>
+		<script th:src="@{/js/nifty.min.js}"></script>
+		<script th:src="@{/js/nifty-demo.min.js}"></script>
+
+		<script th:src="@{/plugins/flot-charts/jquery.flot.min.js}"></script>
+		<script th:src="@{/plugins/flot-charts/jquery.flot.resize.min.js}"></script>
+		<script th:src="@{/plugins/flot-charts/jquery.flot.tooltip.min.js}"></script>
+		<script th:src="@{/plugins/sparkline/jquery.sparkline.min.js}"></script>
+		<script th:src="@{/js/vinyli.viSimpleSlider.js}"></script>
+		<!--<script th:src="@{/js/upmusic.js}"></script>-->
+
+		<script type="text/javascript">
+            $(document).ready(function() {
+                //윈도우 크기 resize
+                var strWidth = $('.payAll_wrap').outerWidth() + (window.outerWidth - window.innerWidth);
+
+                var strHeight = $('.payAll_wrap').outerHeight() + (window.outerHeight - window.innerHeight);
+
+                //resize
+                window.resizeTo(strWidth, strHeight);
+            });
+
+			function checkSubmit(){
+			    if ($("input[name='PAYMENT']").val() == null || $("input[name='PAYMENT']").val() == "") {
+                    UPMMessageModal.showModal("결제 수단을 선택해주세요.");
+					return;
+				} else if ($("input[name='PAYMENT']").val() == "deposit") {
+                    UPMMessageModal.showModal("추후 오픈 예정입니다.");
+                    return;
+				} else {
+                    Submit();
+				}
+			}
+
+            function Submit(){
+                var HForm = document.payment;
+                HForm.target = "payment";
+                HForm.action = "/pay/pay";
+
+                var option ="width=450,height=540,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,left=150,top=150";
+                var objPopup = window.open("", "payment", option);
+
+                if(objPopup == null){	//팝업 차단여부 확인
+                    alert("팝업이 차단되어 있습니다.\n팝업차단을 해제하신 뒤 다시 시도하여 주십시오.");
+                }
+
+                HForm.submit();
+                window.close();
+            }
+
+            var UPMMessageModal = {
+                showModal : function(msg) {
+                    if (msg != null) $('#alert-message').html(msg);
+                    $('#modal-message').modal('show');
+                }
+            };
+		</script>
+		<style>
+			html { overflow: hidden; }
+		</style>
+	</head>
+
+	<body>
+		<div>
+			<div class="modal fade" id="modal-message" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+				<div class="modal-dialog login_pop" style="width:400px;">
+					<div class="modal-content" style="width:415px;">
+						<div class="modal-header login_header">
+							<h2 class="modal_title">안내</h2>
+							<img src="/img/close.png" class="close" alt="" data-dismiss="modal" />
+						</div>
+						<div class="modal-body login_body">
+							<div class="login_body1">
+								<p id="alert-message" class="judge_info"></p>
+							</div>
+							<div class="login_btn upload_btn mt10">
+								<button class="btn btn-custom3 h50 w100p" data-dismiss="modal">확인</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<form name="payment" method="POST" onsubmit="return false;">
+			<div class="payAll_wrap">
+				<div class="modal-header login_header">
+					<h2 class="modal_title">업뮤직 포인트 충전</h2>
+				</div>
+				<div class="pay_content">
+					<div class="page-title-wrap mt10">
+						<h2 class="pay_title fl">나의 업뮤직 포인트</h2>
+						<p class="upm-point fr" th:text="${member.upmPoint}+' point'"><span></span></p>
+					</div>
+					<p class="pay_title2 mb15 mt20">충전금액 선택</p>
+					<div class="streaming_box1">
+						<div class="pay_content">
+							<div class="radiowrap">
+								<!-- 2018-07-12 라디오버튼 커스텀 -->
+								<div class="radio">
+									<input type="radio" id="radio_btn1" name="AMOUNT" checked="" th:value="1000">
+									<label for="radio_btn1"><span class="radiobtn_custom"></span><b class="radio_text">1,000 P</b></label>
+									<p>1,000 원</p>
+								</div>
+								<div class="radio">
+									<input type="radio" id="radio_btn2" name="AMOUNT" th:value="3000">
+									<label for="radio_btn2"><span class="radiobtn_custom"></span><b class="radio_text">3,000 P</b></label>
+									<p>3,000 원</p>
+								</div>
+								<div class="radio">
+									<input type="radio" id="radio_btn3" name="AMOUNT" th:value="5000">
+									<label for="radio_btn3"><span class="radiobtn_custom"></span><b class="radio_text">5,000 P</b></label>
+									<p>5,000 원</p>
+								</div>
+								<div class="radio">
+									<input type="radio" id="radio_btn4" name="AMOUNT" th:value="10000">
+									<label for="radio_btn4"><span class="radiobtn_custom"></span><b class="radio_text">10,000 P</b></label>
+									<p>10,000 원</p>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<input type="hidden" name="PAYMENT">
+					<p class="pay_title2 mt50 mb15">결제수단 선택</p>
+					<div class="pay_mode">
+						<ul>
+							<li name="credit">
+								<div>
+									<img src="img/pay_icon1.png" alt="">
+									<span>신용카드</span>
+								</div>
+							</li>
+							<li name="phone">
+								<div>
+									<img src="img/pay_icon2.png" alt="">
+									<span>휴대폰</span>
+								</div>
+							</li>
+							<li name="account">
+								<div>
+									<img src="img/pay_icon3.png" alt="">
+									<span>계좌이체</span>
+								</div>
+							</li>
+							<li name="deposit">
+								<div>
+									<img src="img/pay_icon4.png" alt="">
+									<span>무통장 입금</span>
+								</div>
+							</li>
+						</ul>
+						<!--  결제수단 미선택시
+						<p class="help-block">결제수단을 선택해주세요.</p>
+						-->
+					</div>
+
+					<div class="login_btn upload_btn mt20">
+						<button class="btn btn-custom3 h50 w50p" onclick="javascript:checkSubmit();">충전</button>
+						<button class="btn btn-custom2 h50 w50p" onclick="window.close();">취소</button>
+					</div>
+				</div>
+			</div>
+		</form>
+		<script>
+            //결제수단 클릭했을때
+            $('.pay_mode ul li').click(function () {
+                console.log($(this).attr('name'));
+
+                if( $(this).hasClass('active') ){
+                    $("input[name='PAYMENT']").val('');
+                    $(this).removeClass('active').siblings('li').removeClass('active');
+                }else{
+                    $("input[name='PAYMENT']").val($(this).attr('name'));
+                    $(this).addClass('active').siblings('li').removeClass('active');
+                }
+            });
+		</script>
+	</body>
+</html>

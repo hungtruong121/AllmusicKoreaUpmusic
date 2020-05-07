@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      <!--layout:decorate="~{layout/default_layout}">-->
+
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-select/bootstrap-select.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/nifty.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo-icons.min.css}">
+    <!--지민-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/swiper.min.css}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/pace/pace.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo.min.css}">
+
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/plugins/bootstrap-select/bootstrap-select.min.js}"></script>
+    <script th:src="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+    <script th:src="@{/js/swiper.min.js}"></script>
+    <script th:src="@{/plugins/pace/pace.min.js}"></script>
+    <script th:src="@{/js/nifty.min.js}"></script>
+    <script th:src="@{/js/nifty-demo.min.js}"></script>
+
+    <script th:src="@{/plugins/flot-charts/jquery.flot.min.js}"></script>
+    <script th:src="@{/plugins/flot-charts/jquery.flot.resize.min.js}"></script>
+    <script th:src="@{/plugins/flot-charts/jquery.flot.tooltip.min.js}"></script>
+    <script th:src="@{/plugins/sparkline/jquery.sparkline.min.js}"></script>
+    <script th:src="@{/js/vinyli.viSimpleSlider.js}"></script>
+    <script th:src="@{/js/upmusic.js}"></script>
+</head>
+      <style>
+          html { overflow: hidden; }
+      </style>
+<body>
+    <div class="payAll_wrap">
+        <div class="modal-header login_header">
+            <h2 class="modal_title">결제완료</h2>
+        </div>
+        <div class="pay_content">
+            <div class="pay_information">
+                <ul>
+                    <li><img th:src="@{/img/pay_icon1.png}" alt=""></li>
+                    <li><i></i>포인트 충전</li>
+                    <!--<li th:text="${authAmount}">11,000 <span class="pay_price">P</span></li>-->
+                    <li><span th:text="${authAmount}"></span><span class="pay_price">P</span></li>
+                </ul>
+            </div>
+            <div class="pay_use_wrap mt10">
+                <ul>
+                    <li>
+                        <span class="pay_use">결제수단 :</span> <span th:text="${chargeType}"></span>
+                    </li>
+                    <li>
+                        <span class="pay_use">결제금액 :</span> <sapn th:text="${authAmount}+'원'"></sapn>
+                    </li>
+                </ul>
+            </div>
+            <div class="login_btn upload_btn mt150">
+                <button class="btn btn-custom3 h50 w50p" onclick="javascript:reCharge();">한번 더 충전</button>
+                <button class="btn btn-custom2 h50 w50p" onclick="javascript:exit();">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function() {
+            //윈도우 크기 resize
+            var strWidth = $('.payAll_wrap').outerWidth() + (window.outerWidth - window.innerWidth);
+
+            var strHeight = $('.payAll_wrap').outerHeight() + (window.outerHeight - window.innerHeight);
+
+            //resize
+            window.resizeTo(strWidth, strHeight);
+        });
+
+        function reCharge(){
+            window.close();
+            window.open('/pay','_blank','width=450,height=790, toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,left=150,top=150');
+        }
+
+        function exit(){
+            console.log("close start");
+
+            window.close();
+            window.location.href = "/";
+        }
+
+    </script>
+</div>
+
+</body>
+</html>

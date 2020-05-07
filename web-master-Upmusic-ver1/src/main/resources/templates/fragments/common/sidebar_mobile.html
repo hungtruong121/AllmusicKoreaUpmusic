@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<title>UPMusic</title>
+</head>
+
+<body>
+	<nav id="mainnav" th:fragment="sidebar_mobile">
+		<div class="sidebarCloseBtn" id="closeButton1" onclick="UPMusic.closeSidebar()"></div>
+		<div sec:authorize="isAnonymous()" id="mainnav-profile" class="mainnav-profile">
+			<div class="profile-wrap">
+				<div class="userInfoBox">
+					<div class="pad-btm">
+						<a href="/auth/login"><img class="img-circle img-md" th:src="@{/img/mobile/ico_user_logout.png}" alt="Profile Picture"></a>
+					</div>
+					<div class="userInfo">
+						<p class="cmt"><a href="/auth/login"><span th:text="#{common.login.please}" th:remove="tag"></span></a></p>
+					</div>
+				</div>
+
+				<div class="user_btn_box">
+					<button class="btn btn-dark" onclick="UPMusic.goto('/feed');"><span th:text="#{sidebar.feed.home}" th:remove="tag"></span></button>
+					<button class="btn btn-dark" onclick="UPMusic.goto('/feed/me#my_feed');"><span th:text="#{nav.feed.me}" th:remove="tag"></span></button>
+					<button class="btn btn-dark" onclick="UPMusic.goto('/feed/upm#all_feed');"><span th:text="#{sidebar.feed.upm}" th:remove="tag"></span></button>
+				</div>
+			</div>
+		</div>
+		<div sec:authorize="isAuthenticated()" id="mainnav-profile" class="mainnav-profile">
+			<div class="profile-wrap">
+				<div class="userInfoBox">
+					<div class="pad-btm">
+						<span th:if="${currentUser != null}" th:remove="tag">
+							<a th:href="@{${currentUser.getUrl()}}"><img th:src="@{${currentUser.getProfileImageUrl()}}" class="img-circle img-md" alt="Profile Picture"/></a>
+						</span>
+						<span th:unless="${currentUser != null}" th:remove="tag">
+							<a th:id="mobileLogin" href="/auth/logout"></a>
+						</span>
+					</div>
+
+					<div class="userInfo">
+						<span th:if="${currentUser != null}" th:remove="tag">
+							<p class="user_name clamp"><a th:href="@{${currentUser.getUrl()}}"><span th:text="${currentUser.getNick()}" th:remove="tag"></span></a></p>
+							<p th:if = "${!@environment.acceptsProfiles('prod')}" class="hyc"><span th:text="${currentUser.getUpmPoint()}" class="num"></span><span class="unit">P</span></p>
+						</span>
+						<span th:unless="${currentUser != null}" th:remove="tag">
+							<a th:id="mobileLogin" href="/auth/logout"></a>
+						</span>
+					</div>
+				</div>
+
+				<div class="user_btn_box">
+					<button class="btn btn-dark" onclick="UPMusic.goto('/feed');"><span th:text="#{sidebar.feed.home}" th:remove="tag"></span></button>
+					<button class="btn btn-dark" onclick="UPMusic.goto('/feed/me#my_feed');"><span th:text="#{nav.feed.me}" th:remove="tag"></span></button>
+					<button class="btn btn-dark" onclick="UPMusic.goto('/feed/upm#all_feed');"><span th:text="#{sidebar.feed.upm}" th:remove="tag"></span></button>
+				</div>
+			</div>
+		</div>
+
+
+		<ul id="mainnav-menu" class="list-group">
+			<li th:class="${selectedSubMenu == '/' ? 'lnb_on' : ''}">
+				<a href="/">
+					<i class="ico_left_upmusic"></i>
+					<span class="menu-title" id="mobile_home">HOME</span>
+					<i class="arrow"></i>
+				</a>
+			</li>
+
+
+			<!--Menu list item-->
+			<li>
+				<a href="#">
+					<i class="ico_left_music"></i>
+					<span class="menu-title" th:text="#{nav.music}"></span>
+					<i class="arrow"></i>
+				</a>
+				<!--Submenu-->
+				<ul class="collapse">
+					<li class="list-divider"></li>
+					<li th:classappend="${selectedSubMenu == '/music/reward' ? 'active-link' : ''}">
+						<a href="/music/reward"><span th:text="#{nav.music.reward}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/music/league' ? 'active-link' : ''}">
+						<a href="/music/league"><span th:text="#{nav.music.league}" th:remove="tag"></span></a>
+					</li>
+					<!--
+					<li th:classappend="${selectedSubMenu == '/music/store' ? 'active-link' : ''}">
+						<a href="/music/store"><span th:text="#{nav.music.store}" th:remove="tag"></span></a>
+					</li>
+					-->
+					<li th:classappend="${selectedSubMenu == '/music/album' ? 'active-link' : ''}">
+						<a href="/music/album"><span th:text="#{nav.music.album}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/music/artist' ? 'active-link' : ''}">
+						<a href="/music/artist"><span th:text="#{nav.music.artist}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/music/vocal_casting' ? 'active-link' : ''}">
+						<a href="/music/vocal_casting"><span th:text="#{nav.music.vocal_casting}" th:remove="tag"></span></a>
+					</li>
+				</ul>			
+			</li>
+			
+			<li>
+				<a href="#">
+					<i class="ico_left_video"></i>
+					<span class="menu-title" th:text="#{nav.video}"></span>
+					<i class="arrow"></i>
+				</a>
+				<!--Submenu-->
+				<ul class="collapse">
+					<li class="list-divider"></li>
+					<li th:classappend="${selectedSubMenu == '/video' ? 'active-link' : ''}">
+						<a href="/video"><span th:text="#{nav.video.home}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/video/hot' ? 'active-link' : ''}">
+						<a href="/video/hot"><span th:text="#{nav.video.hot}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/video/mv' ? 'active-link' : ''}">
+						<a href="/video/mv"><span th:text="#{nav.video.mv}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/video/gv' ? 'active-link' : ''}">
+						<a href="/video/gv"><span th:text="#{nav.video.gv}" th:remove="tag"></span></a>
+					</li>
+				</ul>
+			</li>
+			
+			<li>
+				<a href="#">
+					<i class="ico_left_feed"></i>
+					<span class="menu-title" th:text="#{nav.feed}"></span>
+					<i class="arrow"></i>
+				</a>
+				<!--Submenu-->
+				<ul class="collapse">
+					<li class="list-divider"></li>
+					<li th:classappend="${selectedSubMenu == '/feed' ? 'active-link' : ''}">
+						<a href="/feed"><span th:text="#{nav.feed}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/feed/me' ? 'active-link' : ''}">
+						<a href="/feed/me#my_feed"><span th:text="#{nav.feed.me}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/feed/upm' ? 'active-link' : ''}">
+						<a href="/feed/upm#all_feed"><span th:text="#{nav.feed.upm}" th:remove="tag"></span></a>
+					</li>
+				</ul>			
+			</li>
+			
+			<li>
+				<a href="#">
+					<i class="ico_left_playlist"></i>
+					<span class="menu-title" th:text="#{nav.my_playlist}"></span>
+					<i class="arrow"></i>
+				</a>
+				<!--Submenu-->
+				<ul class="collapse">
+					<li class="list-divider"></li>
+					<li th:classappend="${selectedSubMenu == '/my_playlist/recent' ? 'active-link' : ''}">
+						<a href="/my_playlist/recent"><span th:text="#{nav.my_playlist.recent}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/my_playlist/collection' ? 'active-link' : ''}">
+						<a href="/my_playlist/collection"><span th:text="#{nav.my_playlist.collection}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/my_playlist/like' ? 'active-link' : ''}">
+						<a href="/my_playlist/like"><span th:text="#{nav.my_playlist.like}" th:remove="tag"></span></a>
+					</li>
+				</ul>			
+			</li>
+			
+			<li th:if = "${!@environment.acceptsProfiles('prod')}">
+				<a href="#">
+					<i class="ico_left_myupm"></i>
+					<span class="menu-title" th:text="#{nav.my_upm}"></span>
+					<i class="arrow"></i>
+				</a>
+				<!--Submenu-->
+				<ul class="collapse">
+					<li class="list-divider"></li>
+					<li th:if="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'active-link' : ''}">
+						<a th:href="${currentUser.getUrl()}"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span></a>
+					</li>
+					<li th:unless="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'active-link' : ''}">
+						<a href="/my_upm/profile"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span></a>
+					</li>
+					<!--<li th:classappend="${selectedSubMenu == '/my_upm/upload' ? 'active-link' : ''}">
+						<a href="/my_upm/upload"><span th:text="#{nav.my_upm.upload}" th:remove="tag"></span></a>
+					</li> -->
+					<li th:classappend="${selectedSubMenu == '/my_upm/reward' ? 'active-link' : ''}">
+						<a href="/my_upm/reward"><span th:text="#{nav.my_upm.reward}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/point' ? 'active-link' : ''}">
+						<a href="/my_upm/point"><span th:text="#{nav.my_upm.point}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/my_funding' ? 'active-link' : ''}">
+						<a href="/my_upm/my_funding"><span th:text="#{nav.my_upm.my_funding_records}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/withdraw' ? 'active-link' : ''}">
+						<a href="/my_upm/withdraw"><span th:text="#{nav.my_upm.withdraw}" th:remove="tag"></span></a>
+					</li>
+				</ul>			
+			</li>
+			
+			<li th:if = "${!@environment.acceptsProfiles('prod')}">
+				<a href="#">
+					<i class="ico_left_funding"></i>
+					<span class="menu-title" th:text="#{nav.crowd_funding}"></span>
+					<i class="arrow"></i>
+				</a>
+				<!--Submenu-->
+				<ul class="collapse">
+					<li class="list-divider"></li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/participation' ? 'active-link' : ''}">
+						<a href="/crowd_funding/participation"><span th:text="#{nav.crowd_funding.participation}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/new_project' ? 'active-link' : ''}">
+						<a href="/crowd_funding/new_project#new_project"><span th:text="#{nav.crowd_funding.new_project}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/hot_project' ? 'active-link' : ''}">
+						<a href="/crowd_funding/hot_project#hot_project"><span th:text="#{nav.crowd_funding.hot_project}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/information' ? 'active-link' : ''}">
+						<a href="/crowd_funding/information#infomation"><span th:text="#{nav.crowd_funding.information}" th:remove="tag"></span></a>
+					</li>
+				</ul>			
+			</li>
+			
+			<li>
+				<a href="#">
+					<i class="ico_left_upmnews"></i>
+					<span class="menu-title" th:text="#{nav.upm_news}"></span>
+					<i class="arrow"></i>
+				</a>
+				<!--Submenu-->
+				<ul class="collapse">
+					<li class="list-divider"></li>
+					<li th:classappend="${selectedSubMenu == '/upm_news/notice' ? 'active-link' : ''}">
+						<a href="/upm_news/notice"><span th:text="#{nav.upm_news.notice}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/upm_news/event' ? 'active-link' : ''}">
+						<a href="/upm_news/event"><span th:text="#{nav.upm_news.event}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu =='/upm_news/upm_band' ? 'active-link' : ''}">
+						<a href="/upm_news/upm_band"><span th:text="#{nav.upm_news.upm_band}" th:remove="tag"></span></a>
+					</li>
+					<li th:classappend="${selectedSubMenu == '/upm_news/faq' ? 'active-link' : ''}">
+						<a href="/upm_news/faq"><span th:text="#{nav.upm_news.faq}" th:remove="tag"></span></a>
+					</li>
+				</ul>			
+			</li>
+		</ul>
+		<div sec:authorize="isAuthenticated()">
+			<div class="logout_btn">
+				<button class="btn btn-dark"><a href="/auth/logout">로그아웃</a></button>
+			</div>
+		</div>
+	</nav>
+</body>
+
+</html>

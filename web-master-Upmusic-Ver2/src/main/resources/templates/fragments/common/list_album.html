@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_album(fragmentId, albumList, paginationUrl)" th:id="${fragmentId}" class="genre_listcontent single_list">
+		<ul>
+			<li th:each="album,iter : ${albumList}" >
+				<div class="single_profile">
+					<a th:href="@{${album.getUrl()}}">
+						<img th:src="@{${album.getCoverImageUrl()}}" src="${album.getCoverImageUrl()}" title="cover" class="img-responsive"/>
+					</a>
+				</div>
+				<div class="single_info">
+					<div class="single_titlewrap">
+						<ul class="public_video_title">
+							<li><a th:href="@{${album.getUrl()}}"><span th:text="${album.subject}" th:remove="tag"></span></a></li>
+							<li><a th:href="@{${album.getArtistUrl()}}"><span th:text="${album.getArtistNick()}" th:remove="tag"></span></a></li>
+						</ul>
+					</div>
+					<div class="single_likewrap">
+						<div class="single_btnwrap">
+							<a id="button-album-share" th:onclick="@{${'UPMShareModal.showShareModalFromList(' + album.id + ');'}}"><i><img th:src="@{/img/listcontrols_icon3.png}" alt=""  /></i></a>
+							<a th:id="${album.id}" th:onclick="@{${'UPMusicCommon.likeAlbum(' + album.id + ');'}}"><i><span id="album-like" class="heart_icon2" th:classappend="${album.liked} ? 'heart_icon_on' : 'heart_icon_off'">&nbsp;</span></i></a>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+		
+		<div th:if="${paginationUrl != null and albumList != null and albumList.totalPages gt 0}" class="panel-body text-center clear">
+		    <ul class="pagination">
+		        <li th:class="${albumList.number eq 0} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-left" th:if="${not albumList.first}" th:onclick="@{${'UPMListAlbumAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (albumList.number-1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-left" th:if="${albumList.first}" href="javascript:void(0);"></a>
+		        </li>
+		
+		        <li th:each="pageNo : ${#numbers.sequence(0, albumList.totalPages - 1)}" th:class="${albumList.number eq pageNo}? 'active' : ''">
+		            <a th:if="${albumList.number  eq pageNo}" href="javascript:void(0);">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		            <a th:if="${not (albumList.number  eq pageNo)}" th:onclick="@{${'UPMListAlbumAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + pageNo + ');'}}">
+		                <span th:text="${pageNo + 1}"></span>
+		            </a>
+		
+		        </li>
+		        <li th:class="${albumList.number + 1 ge albumList.totalPages} ? 'disabled' : ''">
+		            <a class="demo-pli-arrow-right" th:if="${not albumList.last}" th:onclick="@{${'UPMListAlbumAnonymous.loadPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (albumList.number+1) + ');'}}"></a>
+		            <a class="demo-pli-arrow-right" th:if="${albumList.last}" href="javascript:void(0);"></a>
+		        </li>
+		    </ul>
+		</div>
+		
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_share">
+		<div class="modal fade" id="modal-upload" tabindex="-1" role="dialog" aria-labelledby="UPM Upload" aria-hidden="true">
+			<div class="modal-dialog login_pop upload_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title" th:text="#{common.upload}">업로드</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<ul class="uploadpop_btn">
+								<li th:onclick="@{${'UPMusic.goto(&quot;/upload/music&quot;);'}}"><i><img th:src="@{/img/artist_music_icon.png}" alt="" /></i><span th:text="#{common.source.music}" th:remove="tag"></span></li>
+								<li th:onclick="@{${'UPMusic.goto(&quot;/upload/video&quot;);'}}"><i><img th:src="@{/img/artist_movie_icon.png}" alt="" /></i><span th:text="#{common.source.video}" th:remove="tag"></span></li>
+							</ul>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+			$(function () {
+				$('.uploadpop_btn li').on('click', function () {
+					$('#modal-upload').hide();
+                })
+            })
+		</script>
+	</div>
+</body>
+
+</html>

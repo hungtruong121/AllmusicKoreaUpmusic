@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activity.MainActivity"
+    tools:showIn="@layout/app_bar_navigation_drawer">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:id="@+id/player_nav"
+            android:layout_above="@id/main_nav"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:weightSum="20"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            >
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="50dp"
+                android:background="@color/colorPrimaryDark"
+                android:drawableTop="@drawable/icon_playlist"
+                />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="8"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:text="title"
+                    android:textColor="@color/colorWhite"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:text="artist"
+                    android:textColor="@color/colorWhite"/>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="50dp"
+                android:background="@color/colorPrimaryDark"
+                android:drawableTop="@drawable/icon_rewind"
+                />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="50dp"
+                android:background="@color/colorPrimaryDark"
+                android:drawableTop="@drawable/icon_play"
+                />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="50dp"
+                android:background="@color/colorPrimaryDark"
+                android:drawableTop="@drawable/icon_forward"
+                />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/main_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/player_nav"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
+
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/listView">
+
+            </ListView>
+        </FrameLayout>
+
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>

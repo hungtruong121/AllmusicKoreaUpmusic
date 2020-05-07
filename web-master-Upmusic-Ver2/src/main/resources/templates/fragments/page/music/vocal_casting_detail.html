@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title" th:text="#{nav.music.vocal_casting}"></h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="producing_listhead">
+							<p class="content_title2 fl"><span th:text="#{common.vocal_casting.description_1}" th:remove="tag"></span> <span th:text="#{common.vocal_casting.description_2}"></span></p>
+							<ul class="hits_wrap hits_wrap_ver1 mt30">
+								<li><span th:text="#{button.registration}" th:remove="tag"></span> : <span th:text="${casting.formattedDay()}" th:remove="tag"></span></li>
+							</ul>
+						</div>
+						<div class="album_infomation">
+							<div class="album_img producing_price_profile pointer" th:onclick="@{${'UPMusic.goto(&quot;' + casting.getMember().getUrl() + '&quot;, event);'}}">
+								<img th:src="@{${casting.getMember().getProfileImageUrl()}}" alt="" />
+							</div>
+							<div class="album_infotext casting_infotext">
+								<table>
+									<colgroup>
+										<col width="10%"/>
+										<col width="15%"/>
+										<col width="10%"/>
+										<col width="65%"/>
+									</colgroup>
+									<tr>
+										<th th:text="#{model.member.nick}"></th>
+										<td class="pointer" th:onclick="@{${'UPMusic.goto(&quot;' + casting.getMember().getUrl() + '&quot;, event);'}}" th:text="${casting.getMember().getNick()}"></td>
+										<th th:text="#{model.vacal_casting.subject}"></th>
+										<td th:text="${casting.getSubject()}"></td>
+									</tr>
+								</table>
+								<div class="casting_coment_field">
+									<p class="prpducing_price_info" th:utext="${#strings.replace( #strings.escapeXml( casting.description ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+								</div>
+								<div class="music_player vocal-casting-player">
+									<div id="audioWrap"></div>
+								</div>
+								<div class="commerce_btn like_event fl mt30 w444">
+									<ul>
+										<li th:onclick="@{${'UPMusic.goto(&quot;/music/vocal_casting&quot;, event);'}}"><i><img th:src="@{/img/list_icon.png}" alt=""></i><span th:text="#{button.list}" th:remove="tag"></span></li>
+										<li onclick="UPMShareModal.showShareModal(null);"><i><img th:src="@{/img/share_icon.png}" alt=""></i><span th:text="#{button.share}" th:remove="tag"></span></li>
+										<!-- 2018-06-19 인조이웍스 백지민 수정 ↓아래 span태그 추가 -->
+										<li th:if="${likedVocalCasting}" id="casting-detail-heart" onclick="UPMVocalCastingDetail.likeVocal();" class="feedbtn_on">
+											<i><img th:src="@{/img/afeedbtn_2.png}" class="w19" alt=""></i><span th:text="#{common.like}" th:remove="tag"></span> <span id="casting-detail-heart-cnt" th:text="${casting.heartCnt}"></span>
+										</li>
+										<li th:unless="${likedVocalCasting}" id="casting-detail-heart" onclick="UPMVocalCastingDetail.likeVocal();">
+											<i><img th:src="@{/img/feedbtn_2.png}" class="w19" alt=""></i><span th:text="#{common.like}" th:remove="tag"></span> <span id="casting-detail-heart-cnt" th:text="${casting.heartCnt}"></span>
+										</li>
+									</ul>
+								</div>
+								<div th:if="${isOwner}" class="commerce_btn commerce_btn_ver2 mt30 w300">
+									<ul>
+										<li th:onclick="@{${'UPMusic.goto(&quot;' + casting.getUrl() + '/edit&quot;);'}}"><i><img th:src="@{/img/change_icon.png}" alt=""></i><span th:text="#{button.modify}" th:remove="tag"></span></li>
+										<li onclick="UPMVocalCastingDetail.deleteRequest();"><i><img th:src="@{/img/delete_icon.png}" alt=""></i><span th:text="#{button.delete}" th:remove="tag"></span></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div th:replace="fragments/common/list_comment :: list_comment(${'/api/vocal_casting/' + casting.id}, ${castingComments}, ${currentUserId}, ${paginationUrl})"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script th:src="@{/js/jQuery.AudioPlayer.js}"></script>
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var audioSource = /*[[ ${casting.getFileUrl()} ]]*/;
+			$(function() {
+		        var player = $.AudioPlayer;
+		        player.init({
+		            container: '#audioWrap'
+		            ,source: audioSource
+		            ,debuggers: false
+		            ,allowSeek: true
+		        });
+		
+		        $('[data-url]').on('click', function(event) {
+		            event.preventDefault();
+		
+		            player.updateSource({
+		                source: $(this).data('url')
+		            });
+		        });
+		    });
+		/*]]>*/
+		</script>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMVocalCastingDetail = {
+				likeVocal : function() {
+					UPMLoginModal.showModal();
+				}
+			};
+		</script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var castingId = /*[[ ${casting.id} ]]*/;
+			var heartCnt = /*[[ ${casting.heartCnt} ]]*/;
+			
+			var UPMVocalCastingDetail = {
+				_config : {
+					loading : false
+				},
+				likeVocal : function() {
+					if (UPMVocalCastingDetail._config.loading) return;
+					UPMVocalCastingDetail._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_vocal_casting + '/' + castingId + '/like', headers, params, UPMVocalCastingDetail.likeVocalCallback);
+				},
+				likeVocalCallback: function(msg, object) {
+					if (msg == 'true') {
+						$('#casting-detail-heart').addClass("feedbtn_on").children("").children("img").attr("src","/img/afeedbtn_2.png");
+					} else {
+						$('#casting-detail-heart').removeClass("feedbtn_on").children("").children("img").attr("src","/img/feedbtn_2.png");
+					}
+					$('#casting-detail-heart-cnt').html(object);
+					UPMVocalCastingDetail._config.loading = false;
+				},
+				deleteRequest: function() {
+					UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+						UPMusic.ajaxDelete(UPMusic._config._api_vocal_casting + '/' + castingId, headers, UPMVocalCastingDetail.deleteRequestCallback);
+				    });
+				},
+				deleteRequestCallback: function(msg, object) {
+					if (msg == 'true') {
+						window.location.href = '/music/vocal_casting';
+					} else {
+						UPMusic.alert("삭제하지 못했습니다");
+					}
+				}
+			};
+			
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

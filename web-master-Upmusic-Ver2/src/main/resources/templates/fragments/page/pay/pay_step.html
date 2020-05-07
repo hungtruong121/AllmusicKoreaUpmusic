@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+		<title></title>
+
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-select/bootstrap-select.min.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/nifty.min.css}">
+		<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo-icons.min.css}">
+		<!--지민-->
+		<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/swiper.min.css}">
+		<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/plugins/pace/pace.min.css}">
+		<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo.min.css}">
+
+		<script th:src="@{/js/jquery.min.js}"></script>
+		<script th:src="@{/js/bootstrap.min.js}"></script>
+		<script th:src="@{/plugins/bootstrap-select/bootstrap-select.min.js}"></script>
+		<script th:src="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+		<script th:src="@{/js/vinyli.viSimpleSlider.js}"></script>
+		<script th:src="@{/js/swiper.min.js}"></script>
+		<script th:src="@{/plugins/pace/pace.min.js}"></script>
+		<script th:src="@{/js/nifty.min.js}"></script>
+
+		<script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+            //var payment = /*[[ ${payment} ]]*/;
+            var payment = /*[[ ${payment} ]]*/;
+            /*]]>*/
+
+            $(document).ready(function() {
+                if (payment == "credit") {
+                    $("#chargeAmount").text("신용카드 결제금액");
+                } else if (payment == "phone") {
+                    $("#chargeAmount").text("핸드폰 결제금액");
+                } else if (payment == "account") {
+                    $("#chargeAmount").text("계좌이체 결제금액");
+                }
+
+                //윈도우 크기 resize
+                var strWidth = $('.payAll_wrap').outerWidth() + (window.outerWidth - window.innerWidth);
+
+                var strHeight = $('.payAll_wrap').outerHeight() + (window.outerHeight - window.innerHeight);
+
+                //resize
+                window.resizeTo(strWidth, strHeight);
+            });
+
+			function checkSubmit(){
+                console.log(payment);
+
+                if (!$('#checked-1').is(":checked") || !$('#checked-2').is(":checked")) {
+                    UPMMessageModal.showModal("필수 체크사항을 체크해주세요.");
+                    return;
+                }
+
+				var HForm = document.payment;
+				HForm.target = "payment";
+
+				if (payment == "credit") {
+                    //테스트 URL(신용카드)
+                    HForm.action = "http://tpay.billgate.net/credit/certify.jsp";
+				} else if (payment == "phone") {
+                    //테스트 URL(핸드폰결제)
+                    HForm.action = "http://tpay.billgate.net/mobile/certify.jsp";
+				} else if (payment == "account") {
+                    //테스트 URL(계좌이체)
+                    HForm.action = "http://tpay.billgate.net/account/certify.jsp";
+				}
+
+                //테스트 URL(가상계좌)
+                //HForm.action = "http://tpay.billgate.net/vaccount/certify.jsp";
+
+				//상용 URL
+				//HForm.action = "https://pay.billgate.net/credit/certify.jsp";
+
+				var option ="width=500,height=477,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,left=150,top=150";
+				var objPopup = window.open("", "payment", option);
+
+				if(objPopup == null){	//팝업 차단여부 확인
+					alert("팝업이 차단되어 있습니다.\n팝업차단을 해제하신 뒤 다시 시도하여 주십시오.");
+				}
+
+				HForm.submit();
+			}
+
+            var UPMMessageModal = {
+                showModal : function(msg) {
+                    if (msg != null) $('#alert-message').html(msg);
+                    $('#modal-message').modal('show');
+                }
+            };
+
+			function detail() {
+                window.open("/terms/use","_blank", window.width, window.height);
+                return;
+            }
+		</script>
+		<style>
+			html { overflow: hidden; }
+		</style>
+	</head>
+	<body>
+		<div>
+			<div class="modal fade" id="modal-message" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+				<div class="modal-dialog login_pop" style="width:400px;">
+					<div class="modal-content" style="width:415px;">
+						<div class="modal-header login_header">
+							<h2 class="modal_title">안내</h2>
+							<img src="/img/close.png" class="close" alt="" data-dismiss="modal" />
+						</div>
+						<div class="modal-body login_body">
+							<div class="login_body1">
+								<p id="alert-message" class="judge_info"></p>
+							</div>
+							<div class="login_btn upload_btn mt10">
+								<button class="btn btn-custom3 h50 w100p" data-dismiss="modal">확인</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<form name="payment" method="post" onsubmit="return false;">
+			<input type="hidden" name="SERVICE_ID" th:value="${serviceId}">
+			<input type="hidden" name="AMOUNT" th:value="${amount}">
+			<input type="hidden" name="ORDER_ID" class="input" th:value="${orderId}">
+			<input type="hidden" name="CHECK_SUM" class="input" th:value="${checkSum}">
+			<input type="hidden" name="ORDER_DATE" class="input" th:value="${orderDate}">
+			<input type="hidden" name="USER_IP" class="input" th:value="${userIp}">
+			<input type="hidden" name="ITEM_NAME" class="input" th:value="${itemName}">
+			<input type="hidden" name="ITEM_CODE" class="input" th:value="${itemCode}">
+			<input type="hidden" name="USER_ID" class="input" th:value="${userId}">
+			<input type="hidden" name="USER_NAME" class="input" th:value="${userName}">
+			<input type="hidden" name="INSTALLMENT_PERIOD" class="input" value="0:3:6:9:12">
+			<input type="hidden" name="RETURN_URL" class="input" th:value="${returnUrl}">
+
+			<div class="payAll_wrap">
+				<div class="modal-header login_header">
+					<h2 class="modal_title">결제하기</h2>
+				</div>
+				<div class="pay_content">
+					<div class="pay_information">
+						<ul>
+							<li><img th:src="@{/img/pay_icon1.png}" alt=""></li>
+							<li id="chargeAmount"><i></i></li>
+							<li th:text="${amount}+'원'"> <span class="pay_price"></span></li>
+						</ul>
+					</div>
+					<div class="pay_agree_wrap">
+						<ul>
+							<li>
+								<div class="checkbox">
+									<input type="checkbox" id="checked-1" class="checkbox-checked" name="cc" />
+									<label for="checked-1"><span class="checkbox-custom"></span> 이용약관 <span class="must">[필수]</span></label>
+									<p class="agree_view fr"><a onclick="javascript:detail();">자세히 보기</a></p>
+								</div>
+							</li>
+							<li>
+								<div class="checkbox">
+									<input type="checkbox" id="checked-2" class="checkbox-checked" name="cc" />
+									<label for="checked-2"><span class="checkbox-custom"></span> 위 결제내용을 확인하였습니다. <span class="must">[필수]</span></label>
+								</div>
+								<p class="pay_alert">(업뮤직포인트 유효기간 : 충전일로부터 5년)</p>
+							</li>
+						</ul>
+					</div>
+					<div class="login_btn upload_btn mt150">
+						<button class="btn btn-custom3 h50 w50p" onclick="javascript:checkSubmit();">결제</button>
+						<button class="btn btn-custom2 h50 w50p" onclick="window.close();">취소</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</body>
+</html>

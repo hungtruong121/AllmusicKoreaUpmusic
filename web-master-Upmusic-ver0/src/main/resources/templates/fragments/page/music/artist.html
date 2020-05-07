@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title" th:text="#{nav.music.artist}"></h2>
+				<div class="tab_design">
+					<ul>
+						<li id="artist-home"><span th:text="#{nav.music.artist.home}" th:remove="tag"></span>
+							<div class="tab_line"></div>
+						</li>
+						<li id="artist-family"><span th:text="#{nav.music.artist.family}" th:remove="tag"></span></li>
+						<li id="artist-new"><span th:text="#{nav.music.artist.new}" th:remove="tag"></span></li>
+						<li id="artist-guide"><span th:text="#{nav.music.artist.guide}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="artist_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl" th:text="#{common.artist.all}"></p>
+							</div>
+							<div class="artist_banner"></div>
+							<div th:replace="fragments/common/list_artist :: list_artist(${artistsFragmentId}, ${artists}, ${paginationUrl})"></div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="artist_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl" th:text="#{nav.music.artist.family}"></p>
+							</div>
+							<div class="artist_banner"></div>
+							<div th:replace="fragments/common/list_artist :: list_artist(${familyArtistsFragmentId}, ${familyArtists}, ${familyPaginationUrl})"></div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="artist_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl" th:text="#{nav.music.artist.new}"></p>
+							</div>
+							<div th:replace="fragments/common/list_artist :: list_artist(${newArtistsFragmentId}, ${newArtists}, ${newPaginationUrl})"></div>
+						</div>
+					</div>
+					<div class="tab_content">
+						<div class="artist_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl" th:text="#{nav.music.artist.guide}"></p>
+								<a th:if="${guideVocalId != null}" th:onclick="@{${'UPMusic.goto(&quot;/music/guide_vocal/' + guideVocalId + '&quot;, event);'}}" class="btn btn-custom2 mt20 fr">가이드 보컬 신청 정보</a>
+								<a th:unless="${guideVocalId != null}" th:onclick="@{${'UPMusic.goto(&quot;/music/guide_vocal/new&quot;, event);'}}" class="btn btn-custom2 mt20 fr"><span th:text="#{common.registration.guide_vocal}" th:remove="tag"></span></a>
+							</div>
+							<div th:replace="fragments/common/list_artist :: list_artist(${guideVocalsFragmentId}, ${guideVocals}, ${guidePaginationUrl})"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="albuminfo_wrap section">
+				<div class="albuminfo_head">
+					<h2 class="page-title" th:text="#{common.video.information}"></h2>
+					<ul class="hits_wrap">
+						<li><span th:text="#{model.video.hits}" th:remove="tag"></span> : <span th:text="${video.hitCnt}" th:remove="tag"></span><span th:text="#{common.times}" th:remove="tag"></span></li>
+						<li><span th:text="#{button.registration}" th:remove="tag"></span> : <span th:text="${video.formattedTime()}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="album_infomation video_infomation">
+					<div class="video_wrap">
+						<!-- UPM VIDEO PLAYER -->
+						<div th:if="${video.videoService == 'youtube'}" class="video-container">
+						    <span class="embed-youtube" style="text-align:center; display: block;"><span id="youtube-player"></span></span>
+						</div>
+						<div th:unless="${video.videoService == 'youtube'}" class="video-container">
+						    <span class="embed-vimeo" style="text-align:center; display: block;"><iframe id="vimeo-player" class="vimeo-player" type="text/html" th:src="@{${'https://player.vimeo.com/video/' + video.videoServiceObjectId}}" style="border: 0px; display: block; margin: 0px; width: 100%; height: 100%;" data-ratio="0.5625" data-width="100%" data-height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></span>
+						</div>
+						<div class="videoinfo_top">
+							<div class="album_img album_img_ver2">
+								<a th:href="@{${owner.getUrl()}}"><img th:src="@{${owner.getProfileImageUrl()}}" alt="" /></a>
+							</div>
+							<div class="videoinfo_titlewrap">
+								<h2 class="album-title" th:text="${video.subject}"></h2>
+								<p class="album_singer"><a th:href="@{${owner.getUrl()}}"><span th:text="${owner.nick}" th:remove="tag"></span></a></p>
+							</div>
+						</div>
+					</div>
+					<div class="album_infotext video_infotext">
+						<div class="album_img album_img_ver2">
+							<a th:href="@{${owner.getUrl()}}">
+								<img th:src="@{${owner.getProfileImageUrl()}}" src="${owner.getProfileImageUrl()}" title="profileimage"/>
+							</a>
+						</div>
+						<div class="videoinfo_titlewrap">
+							<h2 class="album-title" th:text="${video.subject}"></h2>
+							<p class="album_singer"><a th:href="@{${owner.getUrl()}}"><span th:text="${owner.nick}" th:remove="tag"></span></a></p>
+							<!-- <dl th:if="${video.genre != null}" class="hashtag_wrap">
+								<dt class="hashtag"><a href="">#<span th:text="#{${video.getGenreName()}}" th:remove="tag"></span></a></dt>
+							</dl> -->
+						</div>
+						<div class="introduce_info introduce_info_ver2" th:utext="${#strings.replace( #strings.escapeXml( video.description ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></div>
+						<div class="album_sharebox album_sharebox_ver2">
+							<ul>
+								<li>
+									<div id="video-detail-heart" class="like_btn_round" th:classappend="${likedVideo} ? 'like_btn_round_on' : 'like_btn_round_off'" onclick="UPMVideoDetail.likeVideo();"><i><span class="heart">&nbsp;</span></i><span th:text="#{common.like}" th:remove="tag"></span><span id="video-detail-heart-cnt" th:text="${video.heartCnt}"></span></div>
+								</li>
+								<li>
+									<div class="share_info"><i><img th:src="@{/img/listcontrols_icon3.png}" alt="" /></i><span th:text="#{button.share}" th:remove="tag"></span>
+										<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://facebook.com/sharer/sharer.php?u=&quot;);'}}" target="_blank" aria-label=""><img th:src="@{/img/share_facebook.png}" alt="" /></a></b>
+										<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://twitter.com/intent/tweet/?url=&quot;);'}}" target="_blank" aria-label=""><img th:src="@{/img/share_twitter.png}" alt="" /></a></b>
+										<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://story.kakao.com/s/share?url=&quot;);'}}" target="_blank" aria-label=""><img th:src="@{/img/share_kakao.png}" alt="" /></a></b>
+										<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://share.naver.com/web/shareView.nhn?title=UPMusic&url=&quot;);'}}" target="_blank" class="share-btn-small" aria-label=""><img th:src="@{/img/naver.png}" alt="" /></a></b>
+										<b><a th:onclick="@{${'UPMShareModal.shareUrl(&quot;upmusic&quot;);'}}" target="_blank" class="share-btn-small" aria-label=""><img th:src="@{/img/upmusic.png}" alt="" /></a></b>
+										<b><a th:onclick="@{${'UPMShareModal.copyUrl();return false;'}}"><img th:src="@{/img/share_link.png}" alt="" /></a></b>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div th:if="${isOwner}" class="commerce_btn commerce_btn_ver2">
+							<ul>
+								<li th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '/edit&quot;);'}}"><i><img th:src="@{/img/change_icon.png}" alt="" /></i><span th:text="#{button.modify}" th:remove="tag"></span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div th:replace="fragments/common/list_comment :: list_comment(${'/api/video/' + video.id}, ${videoComments}, ${currentUserId}, ${paginationUrl})"></div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var videoId = /*[[ ${video.id} ]]*/;
+			var videoObjectId = /*[[ ${video.videoServiceObjectId} ]]*/;
+			var heartCnt = /*[[ ${video.heartCnt} ]]*/;
+			//비디오 정보창
+			// $(".videoinfo_bottom").css("bottom","0");
+	/* 		$(".video_wrap").mouseenter(function(){
+				$(this).children(".videoinfo_top").stop().animate({"top":"0"},500);
+				$(this).children(".videoinfo_bottom").stop().animate({"bottom":"0"},500);
+			});
+			$(".video_wrap").mouseleave(function(){
+				$(this).children(".videoinfo_top").stop().animate({"top":"-60px"},500);
+				$(this).children(".videoinfo_bottom").stop().animate({"bottom":"-100px"},500);
+			}); */
+		/*]]>*/
+		</script>
+		
+		<div th:if="${video.videoService == 'youtube'}" th:remove="tag">
+			<script src="https://www.youtube.com/iframe_api"></script>
+			<script type="text/javascript" th:inline="javascript">
+				// create youtube player
+			    var player, playing = false;
+			    function onYouTubePlayerAPIReady() {
+			        player = new YT.Player('youtube-player', {
+			          videoId: videoObjectId,
+			          events: {
+			            'onReady': onPlayerReady,
+			            'onStateChange': onPlayerStateChange
+			          }
+			        });
+			    }
+	
+			    // autoplay video
+			    function onPlayerReady(event) {
+			    	UPMusic.log("onPlayerReady");
+			    }
+	
+			    // when video ends
+			    function onPlayerStateChange(event) {
+			    	if (!playing && event.data == YT.PlayerState.PLAYING) {
+			    		UPMusicCommon.addVideoToPlaylist(videoId);
+			    		playing = true;
+			    	}
+			    }				
+			</script>
+		</div>
+		<div th:unless="${video.videoService == 'youtube'}" th:remove="tag">
+			<script src="https://player.vimeo.com/api/player.js"></script>
+			<script type="text/javascript" th:inline="javascript">
+				// create youtube player
+			    var playing = false;
+			    var iframe = document.getElementById("vimeo-player");
+			    var player = new Vimeo.Player(iframe);
+			    player.on('play', function() {
+		    		if (!playing) {
+			    		UPMusicCommon.addVideoToPlaylist(videoId);
+			    		playing = true;
+			    	}
+			    });
+			</script>
+		</div>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMVideoDetail = {
+				likeVideo: function() {
+					UPMLoginModal.showModal();
+				}
+			};
+		</script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		
+			var UPMVideoDetail = {
+				_config : {
+					loading : false
+				},
+				likeVideo: function() {
+					if (UPMVideoDetail._config.loading) return;
+					UPMVideoDetail._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_video + '/' + videoId + '/like', headers, params, UPMVideoDetail.likeVideoCallback);
+				},
+				likeVideoCallback: function(msg, object) {
+					if (msg == 'true') {
+						$('#video-detail-heart').toggleClass('like_btn_round_off like_btn_round_on');
+					} else {
+						$('#video-detail-heart').toggleClass('like_btn_round_on like_btn_round_off');
+					}
+					$('#video-detail-heart-cnt').html(object);
+					UPMVideoDetail._config.loading = false;
+				}
+			};
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+<div th:fragment="modal_share">
+	<div class="modal fade" id="modal-sns-share" tabindex="-1" role="dialog" aria-labelledby="UPM Share" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal_social_sharewrap" role="document">
+			<div class="modal-content">
+				<div class="modal-header social_sharehead">
+					<h2 th:text="#{modal.share}"></h2>
+					<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+				</div>
+				<div class="modal-body sharebody">
+					<ul>
+						<li>
+							<a class="resp-sharing-button__link" th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://story.kakao.com/s/share?url=&quot;);'}}" target="_blank" aria-label="">
+								<img th:src="@{/img/kakao.png}" alt="" />
+							</a>
+						</li>
+						<li>
+							<a class="resp-sharing-button__link" id="tweet" th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://twitter.com/intent/tweet/?url=&quot;);'}}" target="_blank" aria-label="">
+								<img th:src="@{/img/twitter.png}" alt="" />
+							</a>
+						</li>
+						<li>
+							<a class="resp-sharing-button__link" th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://facebook.com/sharer/sharer.php?u=&quot;);'}}" target="_blank" aria-label="">
+								<img th:src="@{/img/facebook.png}" alt="" />
+							</a>
+						</li>
+						<li>
+							<a class="resp-sharing-button__link" th:onclick="@{${'UPMShareModal.shareUrl(&quot;https://share.naver.com/web/shareView.nhn?title=UPMusic&url=&quot;);'}}" target="_blank" aria-label="">
+								<img th:src="@{/img/naver.png}" alt="" />
+							</a>
+						</li>
+						<li>
+							<a class="resp-sharing-button__link" th:onclick="@{${'UPMShareModal.shareUrl(&quot;upmusic&quot;);'}}" target="_blank" aria-label="">
+								<img th:src="@{/img/upmusic.png}" alt="" />
+							</a>
+						</li>
+					</ul>
+					<div class="share_url">
+						<div class="inputbox mt0">
+							<input id="modal-share-url-to-copy" type="text" class="form-control w100p h33" th:value="${shareUrl}" readonly/>
+							<button id="button-copy-url" class="btn btn-custom3 w100p p60 mt10"><span th:text="#{modal.share.copy_url}" th:remove="tag"></span></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+            var shareUrl = /*[[ ${shareUrl} ]]*/;
+            var origSelectionStart, origSelectionEnd;
+            var UPMShareModal = {
+                showShareModal : function(trackId) {
+                    var urlToShare = shareUrl;
+                    if (trackId) urlToShare += '?ti=' + trackId;
+                    $('#modal-share-url-to-copy').val(urlToShare);
+                    $('#modal-sns-share').modal('show');
+                },
+                showShareFeedModal : function(feedId) {
+                    var urlToShareFeed = shareUrl + '/' + feedId;
+                    $('#modal-share-url-to-copy').val(urlToShareFeed);
+                    $('#modal-sns-share').modal('show');
+                },
+                showShareModalFromList : function(albumId, trackId, e) {
+                    if (!e) var e = window.event;
+                    e.cancelBubble = true;
+                    if (e.stopPropagation) e.stopPropagation();
+                    var urlToShare = shareUrl;
+                    if (albumId && urlToShare.endsWith("album/")) urlToShare += albumId;
+                    if (trackId) urlToShare += '?ti=' + trackId;
+                    $('#modal-share-url-to-copy').val(urlToShare);
+                    $('#modal-sns-share').modal('show');
+                },
+                showShareModalFromSearchList : function(path, albumId, trackId, e) {
+                    if (!e) var e = window.event;
+                    e.cancelBubble = true;
+                    if (e.stopPropagation) e.stopPropagation();
+                    var urlToShare = shareUrl + path;
+                    if (albumId) urlToShare += albumId;
+                    if (trackId) urlToShare += '?ti=' + trackId;
+                    $('#modal-share-url-to-copy').val(urlToShare);
+                    $('#modal-sns-share').modal('show');
+                },
+                shareUrl : function(snsUrl) {
+                    if (snsUrl == 'upmusic') {
+                        UPMLoginModal.showModal();
+                    } else {
+                        var urlToShare = document.getElementById("modal-share-url-to-copy").value;
+                        window.open(snsUrl + urlToShare, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=200,left=500,width=400,height=400");
+                    }
+                },
+                copyUrl : function() {
+                    var copyText = document.getElementById("modal-share-url-to-copy");
+                    var $temp = $("<input>");
+                    $("body").append($temp);
+                    $temp.val($(copyText).val()).select();
+                    document.execCommand("copy");
+                    $temp.remove();
+                    UPMusic.alert('복사하였습니다.');
+                }
+            };
+
+            $(function() {
+                $('#button-copy-url').click(function() {
+                    var copyText = document.getElementById("modal-share-url-to-copy");
+                    copyText.select();
+                    document.execCommand("copy");
+                    UPMusic.alert('복사하였습니다.');
+                });
+            });
+            /*]]>*/
+		</script>
+	</div>
+	<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+            var shareUrl = /*[[ ${shareUrl} ]]*/;
+            var origSelectionStart, origSelectionEnd;
+            var UPMShareModal = {
+                showShareModal : function(trackId) {
+                    var urlToShare = shareUrl;
+                    if (trackId) urlToShare += '?ti=' + trackId;
+                    $('#modal-share-url-to-copy').val(urlToShare);
+                    $('#modal-sns-share').modal('show');
+                },
+                showShareFeedModal : function(feedId) {
+                    var urlToShareFeed = shareUrl + '/' + feedId;
+                    $('#modal-share-url-to-copy').val(urlToShareFeed);
+                    $('#modal-sns-share').modal('show');
+                },
+                showShareModalFromList : function(albumId, trackId, e) {
+                    if (!e) var e = window.event;
+                    e.cancelBubble = true;
+                    if (e.stopPropagation) e.stopPropagation();
+                    var urlToShare = shareUrl;
+                    if (albumId && urlToShare.endsWith("album/")) urlToShare += albumId;
+                    if (trackId) urlToShare += '?ti=' + trackId;
+                    $('#modal-share-url-to-copy').val(urlToShare);
+                    $('#modal-sns-share').modal('show');
+                },
+                showShareModalFromSearchList : function(path, albumId, trackId, e) {
+                    if (!e) var e = window.event;
+                    e.cancelBubble = true;
+                    if (e.stopPropagation) e.stopPropagation();
+                    var urlToShare = shareUrl + path;
+                    if (albumId) urlToShare += albumId;
+                    if (trackId) urlToShare += '?ti=' + trackId;
+                    $('#modal-share-url-to-copy').val(urlToShare);
+                    $('#modal-sns-share').modal('show');
+                },
+                shareUrl : function(snsUrl) {
+                    if (snsUrl == 'upmusic') {
+                        var urlToShareFeed = document.getElementById("modal-share-url-to-copy").value;
+                        UPMShareUpmusicModal.showShareModal(urlToShareFeed);
+                    } else {
+                        var urlToShare = document.getElementById("modal-share-url-to-copy").value;
+
+                        if (snsUrl.includes("facebook")) {
+                            if (window.location.host.includes("hyupmusic")) {
+                                FB.init({
+                                    appId: '2344026265820892',
+                                    xfbml: true,
+                                    version : 'v3.2'
+                                });
+							} else if (window.location.host.includes("upmusic.azurewebsites.net")) {
+                                FB.init({
+                                    appId: '585215428617530',
+                                    xfbml: true,
+                                    version : 'v3.2'
+                                });
+							} else {
+                                FB.init({
+                                    appId: '513227399200120',
+                                    xfbml: true,
+                                    version : 'v3.2'
+                                });
+							}
+
+                            FB.ui({
+                                method: 'share',
+                                display: 'popup',
+                                href: urlToShare,
+                            }, function(response){
+                                if (response && !response.error_code) {
+                                    var params = {};
+                                    // 공유됐을때 공유리워드 적립될 ajax
+                                    UPMusic.ajaxPost(UPMusic._config._api_transaction + '/shareReward', headers, params, UPMShareModal.shareCallBack);
+                                } else {
+                                    UPMusic.alert("공유하지 못했습니다.")
+                                }
+                            });
+                        } else {
+                            window.open(snsUrl + urlToShare, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=200,left=500,width=400,height=400");
+                        }
+                    }
+                },
+                shareCallBack : function(msg, object) {
+                    if (msg == 'true') {
+                        UPMusic.alert("공유되었습니다.");
+                    } else {
+                        UPMusic.alert("공유하지 못했습니다.");
+                    }
+                    //UPMPoint._config.loading = false;
+                },
+                copyUrl : function() {
+                    var copyText = document.getElementById("modal-share-url-to-copy");
+                    var $temp = $("<input>");
+                    $("body").append($temp);
+                    $temp.val($(copyText).val()).select();
+                    document.execCommand("copy");
+                    $temp.remove();
+                    UPMusic.alert('복사하였습니다.');
+                }
+            };
+
+            $( document ).ready(function() {
+
+            });
+
+            $(function() {
+                $('#button-copy-url').click(function() {
+                    var copyText = document.getElementById("modal-share-url-to-copy");
+                    copyText.select();
+                    document.execCommand("copy");
+                    UPMusic.alert('복사하였습니다.');
+                });
+            });
+            /*]]>*/
+		</script>
+	</div>
+</div>
+</body>
+
+</html>

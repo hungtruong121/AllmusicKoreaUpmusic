@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<!-- content -->
+		<div id="content">
+			<!-- reward music content -->
+			<div class="reward_wrap">
+				<div class="nl_panel pdb0 pdt0">
+					<ul class="nav nav-tabs tabType01">
+						<li class="active"><a><span th:text="#{nav.my_upm.upload.track}" th:remove="tag"></span></a></li>
+						<li class="making"><a><span th:text="#{nav.my_upm.upload.video}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane active" id="musicStore-1">
+						<!-- 음원 -->
+						<div class="album_list_wrap">
+							<div th:if="${tracks != null and 0 < tracks.getTotalElements()}" class="h100p of-a">
+								<dl class="lanking_list01 album">
+									<dd class="off" th:each="track, iter : ${tracks}" th:id="${track.id}" th:onclick="@{${'UPMListUpload.selectOrNot(&quot;' + track.trackStatus.name() + '&quot;, this);'}}">
+										<div class="num"><span th:if="${iter.index + 1} lt 10" th:remove="tag">0</span><span th:text="${iter.index + 1}" th:remove="tag"></span></div>
+										<div class="info">
+											<p class="img"><a th:href="@{${track.getUrl()}}"><i><img th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></a></p>
+											<p class="subject"><a th:href="@{${track.getUrl()}}"><span class="sj clamp ico_title" th:text="${track.subject}"></span></a><a th:href="@{${track.getArtistUrl()}}"><span class="arti" th:text="${track.getArtistNick()}"></span></a></p>
+										</div>
+										<div class="mt20">
+											<span th:if="${track.trackStatus.name()} eq 'BEFORE_EXAM'" class="icoBtn_gray" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_ing&quot;, null, event);'}}">심사 중</span>
+											<span th:if="${track.trackStatus.name()} eq 'UNDER_EXAM'" class="icoBtn_gray" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_ing&quot;, null, event);'}}">심사 중</span>
+											<span th:if="${track.trackStatus.name()} eq 'ACCEPTED'" class="icoBtn_blue" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_pass&quot;, null, event);'}}">심사 통과</span>
+											<span th:if="${track.trackStatus.name()} eq 'REJECTED'" class="icoBtn_red" th:onclick="@{${'UPMListUpload.showExamModal(&quot;judge_rejection&quot;, &quot;' + track.rejectedReason + '&quot;, event);'}}">심사 반려</span>
+										</div>
+									</dd>
+									<dd th:if="${tracks != null and tracks.totalPages gt 1}" id="list-more-track-button" class="showmore_wrap"  th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;list-more-track-button&quot;, &quot;' + paginationTrackUrl + '&quot;, ' + (tracks.number+1) + ');'}}">
+										<p>SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></p>
+									</dd>
+								</dl>
+							</div>
+							<div th:unless="${tracks != null and 0 < tracks.getTotalElements()}" class="h100p no-music">
+								<p class="ico_nomusic">업로드한 리스트가 없습니다.</p>
+							</div>
+						</div>
+						<!-- //end 음원 -->
+					</div>
+					<!-- 영상 -->
+					<div class="tab-pane" id="musicStore-2">
+						<!-- 일반영상 -->
+						<div th:if="${videos != null and 0 < videos.getTotalElements()}" class="videoListType_02">
+							<dl>
+								<dd th:each="video, iter : ${videos}" th:id="${video.id}">
+									<div class="video" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}"><img th:src="${video.getThumbnailUrl()}" alt="" /><span class="time" th:text="${video.formattedDuration()}"></span></div>
+									<div class="info">
+										<p class="subject clamp1"><a th:href="@{${video.getUrl()}}"><span th:text="${video.getSubject()}" th:remove="tag"></span></a></p>
+										<p class="atist clamp1"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></p>
+										<p class="date"><span th:text="${video.formattedTime()}" th:remove="tag"></span></p>
+									</div>
+								</dd>
+								<dd th:if="${videos != null and videos.totalPages gt 1}" id="list-more-video-button" class="showmore_wrap"  th:onclick="@{${'UPMListTrackAnonymous.loadPage(&quot;list-more-video-button&quot;, &quot;' + paginationVideoUrl + '&quot;, ' + (videos.number+1) + ');'}}">
+									<p>SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></p>
+								</dd>
+							</dl>
+						</div>
+						<div th:unless="${videos != null and 0 < videos.getTotalElements()}" class="h100p no-music">
+							<p class="ico_novideo">영상을 추가해주세요.</p>
+						</div>
+						<!-- //end 일반영상 -->
+					</div>
+					<!-- //end 영상 -->							
+				</div><!-- //end tab-content -->
+			</div>
+			<!-- //end reward music content -->
+		</div>
+		<!-- //end content -->
+	
+		<!--심사반려 팝업-->
+	    <div class="modal fade" id="judge_rejection" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">안내</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<h2 class="judge_title">심사 반려</h2>
+							<p class="judge_info">해당 음원은 업뮤직 소속의 전문 심사단이 검증한 결과<br />
+								반려되었습니다. (반려사유: <span id="rejected_reason"></span>)</p>
+						</div>
+						<div class="login_btn upload_btn mt10">
+							<button class="btn btn-custom3 h50 w100p"  data-dismiss="modal" >확인</button>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<!-- 심사반려 팝업 끝  -->
+	
+		<!--심사중 팝업-->
+	    <div class="modal fade" id="judge_ing" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">안내</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<h2 class="judge_title judge_title2">심사 중</h2>
+							<p class="judge_info">해당 음원은 업뮤직 소속의 전문 심사단이 검증을 하고 있습니다. <br />
+							심사 결과는 최대 3일 이내로 확인하실 수 있습니다.
+							</p>
+						</div>
+						<div class="login_btn upload_btn mt10">
+							<button class="btn btn-custom3 h50 w100p"  data-dismiss="modal" >확인</button>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<!-- 심사중 팝업 끝  -->
+	
+		<!--심사통과 팝업-->
+	    <div class="modal fade" id="judge_pass" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+	        <div class="modal-dialog login_pop">
+	            <div class="modal-content">
+	                <div class="modal-header login_header">
+	                    <h2 class="modal_title">안내</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<h2 class="judge_title judge_title3">심사 통과</h2>
+							<p class="judge_info">해당 음원은 업뮤직 소속의 전문 심사단이 평가한 결과<br />
+							통과되었습니다. 자신의 앨범 정보를 확인해보세요.
+							</p>
+						</div>
+						<div class="login_btn upload_btn mt10">
+							<button class="btn btn-custom3 h50 w100p"  data-dismiss="modal" >확인</button>
+						</div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<!-- 심사통과 팝업 끝  -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var UPMListTrackAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				}
+			};
+		/*]]>*/
+		</script>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMListUpload = {
+				deleteSelectedTrack: function(fragmentId) {
+					UPMLoginModal.showModal();
+				},
+				deleteSelectedVideo: function(fragmentId) {
+					UPMLoginModal.showModal();
+				}
+			};
+	    </script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+			var selectedVideos = [];
+			var UPMListUpload = {
+				_config : {
+					loading: false
+				},
+				showExamModal : function(modalId, msg, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    if (msg != null) $('#rejected_reason').html(msg);
+					$('#' + modalId).modal('show');
+				},
+				selectOrNot : function(status, elm) {
+					if (status == 'ACCEPTED') {
+						
+					} else {
+						UPMusic.selectItem(elm);
+					}
+				},
+				notAcceptedTrack : function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					UPMusic.alert('심사통과 후 사용할 수 있는 기능입니다.');
+				},
+				deleteSelectedTrack: function(fragmentId) {
+					var selectedTracks = $(fragmentId + ' table tr.on').map(function() {
+					    if (this.id) return this.id;
+					}).get();
+					if (0 < selectedTracks.length) {
+						UPMusic.confirm("정말 삭제하시겠습니까?", function() {
+							UPMListUpload.deleteTrackConfirm(fragmentId);
+						});
+					} else {
+						UPMusic.alert(msgSelectItem);
+					}
+				},
+				deleteTrackConfirm: function(fragmentId) {
+					if (UPMListUpload._config.loading) return;
+					UPMListUpload._config.loading = true;
+					var selectedTracks = $(fragmentId + ' table tr.on').map(function() {
+					    if (this.id) return this.id;
+					}).get();
+					var params = {ids : selectedTracks};
+		  			UPMusic.ajaxDeleteItems(UPMusic._config._api_track + '/delete_tracks', headers, params, UPMListUpload.deleteSelectedTrackCallback);
+				},
+				deleteSelectedTrackCallback: function(msg, object) {
+					if (msg == 'true') {
+						window.location.reload();
+					} else {
+						UPMusic.alert("리스트를 삭제하지 못했습니다. 잠시 후 다시 시도하십시오.");
+					}
+					UPMListUpload._config.loading = false;
+				},
+				deleteSelectedVideo: function() {
+					selectedVideos = [];
+					selectedVideos = $('#uploaded-video-list input:checkbox:checked').map(function() {
+					    if (this.value) return this.value;
+					}).get();
+					if (0 < selectedVideos.length) {
+						UPMusic.confirm("정말 삭제하시겠습니까?", function() {
+							UPMListUpload.deleteVideoConfirm();
+						});
+					} else {
+						UPMusic.alert('영상을 선택해주세요');
+					}
+				},
+				deleteVideoConfirm: function() {
+					if (UPMListUpload._config.loading) return;
+					UPMListUpload._config.loading = true;
+					selectedVideos = [];
+					selectedVideos = $('#uploaded-video-list input:checkbox:checked').map(function() {
+					    if (this.value) return this.value;
+					}).get();
+					var params = {ids : selectedVideos};
+		  			UPMusic.ajaxDeleteItems(UPMusic._config._api_video + '/delete_videos', headers, params, UPMListUpload.deleteSelectedVideoCallback);
+				},
+				deleteSelectedVideoCallback: function(msg, object) {
+					if (msg == 'true') {
+						selectedVideos.forEach(UPMListUpload.removeVideo);
+					} else {
+						UPMusic.alert("리스트를 삭제하지 못했습니다. 잠시 후 다시 시도하십시오.");
+					}
+					UPMListUpload._config.loading = false;
+				},
+				removeVideo : function(item) {
+					$('li#' + item).remove();
+				}
+			};
+	    </script>
+	    </div>
+	</div>
+
+</body>
+</html>

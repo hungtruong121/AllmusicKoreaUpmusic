@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 내 리스트 -->
+			
+			<div class="p0_panel btm_gray1">
+				<div class="nl_panel mb10">
+					<div class="ct_title">
+						<h2 class="content_title pdt5 clamp w100p" th:text="${collection.getSubject()}"></h2>
+					</div>
+				</div>
+				<div th:if="${tracks != null and 0 < tracks.getTotalElements()}" class="genre_listcontent">
+					<div th:replace="fragments/common/list_track_default_mobile :: list_track(${tracksFragmentId}, ${tracks}, ${paginationUrl})"></div>
+				</div>
+				<div th:unless="${tracks != null and 0 < tracks.getTotalElements()}"  class="h100p no-music">
+					<p class="ico_nomusic">음원을 추가해주세요.</p>
+				</div>
+			</div>
+			<!-- //end 내 리스트 -->
+			
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+			var UPMListTrackAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				},
+				appendPage: function(elementId, paginationUrl, page, totalPages) {
+					var url = paginationUrl + '?page=' + page;
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.track-list').append(data);
+					});
+					if (page + 1 >= totalPages) {
+						$('#' + elementId + ' #list-more-button').remove();
+					} else {
+						var moreButton = '<p><a onclick="UPMListTrackAnonymous.appendPage(\'' + elementId + '\', \'' + paginationUrl + '\', ' + (page + 1) + ', ' + totalPages + ');">SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i></a></p>';
+						$('#' + elementId + ' #list-more-button').html(moreButton);
+					}
+				}
+			};
+		</script>
+
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMCollectionDetail = {
+				deleteSelectedTrack: function(fragmentId) {
+					UPMusic.alert(msgUserAfterLogin);
+				}
+			};
+	    </script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var collectionId = /*[[ ${collection.id} ]]*/;
+			var UPMCollectionDetail = {
+				_config : {
+					loading: false
+				},
+				deleteSelectedTrack: function(fragmentId) {
+					var selectedTracks = $(fragmentId + ' dl dd.on').map(function() {
+						if (this.id) return this.id;
+					}).get();
+					if (0 < selectedTracks.length) {
+						UPMusic.confirm("정말 삭제하시겠습니까?", function() {
+							UPMCollectionDetail.deleteTrackConfirm(fragmentId);
+						});
+					} else {
+						UPMusic.alert(msgSelectItem);
+					}
+				},
+				deleteTrackConfirm: function(fragmentId) {
+					if (UPMCollectionDetail._config.loading) return;
+					UPMCollectionDetail._config.loading = true;
+					var selectedTracks = $(fragmentId + ' dl dd.on').map(function() {
+						if (this.id) return this.id;
+					}).get();
+					var params = {ids : selectedTracks};
+		  			UPMusic.ajaxDeleteItems(UPMusic._config._api_collection + '/' + collectionId + '/remove_tracks', headers, params, UPMCollectionDetail.deleteSelectedTrackCallback);
+				},
+				deleteSelectedTrackCallback: function(msg, object) {
+					if (msg == 'true') {
+						window.location.reload();
+					} else {
+						UPMusic.alert("리스트를 삭제하지 못했습니다. 잠시 후 다시 시도하십시오.");
+					}
+					UPMCollectionDetail._config.loading = false;
+				}
+			};
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

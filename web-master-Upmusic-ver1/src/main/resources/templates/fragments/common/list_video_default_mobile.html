@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_video(fragmentId, videoList, paginationUrl)" th:id="${fragmentId}" class="videoListType_02">
+		<dl class="video-list">
+			<dd th:each="video, iter : ${videoList}" th:id="${video.id}">
+				<div class="video"><img th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;)'}}" th:src="${video.getThumbnailUrl()}" alt="" /><span class="time" th:text="${video.formattedDuration()}"></span></div>
+				<div class="info">
+					<div class="checkbox pull-right mt8">
+						<input th:id="@{${'checkbox_video_' + video.id}}" class="checkbox-checked" type="checkbox" th:value="${video.id}"/>
+						<label th:for="@{${'checkbox_video_' + video.id}}"><span class="checkbox-custom"></span></label>
+					</div>
+					<p class="subject clamp1"><a th:href="@{${video.getUrl()}}"><span th:text="${video.getSubject()}" th:remove="tag"></span></a></p>
+					<p class="atist clamp1"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></p>
+					<p class="date"><span th:text="${video.formattedTime()}" th:remove="tag"></span></p>
+				</div>
+			</dd>
+		</dl>
+		
+		<div th:if="${paginationUrl != null and videoList != null and videoList.totalPages gt pageNo + 1}" id="list-more-button" class="showmore_wrap">
+			<p><a th:onclick="@{${'UPMListVideoAnonymous.appendPage(&quot;' + fragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, ' + (pageNo + 1) + ', ' + videoList.totalPages + ');'}}">SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></a></p>
+		</div>
+	</div>
+</body>
+
+</html>

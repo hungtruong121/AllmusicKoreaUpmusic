@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="content">
+			<div class="subpage_wrap section">
+				<div class="page-title-wrap">
+					<h2 class="page-title fl">업뮤직 포인트</h2>
+					<button class="btn btn-custom btn-dark fr" data-target="#artist_search" data-toggle="modal" id="btn_artist_search" onclick="javascript:window.open('/pay','_blank','width=450,height=790, toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,left=150,top=150');"><i><img src="/img/pay_icon0.png" alt="" /></i> 결제</button>
+				</div>
+
+				<div class="inputbox_wrap inputbox_wrap3 mt15">
+					<ul>
+						<li>
+							<div class="items bg01">
+								<div>
+									<p class="t01"><span th:text="${member.getUpmPointString()}" th:remove="tag"></span> P</p>
+									<p class="t02">업뮤직 포인트</p>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="items bg02">
+								<div>
+									<p class="t01"><span th:text="${member.getChargePointString()}" th:remove="tag"></span> P</p>
+									<p class="t02">충전 포인트</p>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="items bg02">
+								<div>
+									<p class="t01"><span th:text="${member.getUsablePointString()}" th:remove="tag"></span> P</p>
+									<p class="t02">리워드 포인트</p>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="items bg03">
+								<div>
+									<p class="t01"><span th:text="${member.getFundingPointString()}" th:remove="tag"></span> P</p>
+									<p class="t02">펀딩 포인트</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+
+				<!--<p class="content_title2">포인트 <span>* 업뮤직 포인트 중 10%는 크라우드 펀딩에만 사용할 수 있습니다.</span></p>-->
+				<p><span>* 충전된 업뮤직포인트에 한하여 환불을 신청하실 수 있습니다. 스트리밍 포인트는 환불이 불가합니다.</span></p>
+				<p><span>* 리워드 포인트의 10%는 자동으로 펀딩 포인트로 전환됩니다. (펀딩 포인트는 크라우드 펀딩에만 사용할 수 있습니다.)</span></p>
+
+
+				<div class="tab_design clear">
+					<ul>
+						<li id="point-all"><span th:text="#{nav.my_upm.point.all}" th:remove="tag"></span>
+							<div class="tab_line tab_line"></div>
+						</li>
+						<li id="point-useParticulars"><span th:text="#{nav.my_upm.point.useParticulars}" th:remove="tag"></span>
+						</li>
+						<li id="point-charge"><span th:text="#{nav.my_upm.point.charge}" th:remove="tag"></span>
+						</li>
+					</ul>
+				</div>
+
+				<!-- 전체 -->
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="collaboration_wrap">
+							<div class="collaboration_info">
+								<div class="rew_date monthly">
+									<div class="input-group date">
+										<input id="transaction-all-datetimepicker" th:type="text" class="form-control" th:onchange="@{${'UPMPoint.changeMonth(this.value, this.id);'}}" readonly />
+										<div class="input-group-addon" onclick="$('#transaction-all-datetimepicker').datepicker('show');">
+											<span class="glyphicon glyphicon-th"></span>
+										</div>
+									</div>
+								</div>
+								<div id="transaction-all-list">
+								</div>
+							</div>
+						</div> 
+					</div>
+
+					<!-- 이용내역 -->
+					<div class="tab_content">
+						<div class="collaboration_wrap">
+							<!--<div class="collaboration_head">-->
+							<!--<p class="content_title2 fl mt0">사용내역</p>-->
+							<!--</div>-->
+							<div class="collaboration_info">
+								<div class="rew_date monthly">
+									<div class="input-group date">
+										<input id="transaction-datetimepicker" th:type="text" class="form-control" th:onchange="@{${'UPMPoint.changeMonth(this.value, this.id);'}}" readonly />
+										<div class="input-group-addon" onclick="$('#transaction-datetimepicker').datepicker('show');">
+											<span class="glyphicon glyphicon-th"></span>
+										</div>
+									</div>
+								</div>
+								<div id="transaction-list">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 구매/환불내역 -->
+					<div class="tab_content">
+						<div class="collaboration_wrap">
+							<div class="collaboration_info">
+								<div class="rew_date monthly">
+									<div class="input-group date">
+										<input id="transaction-charge-datetimepicker" th:type="text" class="form-control" th:onchange="@{${'UPMPoint.changeMonth(this.value, this.id);'}}" readonly />
+										<div class="input-group-addon" onclick="$('#transaction-charge-datetimepicker').datepicker('show');">
+											<span class="glyphicon glyphicon-th"></span>
+										</div>
+									</div>
+								</div>
+								<div id="transaction-charge-list">
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div><!-- subpage_wrap	 -->
+			</div><!-- section wrap	 -->
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		var UPMPoint = {
+			_config : {
+				date : '',
+				totalPage : 0,
+				page : 0,
+				loading : false,
+				transactionId : 0,
+                chargeTransactionId : '',
+				type : ''
+			},
+			changeMonth: function(date, id) {
+				console.log("date:"+date);
+				console.log("id:"+id);
+				UPMPoint.loadTransaction(date, id);
+			},
+			loadTransaction : function(date, id) {
+				UPMusic.log("UPMReward.loadTransaction : date is " + date);
+				UPMPoint._config.date = date;
+
+				if (id == "transaction-datetimepicker") {
+                    UPMPoint._config.type = 'use';
+
+                    $.get('/component/my_upm/point/use/' + date, function(data) {
+                        console.log('datas:' + data);
+                        $('#transaction-list').html(data);
+                    });
+				} else if (id == "transaction-all-datetimepicker") {
+                    UPMPoint._config.type = 'all';
+
+                    $.get('/component/my_upm/point/all/' + date, function(data) {
+                        console.log('datasAll:' + data);
+                        $('#transaction-all-list').html(data);
+                    });
+				} else if (id == "transaction-charge-datetimepicker") {
+                    UPMPoint._config.type = 'charge';
+
+                    $.get('/component/my_upm/point/charge/' + date, function(data) {
+                        console.log('datas:' + data);
+                        $('#transaction-charge-list').html(data);
+                    });
+				}
+			},
+			appendPage : function(type) {
+				UPMusic.log("UPMReward.appendPage");
+				UPMPoint._config.page++;
+				$.get('/component/my_upm/point/' + type + '/' + UPMPoint._config.date + '?page=' + UPMPoint._config.page, function(data) {
+				    console.log("data:"+data);
+
+				    if (type == 'all') {
+                        $('#transaction-all-list ul').append(data);
+					} else if (type == 'charge') {
+                        $('#transaction-charge-list ul').append(data);
+					} else {
+                        $('#transaction-list ul').append(data);
+					}
+
+				});
+				if (UPMPoint._config.page + 1 >= UPMPoint._config.totalPage) {
+					$('#transaction-page-btn').remove();
+				}
+			},
+			removeTransaction : function(transactionId) {
+				UPMPoint._config.transactionId = transactionId;
+				UPMusic.confirm("정말 삭제하시겠습니까?", function() {
+					UPMPoint.removeConfirm();
+				});
+			},
+			removeConfirm: function() {
+				if (UPMPoint._config.loading) return;
+				UPMPoint._config.loading = true;
+	  			UPMusic.ajaxDeleteItems(UPMusic._config._api_transaction + '/' + UPMPoint._config.transactionId + '/remove', headers, {}, UPMPoint.removeCallback);
+			},
+			removeCallback: function(msg, object) {
+				if (msg == 'true') {
+					$('li#' + UPMPoint._config.transactionId).remove();
+				} else {
+					UPMusic.alert("내역을 제거하지 못했습니다. 잠시 후 다시 시도하십시오.");
+				}
+				UPMPoint._config.loading = false;
+			},
+
+			//환불 버튼 클릭
+            refundTransaction : function(chargeTransactionId, chargePoint, chargeType, updateTransactionId) {
+			    console.log("refundTransaction start");
+			    console.log("chargeTransactionId"+chargeTransactionId);
+                console.log("chargePoint:"+chargePoint);
+                console.log("chargeType:"+chargeType);
+                console.log("updateTransactionId:"+updateTransactionId);
+
+                UPMPoint._config.chargeTransactionId = chargeTransactionId;
+                UPMusic.confirm("환불을 진행하시겠습니까?", function() {
+                    UPMPoint.refundConfirm(chargeTransactionId, chargePoint, chargeType, updateTransactionId);
+                });
+            },
+
+            refundConfirm : function(chargeTransactionId, chargePoint, chargeType, updateTransactionId) {
+			    console.log("refundConfirm start");
+                console.log("chargeTransactionId"+chargeTransactionId);
+                console.log("chargePoint:"+chargePoint);
+                console.log("chargeType:"+chargeType);
+                console.log("updateTransactionId:"+updateTransactionId);
+
+                var params = {
+                    chargePoint : chargePoint,
+                    chargeTransactionId : chargeTransactionId,
+                    chargeType : chargeType,
+                    updateTransactionId : updateTransactionId
+                };
+
+                if (UPMPoint._config.loading) return;
+                UPMPoint._config.loading = true;
+                UPMusic.ajaxPost(UPMusic._config._api_transaction + '/refund', headers, params, UPMPoint.refundCallback);
+            },
+
+            refundCallback: function(msg, object) {
+                if (msg == 'true') {
+                    //$('li#' + UPMPoint._config.transactionId).remove();
+                    UPMusic.alert("환불이 완료되었습니다.");
+                    window.setTimeout('location.reload()', 3000);
+                } else {
+                    //UPMusic.alert("내역을 제거하지 못했습니다. 잠시 후 다시 시도하십시오.");
+                }
+                UPMPoint._config.loading = false;
+            }
+
+		};
+		$(function() {
+			$('#transaction-datetimepicker').datepicker({
+                format: 'yyyy-mm',
+                changeMonth: true,
+                changeYear: true,
+                startView: 1,
+                minViewMode: 1,
+                language: "ko"
+            }).on('changeMonth', function(e){
+            	$(this).keyup();
+                $(this).datepicker('hide');
+            });
+			$('#transaction-datetimepicker').datepicker('update', new Date());
+		});
+
+        $(function() {
+            $('#transaction-charge-datetimepicker').datepicker({
+                format: 'yyyy-mm',
+                changeMonth: true,
+                changeYear: true,
+                startView: 1,
+                minViewMode: 1,
+                language: "ko"
+            }).on('changeMonth', function(e){
+                $(this).keyup();
+                $(this).datepicker('hide');
+            });
+            $('#transaction-charge-datetimepicker').datepicker('update', new Date());
+        });
+
+        $(function() {
+            $('#transaction-all-datetimepicker').datepicker({
+                format: 'yyyy-mm',
+                changeMonth: true,
+                changeYear: true,
+                startView: 1,
+                minViewMode: 1,
+                language: "ko"
+            }).on('changeMonth', function(e){
+                $(this).keyup();
+                $(this).datepicker('hide');
+            });
+            $('#transaction-all-datetimepicker').datepicker('update', new Date());
+        });
+		</script>
+	</div>
+
+</body>
+</html>

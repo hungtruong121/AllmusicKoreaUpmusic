@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="content">
+			<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title">리워드 관리</h2>
+				<div class="membership_wrap">
+					<form action="#" th:action="@{/admin/crowd_funding/reward}" role="form" method="get">
+					<ul>
+						<li>
+							<div class="inputbox">
+								<label class="input_title">프로젝트 명</label>
+								<select class="form-control" id="select_crowdFundingId" name="crowdFundingId">
+									<option value="">선택</option>
+									<option th:each="project : ${fundingList}" th:value="${project.crowdFundingId}" th:text="${project.subject}" th:selected="${project.crowdFundingId eq selectFlag} ? true : false"></option>
+								</select>
+							</div>
+						</li>
+						<li>
+							<div class="inputbox">
+								<button class="btn btn-custom2 fr" type="submit">검색</button>
+							</div>
+						</li>
+					</ul>
+					</form>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="artist_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl"></p>
+							</div>
+							<div class="producing_list  musicvideo_list event_list clear">
+								<ul class="producing_contnet">
+									<li th:each="rewardObj : ${rewardList}" style="width: 100%">
+										<form action="#" th:action="@{/admin/crowd_funding/reward/update}" role="form" method="post">
+										<input type="hidden" name="crowdFundingRewardId" th:value="${rewardObj.crowdFundingRewardId}">
+										<input type="hidden" name="crowdFundingId" th:value="${rewardObj.crowdFunding.crowdFundingId}">
+										<div class="producing_info event_info" style="width: 70%;">
+											<table style="width: 100%;">
+												<tr>
+													<td style="width: 10%;">리워드 명</td>
+													<td><input type="text" class="form-control" name="rewardSubject" th:value="${rewardObj.rewardSubject}"></td>
+												</tr>
+												<tr>
+													<td>업뮤직 포인트</td>
+													<td><input type="text" class="form-control" name="point" th:value="${rewardObj.point}"></td>
+												</tr>
+												<tr>
+													<td>리워드 구성</td>
+													<td>
+														<textarea class="form-control" rows="3" cols="" name="rewardContent" th:text="${rewardObj.rewardContent}" ></textarea>
+													</td>
+												</tr>
+											</table>
+										</div>
+										<div class="producing_info event_info" style="width: 30%;">
+											<button class="btn btn-custom2">수정</button>
+											<!-- <button class="btn btn-custom2" th:onclick=" @{${'UPMusicAdmin.goto(&quot;' + rewardObj.getAdminDeleteUrl() + '&quot;);'}}" type="button">삭제</button> -->
+											<button class="btn btn-custom2" th:onclick=" @{${'del(&quot;' + rewardObj.getAdminDeleteUrl() + '&quot;);'}}" type="button">삭제</button>
+										</div>
+										</form>
+									</li>
+
+
+									<li style="width: 100%">
+										<form action="#" th:action="@{/admin/crowd_funding/reward/insert}" role="form" th:object="${paramData}" method="post">
+										<input type="hidden" name="crowdFundingId" id="insert_crowdFundingId">
+										<div class="producing_info event_info" style="width: 70%;">
+											<table style="width: 100%;">
+												<tr>
+													<td style="width: 10%;">리워드 명</td>
+													<td><input type="text" class="form-control" name="rewardSubject" required="required"></td>
+												</tr>
+												<tr>
+													<td>업뮤직 포인트</td>
+													<td><input type="text" class="form-control" name="point" required="required"></td>
+												</tr>
+												<tr>
+													<td>리워드 구성</td>
+													<td><textarea class="form-control" rows="3" cols="" name="rewardContent" required="required"></textarea></td>
+												</tr>
+											</table>
+										</div>
+										<div class="producing_info event_info" style="width: 30%;">
+											<button class="btn btn-custom2" id="btn_reward_insert" type="submit">저장</button>
+										</div>
+										</form>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+
+			$('#btn_reward_insert').click(function(){
+				var select_crowdFundingId = $('#select_crowdFundingId').val();
+				if(select_crowdFundingId == ""){
+					alert('프로젝트가 선택되지 않았습니다.');
+					return false;
+				}
+
+				$('#insert_crowdFundingId').val(select_crowdFundingId);
+
+			});
+
+			function del(msg) {
+		    	UPMusicAdmin.confirm("정말로  삭제하시겠습니까?", function() {
+		    		UPMusicAdmin.goto(msg);
+			    });
+			}
+
+		</script>
+
+	</div>
+
+</body>
+</html>

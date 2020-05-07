@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/empty_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-lg-3"></div>
+			<div class="col-lg-6">
+				<h2 class="form-heading text-center">
+					<span th:text="${sMessage}" th:remove="tag"></span>
+				</h2>
+			</div>
+			<div class="col-lg-3"></div>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+			/*<![CDATA[*/
+				var sMessage = /*[[ ${sMessage} ]]*/;
+				var sBirthDate = /*[[ ${sBirthDate} ]]*/;
+				var sMobileNo = /*[[ ${sMobileNo} ]]*/;
+				var sGender = /*[[ ${sGender} ]]*/;
+				$(function() {
+					//opener.birthday.value = sBirthDate;
+					//opener.phoneNumber.value = sMobileNo;
+					//opener.genderNo.value = sGender;
+					//opener.errorPhoneNumber.style.display = 'none';
+					//opener.completePhoneNumberAuthentication.style.display = 'block';
+
+                    window.opener.$('#birthday').val(sBirthDate);
+                    window.opener.$('#phoneNumber').val(sMobileNo);
+                    window.opener.$('#genderNo').val(sGender);
+                    window.opener.$('#errorPhoneNumber').css('display','none');
+                    window.opener.$('#completePhoneNumberAuthentication').css('display','block');
+
+					window.opener.$('#phoneNumber').trigger('change');
+					self.close();
+				});
+			/*]]>*/
+		</script>
+	</div>
+
+</body>
+</html>

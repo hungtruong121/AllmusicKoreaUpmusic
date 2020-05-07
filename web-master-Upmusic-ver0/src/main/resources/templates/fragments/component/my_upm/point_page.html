@@ -1,0 +1,61 @@
+<li th:each="transaction, iter : ${transactions}" th:id="${transaction.id}">
+	<span th:if="${transaction.getTransactionTypeInteger() eq 9}" th:remove="tag">
+		<div class="pitems" th:classappend="${0 < transaction.getChargePoint() ? 't01' : 't03'}">
+			<div class="pic"></div>
+			<div class="cont">
+				<div>
+					<span class="s01"><span th:text="${0 < transaction.getChargePoint() ? '충전' : '환불'}" th:remove="tag"></span></span>
+					<span class="s02"><span th:text="${0 < transaction.getChargePoint() ? ' 포인트 충전' : '포인트 충전 취소'}" th:remove="tag"></span></span>
+					<span class="s03" th:if="${transaction.getChargeTypeInteger() eq 1}">신용카드</span>
+					<span class="s03" th:if="${transaction.getChargeTypeInteger() eq 2}">핸드폰 결제</span>
+					<span class="s03" th:if="${transaction.getChargeTypeInteger() eq 3}">계좌이체</span>
+				</div>
+			</div>
+			<div class="etc">
+				<div>
+					<span class="s01" th:if="${transaction.getChargePoint() < 0}" th:text="${'-' + (transaction.getChargePoint() * -1).toString() + 'P'}"></span>
+					<span class="s01" th:if="${transaction.getChargePoint() > 0}" th:text="${transaction.getChargePointString() + 'P'}"></span>
+					<span class="s02" th:text="${transaction.formattedDay()}"></span>
+					<button class="btn btn-custom btn-dark" th:if="${transaction.getChargePoint() > 0 && transaction.chargeStatus eq 'charge'}" th:onclick="@{${'UPMPoint.refundTransaction(&quot;' + transaction.chargeTransactionId + '&quot;, ' + transaction.chargePoint + ', &quot;' + transaction.chargeType + '&quot;, ' + transaction.id + ')'}}">환불</button>
+				</div>
+			</div>
+			<a th:onclick="@{${'UPMPoint.removeTransaction(' + transaction.id + ')'}}"><img th:src="@{/img/ico_close01.png}" /></a>
+		</div>
+	</span>
+
+	<span th:unless="${transaction.getTransactionTypeInteger() eq 9}" th:remove="tag">
+		<div class="pitems" th:classappend="${transaction.getTransactionTypeInteger() eq 7 ? 't01' : 't02'}" >
+			<div class="pic"></div>
+			<div class="cont">
+				<div>
+					<span class="s01" th:text="${transaction.getTransactionTypeInteger() eq 7 ? '펀딩' : '하이콘'}"></span>
+					<span class="s02"><span th:text="${transaction.getTransactionTypeInteger() eq 7 ? '펀딩시 사용' : '하이콘 전환시 사용'}" th:remove="tag"></span> <span th:text="${transaction.getTransactionTypeInteger() eq 7 and 0 < transaction.getSumPoint() ? ' - 환불' : ''}" th:remove="tag"></span></span>
+					<span th:if="${transaction.getTransactionTypeInteger() eq 7}" class="s03 pointer" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/participation/detail?crowdFundingId=' + transaction.transactionTypeId + '&quot;, event);'}}" th:text="${transaction.subject}"></span>
+					<span th:unless="${transaction.getTransactionTypeInteger() eq 7}" class="s03" th:text="${transaction.getSumPointString() + ' HYC'}"></span>
+				</div>
+			</div>
+			<div class="etc">
+				<div>
+					<span class="s01" th:if="${transaction.getSumPoint() < 0}" th:text="${'-' + (transaction.getSumPoint() * -1).toString() + 'P'}"></span>
+					<span class="s01" th:if="${transaction.getSumPoint() > 0}" th:text="${transaction.getSumPointString() + 'P'}"></span>
+					<span class="s02" th:text="${transaction.formattedDay()}"></span>
+				</div>
+			</div>
+			<a th:onclick="@{${'UPMPoint.removeTransaction(' + transaction.id + ')'}}"><img th:src="@{/img/ico_close01.png}" /></a>
+		</div>
+	</span>
+	<!--<div class="pitems" th:classappend="${transaction.getTransactionTypeInteger() eq 7 ? 't01' : 't02'}" >
+		<div class="pic"></div>
+		<div class="cont">
+			<span class="s01" th:text="${transaction.getTransactionTypeInteger() eq 7 ? '펀딩' : '하이콘'}"></span>
+			<span class="s02"><span th:text="${transaction.getTransactionTypeInteger() eq 7 ? '펀딩시 사용' : '하이콘 전환시 사용'}" th:remove="tag"></span> <span th:text="${transaction.getTransactionTypeInteger() eq 7 and 0 > transaction.getSumPoint() ? ' - 환불' : ''}" th:remove="tag"></span></span>
+			<span th:if="${transaction.getTransactionTypeInteger() eq 7}" class="s03 pointer" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/participation/detail?crowdFundingId=' + transaction.transactionTypeId + '&quot;, event);'}}" th:text="${transaction.subject}"></span>
+			<span th:unless="${transaction.getTransactionTypeInteger() eq 7}" class="s03" th:text="${transaction.getSumPointStringt() + ' HYC'}"></span>
+		</div>
+		<div class="etc">
+			<span class="s01" th:text="${transaction.getSumPointString() + 'P'}"></span>
+			<span class="s02" th:text="${transaction.formattedDay()}"></span>
+		</div>
+		<a th:onclick="@{${'UPMPoint.removeTransaction(' + transaction.id + ')'}}"><img th:src="@{/img/ico_close01.png}" /></a>
+	</div>-->
+</li>

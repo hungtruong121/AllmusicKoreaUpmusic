@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<title>UPMusic</title>
+</head>
+
+<body>
+	<aside th:fragment="sidebar" th:classappend="${selectedSubMenu == '/' ? 'boxshadow_aside' : ''}">
+		<div sec:authorize="isAnonymous()" class="aside_profile logout_profile">
+			<div class="profile_img pointer" onclick="UPMLoginModal.showModal();"><img th:src="@{/img/logout_profile.png}" alt="" /></div>
+			<p class="logout_profileTitle" onclick="UPMLoginModal.showModal();">
+				<span th:text="#{common.login.please}" th:remove="tag"></span>
+			</p>
+		</div>
+		<div sec:authorize="isAuthenticated()">
+			<div class="aside_profile mt15">
+				<div class="profile_img"><a th:href="@{${currentUser.getUrl()}}"><img th:src="@{${currentUser.getProfileImageUrl()}}" title="profile"/></a>
+				</div>
+				<div class="aside_info">
+					<ul>
+						<li>
+							<input type="hidden" th:value="@{${currentUser.getId()}}" id="sideBarUserId">
+							<a th:href="@{${currentUser.getUrl()}}"><span th:text="${currentUser.getNick()}"></span></a>
+							<i><a th:href="@{${currentUser.getUrl() + '/edit'}}"><img th:src="@{/img/profile_change.png}" alt="" /></a></i>
+						</li>
+						<!--<li th:if = "${!@environment.acceptsProfiles('prod')}"><span th:text="${currentUser.getUpmPoint()}" th:remove="tag"></span> <span>P</span></li>-->
+						<li><span th:text="${currentUser.getUpmPoint()}" th:remove="tag"></span> <span>P</span></li>
+
+						<!--
+						<li onclick="javascript:window.open('/pay','_blank','width=450,height=790, toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,left=150,top=150');">
+							<i><img th:src="@{/img/funding.png}" alt="" /></i><span>결제</span>
+						</li>
+						-->
+						<!--<li onclick="UPMPayModal.showModal();">-->
+							<!--<i><img th:src="@{/img/funding.png}" alt="" /></i><span>결제</span>-->
+						<!--</li>-->
+					</ul>
+					<!--
+					<button class="btn btn-dark btn-custom p60" onclick="javascript:window.open('/pay','_blank','width=520,height=210');">포인트 충전</button>
+					-->
+				</div>
+			</div>
+			<div class="profile_button">
+				<button class="btn btn-dark btn-custom p60" onclick="UPMusic.goto('/feed', event);"><span th:text="#{sidebar.feed.home}" th:remove="tag"></span></button>
+				<button class="btn btn-dark btn-custom p60" onclick="UPMusic.goto('/feed/me#my_feed', event);"><span th:text="#{nav.feed.me}" th:remove="tag"></span></button>
+				<button class="btn btn-dark btn-custom p60" onclick="UPMusic.goto('/feed/upm#all_feed', event);"><span th:text="#{sidebar.feed.upm}" th:remove="tag"></span></button>
+			</div>
+		</div>
+		<div sec:authorize="isAuthenticated()">
+			<div class="aside_menu">
+				<ul>
+					<li class="menu_first" th:classappend="${selectedSubMenu == '/' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/&quot;, event);'}}">HOME <i><img th:src="@{/img/profile_ar2.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-music"><span th:text="#{nav.music}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/music/reward' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/reward&quot;, event);'}}"><span th:text="#{nav.music.reward}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/music/league' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/league&quot;, event);'}}"><span th:text="#{nav.music.league}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<!--<li th:classappend="${selectedSubMenu == '/music/store' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/store&quot;, event);'}}"><span th:text="#{nav.music.store}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+					<li th:classappend="${selectedSubMenu == '/music/album' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/album&quot;, event);'}}"><span th:text="#{nav.music.album}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/music/artist' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/artist&quot;, event);'}}"><span th:text="#{nav.music.artist}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/music/vocal_casting' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/vocal_casting&quot;, event);'}}"><span th:text="#{nav.music.vocal_casting}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-video"><span th:text="#{nav.video}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/video' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/video&quot;, event);'}}"><span th:text="#{nav.video.home}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/video/hot' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/video/hot&quot;, event);'}}"><span th:text="#{nav.video.hot}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/video/mv' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/video/mv&quot;, event);'}}"><span th:text="#{nav.video.mv}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/video/gv' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/video/gv&quot;, event);'}}"><span th:text="#{nav.video.gv}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-feed"><span th:text="#{nav.feed}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/feed' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/feed&quot;, event);'}}"><span th:text="#{nav.feed}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/feed/me' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/feed/me#my_feed&quot;, event);'}}"><span th:text="#{nav.feed.me}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/feed/upm' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/feed/upm#all_feed&quot;, event);'}}"><span th:text="#{nav.feed.upm}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-play"><span th:text="#{nav.my_playlist}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/my_playlist/recent' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_playlist/recent&quot;, event);'}}"><span th:text="#{nav.my_playlist.recent}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_playlist/collection' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_playlist/collection&quot;, event);'}}"><span th:text="#{nav.my_playlist.collection}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_playlist/like' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_playlist/like&quot;, event);'}}"><span th:text="#{nav.my_playlist.like}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul th:if = "${!@environment.acceptsProfiles('prod')}">
+					<li class="menu_first menu_first_ver2 menu-my"><span th:text="#{nav.my_upm}" th:remove="tag"></span></li>
+					<li th:if="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;' + currentUser.getUrl() + '&quot;, event);'}}"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:unless="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_upm/profile&quot;, event);'}}"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/transaction' ? 'lnb_on' : ''}" onclick="UPMMessageModal.showModal(msgSeeNextVersion);"><span th:text="#{nav.my_upm.transaction}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/upload' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_upm/upload&quot;, event);'}}"><span th:text="#{nav.my_upm.upload}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/reward' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_upm/reward&quot;, event);'}}"><span th:text="#{nav.my_upm.reward}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/point' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_upm/point&quot;, event);'}}"><span th:text="#{nav.my_upm.point}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/my_funding' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_upm/my_funding&quot;, event);'}}"><span th:text="#{nav.my_upm.my_funding_records}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul th:if = "${@environment.acceptsProfiles('prod')}">
+					<li class="menu_first menu_first_ver2 menu-my"><span th:text="#{nav.my_upm}" th:remove="tag"></span></li>
+					<li th:if="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;' + currentUser.getUrl() + '&quot;, event);'}}"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:unless="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_upm/profile&quot;, event);'}}"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/upload' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_upm/upload&quot;, event);'}}"><span th:text="#{nav.my_upm.upload}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/point' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/my_upm/point&quot;, event);'}}"><span th:text="#{nav.my_upm.point}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul th:if = "${!@environment.acceptsProfiles('prod')}">
+					<li class="menu_first menu_first_ver2 menu-cloud"><span th:text="#{nav.crowd_funding}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/participation' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/participation&quot;, event);'}}"><span th:text="#{nav.crowd_funding.participation}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/new_project' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/new_project#new_project&quot;, event);'}}"><span th:text="#{nav.crowd_funding.new_project}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/hot_project' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/hot_project#hot_project&quot;, event);'}}"><span th:text="#{nav.crowd_funding.hot_project}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/information' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/information#infomation&quot;, event);'}}"><span th:text="#{nav.crowd_funding.information}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-ump"><span th:text="#{nav.upm_news}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/upm_news/notice' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/notice&quot;, event);'}}"><span th:text="#{nav.upm_news.notice}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/upm_news/event' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/event&quot;, event);'}}"><span th:text="#{nav.upm_news.event}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<!--<li th:classappend="${selectedSubMenu == '/upm_news/upm_band' or '/upm_news/upm_band/detail' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/upm_band&quot;, event);'}}"><span th:text="#{nav.upm_news.upm_band}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+					<!--<li th:classappend="${selectedSubMenu == '/upm_news/upm_band' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/upm_band&quot;, event);'}}"><span th:text="#{nav.upm_news.upm_band}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+					<li th:classappend="${selectedSubMenu == '/upm_news/upm_band' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/upm_band&quot;, event);'}}"><span th:text="#{nav.upm_news.upm_band}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<!--<li th:classappend="${#strings.contains(selectedSubMenu,'/upm_news/upm_band') ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/upm_band&quot;, event);'}}"><span th:text="#{nav.upm_news.upm_band}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+					<li th:classappend="${selectedSubMenu == '/upm_news/faq' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq&quot;, event);'}}"><span th:text="#{nav.upm_news.faq}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+			</div>
+		</div>
+		<div sec:authorize="isAnonymous()">
+			<div class="aside_menu">
+				<ul>
+					<li class="menu_first" th:classappend="${selectedSubMenu == '/' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/&quot;, event);'}}">HOME <i><img th:src="@{/img/profile_ar2.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-music"><span th:text="#{nav.music}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/music/reward' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/reward&quot;, event);'}}"><span th:text="#{nav.music.reward}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/music/league' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/league&quot;, event);'}}"><span th:text="#{nav.music.league}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<!--<li th:classappend="${selectedSubMenu == '/music/store' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/store&quot;, event);'}}"><span th:text="#{nav.music.store}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+					<li th:classappend="${selectedSubMenu == '/music/album' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/album&quot;, event);'}}"><span th:text="#{nav.music.album}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/music/artist' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/artist&quot;, event);'}}"><span th:text="#{nav.music.artist}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/music/vocal_casting' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/music/vocal_casting&quot;, event);'}}"><span th:text="#{nav.music.vocal_casting}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-video"><span th:text="#{nav.video}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/video' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/video&quot;, event);'}}"><span th:text="#{nav.video.home}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/video/hot' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/video/hot&quot;, event);'}}"><span th:text="#{nav.video.hot}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/video/mv' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/video/mv&quot;, event);'}}"><span th:text="#{nav.video.mv}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/video/gv' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/video/gv&quot;, event);'}}"><span th:text="#{nav.video.gv}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-feed"><span th:text="#{nav.feed}" th:remove="tag"></span></li>
+					<!--<li th:classappend="${selectedSubMenu == '/feed' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/feed&quot;, event);'}}"><span th:text="#{nav.feed}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+					<li th:classappend="${selectedSubMenu == '/feed' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.feed}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/feed/me' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.feed.me}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/feed/upm' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.feed.upm}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-play"><span th:text="#{nav.my_playlist}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/my_playlist/recent' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_playlist.recent}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_playlist/collection' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_playlist.collection}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_playlist/like' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_playlist.like}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul th:if = "${!@environment.acceptsProfiles('prod')}">
+					<li class="menu_first menu_first_ver2 menu-my"><span th:text="#{nav.my_upm}" th:remove="tag"></span></li>
+					<li th:if="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:unless="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/transaction' ? 'lnb_on' : ''}" onclick="UPMMessageModal.showModal(msgSeeNextVersion);"><span th:text="#{nav.my_upm.transaction}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/upload' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.upload}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/reward' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.reward}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/point' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.point}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/my_funding' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.my_funding_records}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul th:if = "${@environment.acceptsProfiles('prod')}">
+					<li class="menu_first menu_first_ver2 menu-my"><span th:text="#{nav.my_upm}" th:remove="tag"></span></li>
+					<li th:if="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:unless="${currentUser != null}" th:classappend="${selectedSubMenu == '/my_upm/profile' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.profile}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/upload' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.upload}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/my_upm/point' ? 'lnb_on' : ''}" onclick="UPMLoginModal.showModal();"><span th:text="#{nav.my_upm.point}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul th:if = "${!@environment.acceptsProfiles('prod')}">
+					<li class="menu_first menu_first_ver2 menu-cloud"><span th:text="#{nav.crowd_funding}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/participation' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/participation&quot;, event);'}}"><span th:text="#{nav.crowd_funding.participation}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/new_project' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/new_project#new_project&quot;, event);'}}"><span th:text="#{nav.crowd_funding.new_project}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/hot_project' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/hot_project#hot_project&quot;, event);'}}"><span th:text="#{nav.crowd_funding.hot_project}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/crowd_funding/information' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/crowd_funding/information#infomation&quot;, event);'}}"><span th:text="#{nav.crowd_funding.information}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+				<ul>
+					<li class="menu_first menu_first_ver2 menu-ump"><span th:text="#{nav.upm_news}" th:remove="tag"></span></li>
+					<li th:classappend="${selectedSubMenu == '/upm_news/notice' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/notice&quot;, event);'}}"><span th:text="#{nav.upm_news.notice}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<li th:classappend="${selectedSubMenu == '/upm_news/event' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/event&quot;, event);'}}"><span th:text="#{nav.upm_news.event}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<!--<li th:classappend="${selectedSubMenu == '/upm_news/upm_band' or '/upm_news/upm_band/detail' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/upm_band&quot;, event);'}}"><span th:text="#{nav.upm_news.upm_band}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+					<!--<li th:classappend="${selectedSubMenu == '/upm_news/upm_band' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/upm_band&quot;, event);'}}"><span th:text="#{nav.upm_news.upm_band}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+					<li th:classappend="${selectedSubMenu == '/upm_news/upm_band' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/upm_band&quot;, event);'}}"><span th:text="#{nav.upm_news.upm_band}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+					<!--<li th:classappend="${#strings.contains(selectedSubMenu,'/upm_news/upm_band') ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/upm_band&quot;, event);'}}"><span th:text="#{nav.upm_news.upm_band}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>-->
+					<li th:classappend="${selectedSubMenu == '/upm_news/faq' ? 'lnb_on' : ''}" th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq&quot;, event);'}}"><span th:text="#{nav.upm_news.faq}" th:remove="tag"></span> <i><img th:src="@{/img/profile_ar.png}" alt="" /></i></li>
+				</ul>
+			</div>
+		</div>
+	</aside>
+</body>
+
+</html>

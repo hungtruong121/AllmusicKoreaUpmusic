@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>UPMusic</title>
+</head>
+
+<body>
+	<footer th:unless="${selectedSubMenu == '/auth/login'}" th:fragment="footer_mobile" id="footer-wrap" >
+		<p><span><a onclick="UPMTermsModal.showModalUse();">이용약관</a></span><span><a onclick="UPMTermsModal.showModalPrivacy();">개인정보처리방침</a></span><span><a href="/upm_news/faq">FAQ</a></span></p>
+		<p>© 2018 GLOSFER corp.</p>
+	</footer>
+</body>
+
+</html>

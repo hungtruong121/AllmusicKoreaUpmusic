@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	  layout:decorate="~{layout/default_layout}">
+<head>
+	<style type="text/css">
+		.feed_like_img {
+			pointer-events: none !important;
+			cursor: default;
+		}
+		.feed_cnt {
+			pointer-events: none !important;
+			cursor: default;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		
+		<div class="content">
+			<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl">피드</h2>
+				<div class="feed_wrap">
+					<div class="feed_contentwrap">
+						<div class="feed_content parentFlag">
+							<div class="feedcontent_head">
+								<a th:href="@{${result.member.getUrl()}}">
+								<div class="feedprofile"><img th:src="${result.member.getProfileImageUrl()}" alt="" /></div>
+								<div class="feedinfo">
+									<ul>
+										<li th:text="${result.member.nick}"></li>
+										<li th:text="${result.getCreateAtFormat()}"></li>
+									</ul>
+								</div>
+								</a>
+							</div>
+							<div class="feedcontent_cont">
+								<div class="feedmemo" th:uText="${#strings.replace(result.content, T(System).getProperty('line.separator'), '<br />')}">
+								</div>
+								<div class="feed_video_section" th:if="${result.feedFileList.size()} > 0">
+									<img th:src="${result.getFirstImgUrl()}" class="img_detail"/>
+									<input type="hidden" class="img_detail_search_id" th:value="${result.feedId}">
+									<p class="img_view_num"> 1 / <span th:text="${result.feedFileList.size()}"></span> </p>
+								</div>
+							</div>
+							<div class="feedcontent_footer">
+								<ul>
+									<li class="comment-toggle"><i><img src="/img/feedbtn_0.png" alt="" /></i>댓글<span th:text="${result.commentCnt} + 개" class="comment_cnt"></span></li>
+									<li class="feed_share"><i><img src="/img/feedbtn_1.png" alt="" /></i>공유</li>
+									<li th:classappend="${result.feedLikeClass}" sec:authorize="isAnonymous()" onclick="UPMLoginModal.showModal();">
+										<i><img th:src="${result.feedLikeImgUrl}" alt="" class="feed_like_img"/></i>좋아요<span th:text="${result.likeCnt}" class="feed_cnt"></span>
+										<input type="hidden" class="like_feed_id" th:value="${result.feedId}">
+									</li>
+									<li class="feed_like_toggle" th:classappend="${result.feedLikeClass}" sec:authorize="isAuthenticated()">
+										<i><img th:src="${result.feedLikeImgUrl}" alt="" class="feed_like_img"/></i>좋아요<span th:text="${result.likeCnt}" class="feed_cnt"></span>
+										<input type="hidden" class="like_feed_id" th:value="${result.feedId}">
+									</li>
+								</ul>
+							</div>
+							<div class="comment_wrap feedcomment_wrap">
+								<h3 class="content_title">댓글<span th:text="${result.commentCnt} + 개" class="comment_cnt"></span></h3>
+								<form action="#" role="form" enctype="utf-8"
+								th:object="${paramData}" method="post" class="feed_comment_insert_form">
+								<input type="hidden" name="feedId" th:value="${result.feedId}">
+								<div class="inputbox mt0" sec:authorize="isAuthenticated()">
+									<textarea class="form-control comment_input" name="content" onsubmit="return false;"></textarea>
+									<input type="hidden" style="display: none;">
+									<button sec:authorize="isAnonymous()" class="btn btn-dark btn-custom comment_btn btn_feed_comment" type="button" onclick="UPMLoginModal.showModal();">등록</button>
+									<button sec:authorize="isAuthenticated()" class="btn btn-dark btn-custom comment_btn btn_feed_comment" type="button">등록</button>
+								</div>
+								</form>
+								<div class="comment_list_wrap feed_comment_list_result">
+									<div class="comment_list feed_comment_form" th:each="comment : ${result.feedCommentListDate.content}">
+										<div class="feedprofile">
+											<a th:href="@{${comment.member.getUrl()}}">
+											<img th:src="${comment.member.getProfileImageUrl()}" alt="" />
+											</a>
+										</div>
+										<div class="comment_content" >
+											<h3 class="comment_id" th:text="${comment.member.nick}"></h3>
+											<p class="comment_memo comment_update_form feed_comment_content" th:text="${#strings.replace(comment.content, T(System).getProperty('line.separator'), '&lt;br /&gt;')}"></p>
+											<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_update">
+											<input type="hidden" id="feedCommentId" name="feedCommentId" th:value="${comment.feedCommentId}">
+											<input type="hidden" id="feedId" name="feedId" th:value="${result.feedId}">
+											<div class="inputbox w677 comment_change_form" style="display: none;">
+												<textarea class="form-control comment_input_ver2 feed_update_content" name="content"></textarea>
+												<button class="btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update" type="button">저장</button>
+											</div>
+											</form>
+										</div>
+										<div class="comment_day_wrap">
+											<p class="comment_day" id="comment_createAt" th:text="${comment.getCreateAtFormat()}"></p>
+											<form action="#" role="form" enctype="utf-8" method="post" class="comment_delete_form">
+											<input type="hidden" name="feedCommentId" th:value="${comment.feedCommentId}">
+											<input type="hidden" name="feedId" th:value="${result.feedId}">
+											<ul class="comment_update_form" th:if="${comment.registrantFlag}">
+												<li class="btn_updateForm">수정</li>
+												<li class="btn_delete">삭제</li>
+											</ul>
+											</form>
+											<ul class="comment_change comment_change_form" style="display: none;">
+												<li class="btn_update_cancel">취소</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<form action="#" role="form" enctype="utf-8" method="post" class="feed_comment_paging">
+								<input type="hidden" name="feedId" th:value="${result.feedId}">
+								<input type="hidden" name="pageSize" class="feed_page_size" th:value="${result.feedCommentListDate.content.size()}">
+								<div class="showmore_wrap" th:if="${result.feedCommentListDate.hasNext()}">
+									<p class="feed_next_paging">
+										SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i>
+									</p>
+								</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		
+		
+		<div class="modal fade" id="img_detail" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+			<div class="modal-dialog img_detail_wrap">
+				<div class="modal-content">
+					<div class="modal-body login_body img_detail_wrap_body">
+						<img src="/img/close.png" class="close" alt="" data-dismiss="modal">
+						<div class="img_detail_view_wrap">
+							<div class="img_view_list">
+								<ul id="modal_img_detail_list">
+									<li id="modal_img_detail_li" style="display: none;">
+										<input type="hidden" class="modal_img_detail_src" style="display: none;">
+									</li>
+								</ul>
+							</div>
+							<div class="img_view_content">
+								<div class="img_view_itemwrap">
+									<img src="/img/img_detail_item1.png" id="modal_img_detail_main" data-target="#img_detail" data-toggle="modal">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+
+		    var modal_html_1 = "";
+		    imgDetail(modal_html_1);
+
+		    commentDelete();
+		    reBindEvent();
+		    commentUpdate();
+		    commentInsert();
+		    feedCommentPaging();
+		    feedLikeToggle();
+		    feedShare();
+
+		    function allFeedSetting(data, modal_html_1){
+		    	for(var i=0; i<data.allFeedList.content.length; i++){
+            		var resultObj = data.allFeedList.content[i];
+            		
+            		var feedSample = $('#feed_sample').clone();
+            		feedSample.find('#feed_memberUrl').attr('href', resultObj.memberUrl);
+            		feedSample.find('#feed_member_profile').attr('src', resultObj.memberProfileUrl);
+            		feedSample.find('#feed_member_nick').html(resultObj.member.nick);
+            		feedSample.find('#feed_createAt').html(resultObj.createAtFomatStr);
+            		feedSample.find('#feed_content').html(resultObj.content);
+            		feedSample.find('#feed_first_img').attr('src', resultObj.firstImg);
+            		feedSample.find('.img_detail_search_id').val(resultObj.feedId);
+            		feedSample.find('#feed_file_size').html(resultObj.fileSize);
+            		feedSample.find('.comment_cnt').html(resultObj.commentCnt);
+            		feedSample.find('.feed_cnt').html(resultObj.likeCnt);
+            		feedSample.find('.feed_like_toggle').addClass(resultObj.feedLikeClass);
+            		feedSample.find('.feed_like_img').attr('src', resultObj.feedLikeImgUrl);
+            		feedSample.find('.like_feed_id').val(resultObj.feedId);
+            		feedSample.find('.feedId').val(resultObj.feedId);
+            		
+            		var result = "";
+            		for(var j=0; j<resultObj.feedCommentListDate.content.length; j++){
+            			var dataObj = resultObj.feedCommentListDate.content[j];
+            			
+            			result += "<div class='comment_list feed_comment_form'><div class='feedprofile'>";
+                		result += "<a href='" + dataObj.memberUrl + "'>";
+    	        		result += "<img src='" + dataObj.memberImgUrl + "' /></a>";
+    	        		result += "</div><div class='comment_content'><h3 class='comment_id'>" + dataObj.member.nick + "</h3>";
+    	        		result += "<p class='comment_memo comment_update_form feed_comment_content'>" + (dataObj.content).replace(/\n/g, "<br />"); + "</p>";
+    	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='feed_comment_update'>";
+    	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+    	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + resultObj.feedId + "'>";
+    	        		result += "<div class='inputbox w677 comment_change_form' style='display: none;'>";
+    	        		result += "<textarea class='form-control comment_input_ver2 feed_update_content' name='content'></textarea>";
+    	        		result += "<button class='btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update' type='button'>저장</button></div></form></div>";
+    	        		result += "<div class='comment_day_wrap'>";
+    	        		result += "<p class='comment_day' id='comment_createAt'>" + dataObj.createdAtFormat + "</p>";
+    	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='comment_delete_form'>";
+    	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+    	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + resultObj.feedId + "'>";
+    	        		if(dataObj.registrantFlag) {
+    	        			result += "<ul class='comment_update_form'>";
+    	        			result += "<li class='btn_updateForm'>수정</li>";
+    	        			result += "<li class='btn_delete'>삭제</li></ul></form>";
+    	        		}
+    	        		result += "<ul class='comment_change comment_change_form' style='display: none;'>";
+    	        		result += "<li class='btn_update_cancel'>취소</li>";
+    	        		result += "</ul></div></div>";
+            		}
+            		
+            		var list = feedSample.find('.feed_comment_list_result');
+                	list.empty();
+                	list.append(result);
+                	
+                	var comment_totalPage = resultObj.commentTotalPage;
+                	
+                	if(comment_totalPage <=	 1){
+                		feedSample.find('.showmore_wrap').hide();
+                	}else{
+                		feedSample.find('.showmore_wrap').show();
+                		feedSample.find('.feedId').val(resultObj.feedId);
+                		feedSample.find('.feed_page_size').val(resultObj.feedCommentListDate.size);
+                	}
+                	
+                	
+                	feedSample.show();
+                	$('#all_feed_div').append(feedSample);
+            		
+            	}
+            	
+            	var feedTotalPage = data.totalPage;
+            	
+            	if(feedTotalPage <= 1){
+            		$('#all_feed_more').hide();
+            	}else{
+            		$('#all_feed_more').show();
+            		$('#all_feed_pageSize').val(data.allFeedList.content.length);
+            	}
+            	
+            	$(".comment-toggle").unbind();
+            	$(".comment-toggle").click(function(){
+        			$(this).parents("ul").parents().siblings(".feedcomment_wrap").slideToggle();
+        		});
+            	reBindEvent();
+            	commentDelete();
+            	commentUpdate();
+            	commentInsert();
+            	feedCommentPaging();
+            	feedLikeToggle();
+            	
+            	$('.img_detail').unbind();
+            	modal_html_1 = "";
+            	imgDetail(modal_html_1);
+		    }
+		    
+		    function allFeedMore(){
+		    	$('#all_feed_more').unbind();
+		    	$('#all_feed_more').on('click', function(e){
+		    		var pageSize = $(e.target).closest('.showmore_wrap').find('#all_feed_pageSize').val();
+		    		
+		    		$.ajax({
+			            type : 'get',
+			            url : '/api/feed/allFeed.json',
+			            data : {
+			            	"allFeedPage" : pageSize
+			            },
+			            success : function(data){
+			            	$('#all_feed_div').empty();
+			            	allFeedSetting(data, modal_html_1);
+			            }
+			        });
+		    		
+			    });
+		    }
+		    
+		    function getCommentHtml(data, e){
+		    	var result = "";
+		    	for(var i=0; i<data.commentList.content.length; i++){
+            		var dataObj = data.commentList.content[i];
+            		result += "<div class='comment_list feed_comment_form'><div class='feedprofile'>";
+            		result += "<a href='" + dataObj.memberUrl + "'>";
+	        		result += "<img src='" + dataObj.memberImgUrl + "' /></a>";
+	        		result += "</div><div class='comment_content'><h3 class='comment_id'>" + dataObj.member.nick + "</h3>";
+	        		result += "<p class='comment_memo comment_update_form feed_comment_content'>" + (dataObj.content).replace(/\n/g, "<br />"); + "</p>";
+	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='feed_comment_update'>";
+	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + data.feedId + "'>";
+	        		result += "<div class='inputbox w677 comment_change_form' style='display: none;'>";
+	        		result += "<textarea class='form-control comment_input_ver2 feed_update_content' name='content'></textarea>";
+	        		result += "<button class='btn btn-dark btn-custom comment_btn comment_btn_ver2 btn_comment_update' type='button'>저장</button></div></form></div>";
+	        		result += "<div class='comment_day_wrap'>";
+	        		result += "<p class='comment_day' id='comment_createAt'>" + dataObj.createdAtFormat + "</p>";
+	        		result += "<form action='#' role='form' enctype='utf-8' method='post' class='comment_delete_form'>";
+	        		result += "<input type='hidden' id='feedCommentId' name='feedCommentId' value='" + dataObj.feedCommentId + "'>";
+	        		result += "<input type='hidden' id='feedId' name='feedId' value='" + data.feedId + "'>";
+	        		if(dataObj.registrantFlag) {
+	        			result += "<ul class='comment_update_form'>";
+	        			result += "<li class='btn_updateForm'>수정</li>";
+	        			result += "<li class='btn_delete'>삭제</li></ul></form>";
+	        		}
+	        		result += "<ul class='comment_change comment_change_form' style='display: none;'>";
+	        		result += "<li class='btn_update_cancel'>취소</li>";
+	        		result += "</ul></div></div>";
+            	}
+
+		    	$(e.target).closest('.parentFlag').find('.comment_cnt').html(data.commentCnt + "개");
+            	$(e.target).closest('.parentFlag').find('.comment_input').val('');
+            	var list = $(e.target).closest('.feedcomment_wrap').find('.feed_comment_list_result');
+            	
+            	list.empty();
+            	list.append(result);
+            	
+            	reBindEvent();
+            	commentDelete();
+            	commentUpdate();
+            	feedCommentPaging();
+		    }
+
+		    
+		    function commentInsert(){
+		    	// feed comment 등록
+		    	$('.btn_feed_comment').unbind();
+			    $('.btn_feed_comment').click(function(e){
+			    	var form = $(e.target).closest('.feed_comment_insert_form')[0];
+			    	var formData = new FormData(form);
+			    	var pageSize = Number($(e.target).closest('.feedcomment_wrap').find('.feed_page_size').val()) - 5;
+			    	formData.append('pageSize', pageSize);
+
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/comment_insert.json',
+			            data : formData,
+			            processData : false,
+			            contentType : false,
+			            success : function(data){
+			            	getCommentHtml(data, e);
+			            	
+			            	if(data.commentTotalPage <= 1){
+			           			$(e.target).parents('.feedcomment_wrap').find('.showmore_wrap').hide();
+			               	}else{
+			               		$(e.target).closest('.feedcomment_wrap').find('.showmore_wrap').show();
+			               	}
+			            }
+			        });
+
+			    });
+		    }
+
+		    function reBindEvent(){
+		    	$('.btn_updateForm').click(function(e){
+			    	$(e.target).closest('.comment_list').find('.comment_update_form').hide();
+			    	$(e.target).closest('.comment_list').find('.comment_change_form').show();
+			    });
+
+			    $('.btn_update_cancel').click(function(e){
+			    	$(e.target).closest('.comment_list').find('.comment_update_form').show();
+			    	$(e.target).closest('.comment_list').find('.comment_change_form').hide();
+			    });
+
+		    }
+
+		    function commentDelete(){
+		    	$('.btn_delete').on('click', function(e){
+			    	var form = $(e.target).closest('.comment_delete_form')[0];
+			    	var formData = new FormData(form);
+			    	var pageSize = Number($(e.target).closest('.feedcomment_wrap').find('.feed_page_size').val()) - 5;
+			    	formData.append('pageSize', pageSize);
+
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/comment_delete.json',
+			            data : formData,
+			            processData : false,
+			            contentType : false,
+			            success : function(data){
+			            	if(data.commentTotalPage <= 1){
+			           			$(e.target).closest('.feedcomment_wrap').find('.showmore_wrap').hide();
+			               	}else{
+			               		$(e.target).closest('.feedcomment_wrap').find('.showmore_wrap').show();
+			               	}
+			            	
+			            	getCommentHtml(data, e);
+			            }
+			        });
+			    });
+		    }
+
+		    function commentUpdate(){
+		    	$('.btn_comment_update').on('click', function(e){
+		    		var form = $(e.target).closest('.feed_comment_update')[0];
+			    	var formData = new FormData(form);
+
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/comment_update.json',
+			            data : formData,
+			            processData : false,
+			            contentType : false,
+			            success : function(data){
+			            	$(e.target).closest('.feed_comment_form').find('.btn_update_cancel').click();
+			            	$(e.target).closest('.feed_comment_form').find('.feed_comment_content').html(data.content);
+			            	$(e.target).closest('.feed_comment_form').find('.feed_update_content').val('');
+			            }
+			        });
+		    	});
+		    }
+
+		    function feedCommentPaging(){
+		    	$('.feed_next_paging').unbind();
+		    	$('.feed_next_paging').on('click', function(e){
+		    		var form = $(e.target).closest('.feed_comment_paging')[0];
+			    	var formData = new FormData(form);
+			    	
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/comment_paging.json',
+			            data : formData,
+			            processData : false,
+			            contentType : false,
+			            success : function(data){
+			            	getCommentHtml(data, e);
+
+			            	if(data.hasNext){
+			            		$(e.target).closest('.feed_comment_paging').find('.feed_page_size').val(data.commentList.content.length);
+			            	}else{
+			            		$(e.target).closest('.feed_comment_paging').hide();
+			            	}
+			            }
+			        });
+		    	});
+		    }
+
+		    function imgDetail(modal_html_1){
+		    	// 이미지 상세보기
+			    $('.img_detail').on('click', function(e){
+			    	var img_detail_id = $(e.target).closest('.feed_video_section').find('.img_detail_search_id').val();
+
+			    	if (modal_html_1 == "") {
+						modal_html_1 = document.getElementById("img_detail").innerHTML;
+					} else {
+						document.getElementById("img_detail").innerHTML = "";
+						document.getElementById("img_detail").innerHTML = modal_html_1;
+					}
+
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/imgDetail.json',
+			            data : {
+			            	"feedId" : img_detail_id
+			            },
+			            dataType : "JSON",
+			            success : function(data){
+			            	for(var i=0; i<data.result.length; i++){
+			            		var li = $('#modal_img_detail_li').clone();
+			            		var resultObj = data.result[i];
+			            		li.css('background', 'url('+ resultObj.imgSrcText +') center center').css('background-size', 'cover');
+			            		li.find('.modal_img_detail_src').val(resultObj.imgSrcText);
+			            		li.show();
+
+			            		$('#modal_img_detail_list').prepend(li);
+			            	}
+
+			            	if(data.result.length > 0){
+			            		var mainSrc = $('#modal_img_detail_list').children('li').eq(0).find('.modal_img_detail_src').val();
+			            		$('#modal_img_detail_main').attr('src', mainSrc);
+			            	}
+
+			            	$('#img_detail').modal();
+
+			            	$(".img_view_list>ul>li").click(function(){
+			        			imgViewNum = $(this).index();
+			        			var mainSrc = $('#modal_img_detail_list').children('li').eq(imgViewNum).find('.modal_img_detail_src').val();
+			        			$(".img_view_itemwrap>img").attr("src", mainSrc);
+			        		});
+			            }
+			        });
+
+			    });
+		    	
+			    $('#img_detail').on('hidden.bs.modal', function(){
+			    	document.getElementById("img_detail").innerHTML = modal_html_1;
+			    });
+		    }
+		    
+		    function feedLikeToggle(){
+		    	// 좋아요 toggle
+		    	$('.feed_like_toggle').unbind();
+			    $('.feed_like_toggle').on('click', function(e){
+			    	var feedId = $(e.target).closest('.feed_like_toggle').find('.like_feed_id').val();
+
+			    	$.ajax({
+			            type : 'post',
+			            url : '/api/feed/feedLike.json',
+			            data : {
+			            	"feedId" : feedId
+			            },
+			            success : function(data){
+			            	$(e.target).find('.feed_cnt').html(data);
+
+			            	// 같은 feedId의 피드 좋아요 동기화
+			            	$('.feed_like_toggle').each(function(){
+			            		var syncFeedId = $(this).find('.like_feed_id').val();
+			            		if(feedId == syncFeedId){
+			            			if($(this).hasClass('feedbtn_on')){
+			            				$(this).removeClass('feedbtn_on');
+				            			$(this).find('.feed_like_img').attr('src', '/img/feedbtn_2.png');
+			            			}else{
+			            				$(this).addClass('feedbtn_on');
+				            			$(this).find('.feed_like_img').attr('src', '/img/afeedbtn_2.png');
+			            			}
+			            			$(this).find('.feed_cnt').html(data);
+			            		}
+			            	});
+
+			            }
+			        });
+			    });
+		    }
+		    
+		    function feedShare(){
+		    	$('.feed_share').on('click', function(e){
+		    		var feedId = $(e.target).closest('.parentFlag').find('.like_feed_id').val();
+		    		
+		    		UPMShareModal.showShareModal(feedId);
+		    		
+		    	});
+		    }
+		    
+		</script>
+
+
+
+	</div>
+
+</body>
+</html>

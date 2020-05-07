@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<dl th:fragment="list_collection(collectionFragmentId, collectionList, collectionPaginationUrl)" th:remove="tag">
+		<dd th:each="collection, iter : ${collectionList}" th:id="${collection.id}" class="off">								
+			<div class="info">
+				<p class="subject">
+					<a th:href="@{${'/my_playlist/collection/' + collection.id}}"><span th:text="${collection.subject}" th:remove="tag"></span></a>
+					<span class="unit"><span th:text="${collection.trackCnt}" th:remove="tag"></span><span th:text="#{model.music.track_count}" th:remove="tag"></span></span>
+				</p>
+			</div>
+			<div th:if="${0 < collection.trackCnt}" class="btn_play" th:onclick="@{${'UPMListCollection.addToPlaylist(' + collection.id + ');'}}"></div>
+			<div th:unless="${0 < collection.trackCnt}" class="btn_play" th:onclick="@{${'UPMListCollection.addTrackToCollection();'}}"></div>
+			<!-- <div class="btn_more"  data-toggle="modal" data-target="#lab-slide-bottom-popup"></div> -->
+		</dd>
+	</dl>
+</body>
+
+</html>

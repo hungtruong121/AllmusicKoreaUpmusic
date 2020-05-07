@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	  xmlns:display="http://www.w3.org/1999/xhtml">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_track_menu">
+		<div class="modal fade" id="track-menu-modal" data-keyboard="false" data-backdrop="false">
+			<div class="lab-modal-body">
+				<div class="lab-header-wrap">
+					<h1>
+						<span id="track-menu-modal-title"></span>
+					</h1>
+					<p class="close" data-dismiss="modal"></p>
+				</div>
+				<div sec:authorize="isAnonymous()">
+					<ul>
+						<li onclick="UPMTrackMenuModal.gotoArtistPage(event);"><a class="btm_m01"><span th:text="#{common.artist.profile}" th:remove="tag"></span></a></li>
+						<li onclick="UPMTrackMenuModal.gotoMusicAlbumPage(event);"><a class="btm_m02"><span th:text="#{common.musicalbum.information}" th:remove="tag"></span></a></li>
+						<li onclick="UPMTrackMenuModal.share(event);"><a class="btm_m03"><span th:text="#{common.share}" th:remove="tag"></span></a></li>
+						<li onclick="UPMusic.alert(msgUserAfterLogin);"><a id="track-like-status" class="btm_heart"><span th:text="#{common.like}" th:remove="tag"></span></a></li>
+						<li onclick="UPMusic.alert(msgUserAfterLogin);"><a class="btm_m04"><span th:text="#{common.put_in}" th:remove="tag"></span></a></li>
+						<li onclick="UPMTrackMenuModal.buy(event);" id="track-menu-modal-store"><a class="btm_m05"><span th:text="#{button.buy}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+				<div sec:authorize="isAuthenticated()">
+					<ul>
+						<li onclick="UPMTrackMenuModal.gotoArtistPage(event);"><a class="btm_m01"><span th:text="#{common.artist.profile}" th:remove="tag"></span></a></li>
+						<li onclick="UPMTrackMenuModal.gotoMusicAlbumPage(event);"><a class="btm_m02"><span th:text="#{common.musicalbum.information}" th:remove="tag"></span></a></li>
+						<li onclick="UPMTrackMenuModal.share(event);"><a class="btm_m03"><span th:text="#{common.share}" th:remove="tag"></span></a></li>
+						<li onclick="UPMTrackMenuModal.likeTrack(event);"><a id="track-like-status" class="btm_heart"><span th:text="#{common.like}" th:remove="tag"></span></a></li>
+						<li onclick="UPMTrackMenuModal.collection(event);"><a class="btm_m04"><span th:text="#{common.put_in}" th:remove="tag"></span></a></li>
+						<li onclick="UPMTrackMenuModal.buy(event);" id="track-menu-modal-store"><a class="btm_m05"><span th:text="#{button.buy}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- /.modal-body -->
+			<div class="modalbg"></div>
+		</div>
+		
+		<!--<div class="modal fade" id="track-buttons-modal" data-keyboard="true" data-backdrop="true">-->
+			<!--<div class="lab-modal-body">-->
+				<!--<div class="quickMenu quickMenu2">-->
+					<!--<dl>-->
+						<!--<dd class="play" th:onclick="@{${'UPMTrackMenuModal.addTracksToPlaylist();'}}">-->
+							<!--<p class="ico"></p>-->
+							<!--<p class="txt" th:text="#{common.play}"></p>-->
+						<!--</dd>-->
+						<!--<dd class="save" th:onclick="@{${'UPMTrackMenuModal.showCollectionModal();'}}">-->
+							<!--<p class="ico"></p>-->
+							<!--<p class="txt" th:text="#{common.put_in}"></p>-->
+						<!--</dd>-->
+					<!--</dl>-->
+				<!--</div>-->
+			<!--</div>-->
+		<!--</div>-->
+
+		<div class="quickMenu quickMenu2" id="track-buttons-modal"  style="display:none;">
+			<dl>
+				<dd class="play" th:onclick="@{${'UPMTrackMenuModal.addTracksToPlaylist();'}}">
+					<p class="ico"></p>
+					<p class="txt" th:text="#{common.play}"></p>
+				</dd>
+				<dd class="save" th:onclick="@{${'UPMTrackMenuModal.showCollectionModal();'}}">
+					<p class="ico"></p>
+					<p class="txt" th:text="#{common.put_in}"></p>
+				</dd>
+			</dl>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+
+		function callbackModalHidden() {
+
+			$('dd.on').each(function() {
+			console.log('dd !!')
+				$(this).removeClass('on');
+				$(this).addClass('active');
+			});
+		}
+		/*<![CDATA[*/
+			var UPMTrackMenuModal = {
+				_config : {
+					album_id : 0,
+					track_id : 0,
+					artist_url : '',
+					album_url: '',
+					liked: false,
+					fragment_id : ''
+				},
+				showModal : function(albumId, trackId, trackTitle, artistTitle, artistUrl, albumUrl, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    UPMTrackMenuModal._config.album_id = albumId;
+				    UPMTrackMenuModal._config.track_id = trackId;
+				    UPMTrackMenuModal._config.artist_url = artistUrl;
+				    UPMTrackMenuModal._config.album_url = albumUrl;
+				    UPMTrackMenuModal._config.liked = false;
+				    $('#track-like-status').html('좋아요');
+				    $.get(UPMusic._config._api_track + '/' + UPMTrackMenuModal._config.track_id, function(data) {
+				    	UPMTrackMenuModal._config.liked = data.liked;
+				    	if (data.liked) $('#track-like-status').html('좋아요 취소');
+					});
+				    $('#track-menu-modal-title').html(trackTitle + " - " + artistTitle);
+				    $('#track-menu-modal-store').hide();
+
+					$('#track-menu-modal').modal('show');
+				},
+				showStoreModal : function(albumId, trackId, trackTitle, artistTitle, artistUrl, albumUrl, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    UPMTrackMenuModal._config.album_id = albumId;
+				    UPMTrackMenuModal._config.track_id = trackId;
+				    UPMTrackMenuModal._config.artist_url = artistUrl;
+				    UPMTrackMenuModal._config.album_url = albumUrl;
+				    UPMTrackMenuModal._config.liked = false;
+				    $('#track-like-status').html('좋아요');
+				    $.get(UPMusic._config._api_track + '/' + UPMTrackMenuModal._config.track_id, function(data) {
+				    	UPMTrackMenuModal._config.liked = data.liked;
+				    	if (data.liked) $('#track-like-status').html('좋아요 취소');
+					});
+				    $('#track-menu-modal-title').html(trackTitle + " - " + artistTitle);
+				    $('#track-menu-modal-store').show();
+
+					$('#track-menu-modal').modal('show');
+				},
+				showTrackButtons : function(fragmentId, type) {
+					UPMTrackMenuModal._config.fragment_id = fragmentId;
+					//$('#track-buttons-modal').modal('show');
+
+					console.log(navigator.userAgent)
+
+					var data = {
+						request_type: 'REQUEST_PLAY_AUDIO_HIDE'
+						};
+
+					if(navigator.userAgent.indexOf("UPMusicIOS") != -1) {
+
+						window.webkit.messageHandlers.callbackFromJS.postMessage(JSON.stringify({request_type: 'REQUEST_PLAY_AUDIO_HIDE'}));
+
+					}else{
+						window.AndroidHandler.callbackFromJS(JSON.stringify(data));
+					}
+
+					$('#content').css('padding-bottom','50px');
+
+					$('#track-buttons-modal').show();
+				},
+				hideTrackButtons : function(fragmentId, type) {
+					UPMTrackMenuModal._config.fragment_id = '';
+
+
+					$('#content').css('padding-bottom','0px');
+					$('#track-buttons-modal').hide();
+
+					console.log(navigator.userAgent)
+
+					var data = {
+						request_type: 'REQUEST_PLAY_AUDIO_SHOW'
+						};
+
+					if(navigator.userAgent.indexOf("UPMusicIOS") != -1) {
+
+						window.webkit.messageHandlers.callbackFromJS.postMessage(JSON.stringify({request_type: 'REQUEST_PLAY_AUDIO_SHOW'}));
+
+					}else{
+						window.AndroidHandler.callbackFromJS(JSON.stringify(data));
+					}
+				},
+				addTracksToPlaylist : function() {
+					UPMusicCommon.addTracksToPlaylist(UPMTrackMenuModal._config.fragment_id);
+
+
+$('#content').css('padding-bottom','0px');
+					$('#track-buttons-modal').hide();
+				},
+				showCollectionModal : function() {
+					UPMusicCommon.showCollectionModal(UPMTrackMenuModal._config.fragment_id);
+
+$('#content').css('padding-bottom','0px');
+					$('#track-buttons-modal').hide();
+
+				},
+				gotoArtistPage : function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    $('#track-menu-modal').modal('hide');
+					window.location.href = UPMTrackMenuModal._config.artist_url;
+				},
+				gotoMusicAlbumPage : function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					$('#track-menu-modal').modal('hide');
+					window.location.href = UPMTrackMenuModal._config.album_url;
+				},
+				share : function(e) {
+					$('#track-menu-modal').modal('hide');
+					UPMShareModal.showShareModalFromList(UPMTrackMenuModal._config.album_id, UPMTrackMenuModal._config.track_id, e);
+				},
+				collection : function(e) {
+					$('#track-menu-modal').modal('hide');
+					UPMusicCommon.showCollectionModalWithTrack(UPMTrackMenuModal._config.track_id);
+				},
+				buy : function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					$('#track-menu-modal').modal('hide');
+					UPMusic.alert(msgSeeNextVersion);
+				},
+				likeTrack: function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    $('#track-menu-modal').modal('hide');
+					var params = {};
+					UPMusic.ajaxPost(UPMusic._config._api_track + '/' + UPMTrackMenuModal._config.track_id + '/like', headers, params, UPMTrackMenuModal.likeTrackCallback);
+				},
+				likeTrackCallback: function(msg, object) {
+					if (msg == 'true') {
+						$('[id="' + object + '"]').each(function(value) {
+							// if (!$(this).find("#track-like-status").hasClass('on')) $(this).find("#track-like-status").addClass('on');
+							$("#track-like-status").addClass('on');
+						});
+					} else {
+						$('[id="' + object + '"]').each(function(value) {
+							// if ($(this).find("#track-like-status").hasClass('on')) $(this).find("#track-like-status").removeClass('on');
+							$("#track-like-status").removeClass('on');
+						});
+					}
+					UPMusicCommon._config.loading = false;
+				},
+			};
+		/*]]>*/
+	    </script>
+	</div>
+</body>
+
+</html>

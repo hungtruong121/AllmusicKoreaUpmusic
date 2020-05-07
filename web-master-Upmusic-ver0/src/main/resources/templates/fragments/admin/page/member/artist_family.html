@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<div class="artist_list clear">
+					<div class="producing_listhead">
+						<h2 class="page-title fl mb20" th:text="#{nav.music.artist.family}"></h2>
+						<a th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/member/artist/family/insert&quot;);'}}"><button class="btn btn-custom2 fr"><i><img src="img/add-event.png" alt="" /></i> 신규 등록</button></a>
+					</div>
+					<div th:replace="fragments/admin/page/member/list_family_artist :: list_family_artist(${familyArtistsFragmentId}, ${familyArtists}, ${familyPaginationUrl})"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

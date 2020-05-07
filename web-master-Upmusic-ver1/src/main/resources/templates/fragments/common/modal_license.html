@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" >
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_license">
+		<div class="modal fade" id="modal-store-license" tabindex="-1" role="dialog" aria-labelledby="UPM License" aria-hidden="true">
+			<div class="modal-dialog login_pop license_pop">
+				<div class="modal-content">
+					<div class="modal-header login_header">
+						<h2 class="modal_title" th:text="#{modal.buy_license}">License</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+					</div>
+					<div class="modal-body login_body">
+						<div class="login_body1">
+							<div class="license_wrap">
+								<ul>
+									<li th:each="license, iter : ${licenseObj}" th:id="${license.id}">
+										<div class="license_info">
+											<div class="radiowrap center">
+												<div class="radio license_title">
+													<input th:id="@{${'demo-form-radio-' + iter.index}}" class="magic-radio" type="radio" name="form-radio-button" checked="">
+													<label th:for="@{${'demo-form-radio-' + iter.index}}"><span th:text="${license.name}" th:remove="tag"></span> <span th:text="${license.trackType}"></span></label>
+												</div>
+											</div>
+											<p class="license_sub clear" th:classappend="${license.id} eq 1 ? 'rental-license-price' : 'absolute-license-price'"></p>
+											<p class="license_description"data-th-utext="${#strings.replace(#strings.escapeXml(license.description),'\n','&lt;br&gt;')}"></p>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="login_btn upload_btn mt10">
+								<button class="btn btn-custom3 h50 w100p">구매하기</button>
+							</div>
+						</div>
+					</div>
+				</div>
+	        </div>
+		</div>
+		
+		<div class="modal fade" id="modal-store-download" tabindex="-1" role="dialog" aria-labelledby="UPM Download" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" th:text="#{modal.download}">License</h4>
+					</div>
+					<div class="modal-body">
+						<button id="button-download-mp3" type="button" class="btn btn-default" onclick="UPMLicenseModal.requestFile('MP3');">
+							<span th:text="#{button.mp3}" th:remove="tag"></span>
+						</button>
+						<button id="button-download-wav" type="button" class="btn btn-default" onclick="UPMLicenseModal.requestFile('WAV');">
+							<span th:text="#{button.wav}" th:remove="tag"></span>
+						</button>
+						<button id="button-download-zip" type="button" class="btn btn-default" onclick="UPMLicenseModal.requestFile('ZIP');">
+							<span th:text="#{button.track_zip}" th:remove="tag"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	    <div sec:authorize="isAnonymous()">
+		<script type="text/javascript">
+			var UPMLicenseModal = {
+				showModalFromList : function(trackId, rentalFee, price, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					/* $('.rental-license-price').html(rentalFee.toLocaleString() + '원');
+					$('.absolute-license-price').html(price.toLocaleString() + '원');
+					$('#modal-store-license').modal('show'); */
+					UPMMessageModal.showModal(msgSeeNextVersion);
+				},
+				download : function(trackId, price) {
+					UPMMessageModal.showModal(msgSeeNextVersion);
+				}
+			};
+	    </script>
+		</div>
+	    
+	    <div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+			var currentTrackId = 0;
+			var currentRentalFee = 0;
+			var currentPrice = 0;
+			var UPMLicenseModal = {
+				showModalFromList : function(trackId, rentalFee, price, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					/* $('.rental-license-price').html(rentalFee.toLocaleString() + '원');
+					$('.absolute-license-price').html(price.toLocaleString() + '원');
+					$('#modal-store-license').modal('show'); */
+				    UPMMessageModal.showModal(msgSeeNextVersion);
+				},
+				download : function(trackId, rentalFee, price) {
+					currentTrackId = trackId;
+					currentRentalFee = rentalFee;
+					currentPrice = price;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_store + '/is_buyer/' + trackId, headers, params, UPMLicenseModal.isBuyerCallback);
+				},
+				isBuyerCallback: function(msg, object) {
+					if (msg == 'true') {
+						if (object.includes("MP3")) $('#button-download-mp3').show();
+						else $('#button-download-mp3').hide();
+						if (object.includes("WAV")) $('#button-download-wav').show();
+						else $('#button-download-wav').hide();
+						if (object.includes("ZIP")) $('#button-download-zip').show();
+						else $('#button-download-zip').hide();
+						$('#modal-store-download').modal('show');
+					} else {
+						UPMLicenseModal.showModalFromList(currentTrackId, currentRentalFee, currentPrice);
+					}
+				},
+				requestFile: function(format) {
+					window.location.href = UPMusic._config._api_store + '/download/' + currentTrackId + '/' + format;
+				}
+			};
+		</script>
+		</div>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+		<form action="#" th:action="@{/admin/upm_news/event_banner/edit}" role="form" enctype="multipart/form-data" th:object="${paramData}" method="post" id="updateForm">
+		<input type="hidden" name="eventBannerId" id="eventBannerId" th:value="${result.eventBannerId}" >
+        <input type="hidden" name="filename" th:value="${result.filename}">
+    	<div class="subpage_wrap section">
+			<h2 class="page-title">이벤트 배너 수정하기</h2>
+			<!--
+			이미지 업로드
+			노출여부
+			링크
+			노출순서
+			 -->
+			<div class="membership_wrap">
+				<ul>
+					<li>
+						<div id="form-group-imageFilename" class="form-group inputbox">
+							<div class="input-file" id="imageFilename">
+								<label class="input_title">이벤트 배너 이미지</label>
+								<input th:type="text" id="img_fileName" placeholder="이미지를 등록하세요" class="form-control imgupload_input" onclick="$('#band_img').trigger('click');return false;" onkeypress="return event.keyCode != 13;"/>
+								<input type="file" name="thumbnailImg" id="band_img" style="display: none;"/>
+								<img th:src="@{/img/inputicon_img.png}" alt="" />
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">링크</label>
+							<input type="text" placeholder="입력하세요." class="form-control" name="link" th:value="${result.link}" id="event_link">
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">노출 여부</label>
+							<div>
+								<select class="form-control" name="showYn" style="height: 50px;">
+									<option value="1" th:selected="${result.showYn} == '1' ? true : false">노출</option>
+									<option value="0" th:selected="${result.showYn} == '0' ? true : false">비노출</option>
+								</select>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">노출순서</label>
+							<input type="text" placeholder="입력하세요." class="form-control" name="orderNo"  th:value="${result.orderNo}">
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- <div class="inputbox">
+				<label class="input_title">내용</label>
+			    <textarea rows="" cols="" class="summernote" name="content"></textarea>
+			</div> -->
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom btn-dark h50" type="button" id="btn_submit">등록</button>
+					<button type="button" class="btn btn-custom2 h50" id="btn_delete">삭제</button>
+					<button type="button" class="btn btn-custom2 h50" id="btn_back">취소</button>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</form>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+	    $('#btn_back').click(function(){
+	    	history.back();
+	    });
+
+	    $('#btn_delete').click(function(){
+	    	UPMusicAdmin.confirm("정말로  삭제하시겠습니까?", function() {
+	    		UPMusicAdmin.goto("/admin/upm_news/event_banner/delete?eventBannerId=" + /*[[${result.eventBannerId}]]*/);
+	    	});
+	    });
+	    
+	    $('#band_img').change(function(e){
+	    	var temp = $(this).val().split('.');
+            var fileExt = temp[temp.length-1].toLowerCase();
+
+            if(fileExt == "jpg" || fileExt == "jpeg" || fileExt == "png" || fileExt == "gif" || fileExt == "bmp"){
+				$('#img_fileName').val(e.target.files[0].name);
+            }else{
+            	alert('이미지 파일만 등록 가능 합니다.');
+            	$(this).val('');
+            }
+
+	    });
+	    
+	    $('#btn_submit').on('click', function(){
+	    	var linkValue = $('#event_link').val();
+	    	
+	    	if(linkValue != ""){
+	    		if(linkValue.indexOf('http://') == -1){
+	    			if(linkValue.indexOf('https://') == -1){
+	    				alert('링크에 입력되는 URL 정보에 (http://, https://)를 필수로 입력해주세요.');
+	    				return false;
+	    			}
+	    		}
+	    	}else{
+	    		alert('링크의 URL 정보를 입력해주세요');
+	    		return false;
+	    	}
+	    	
+	    	$('#updateForm').submit();
+	    	
+	    });
+
+	</script>
+  </div>
+
+</body>
+</html>

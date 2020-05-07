@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 피드 이미지 -->
+			<form action="#" th:action="@{'/feed/feedInsert'}" role="form" id="feedUpdateForm" enctype="multipart/form-data" method="post" th:object="${paramData}">
+			<input type="hidden" name="feedId" th:value="${result.feedId}">
+			<div class="nl_panel pdt0">
+				<div class="feed mb_80">
+					<div class="feedBox bdn">
+						<div class="feedWrite">
+							<div class="feedWriteTop">
+								<div class="userImg noImg"></div>
+								<div class="form-group smallSelect">										
+									<ul class="feed_commentsend">
+										<li>
+											<div class="selectbox_design">
+												<span id="selectbox_seleted_text">
+													<span th:if="${result.publicRange.toString() eq 'ALL'}">전체공개</span>
+													<span th:if="${result.publicRange.toString() eq 'LIKE'}">좋아요 공개</span>
+													<span th:if="${result.publicRange.toString() eq 'PRIVATE'}">나만 보기</span>
+												</span>
+												<i><img src="/img/select_ar.png" alt="" /></i>
+												<input type="hidden" name="publicRangeFormValue" id="publicRangeFormValue" th:value="${result.publicRange.toString()}">
+												<ul class="selectbox_option selectbox_off">
+													<li class="ALL">전체 공개</li>
+													<li class="LIKE">좋아요 공개</li>
+													<li class="PRIVATE">나만 보기</li>
+												</ul>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group mar-btm">
+									<textarea placeholder="음악대장님의 뮤직 스토리를 입력하세요." rows="18" class="form-control" th:text="${result.content}" name="content" id="update_feed_content"></textarea>
+								</div>
+							</div>
+
+							<!--
+							<div class="form-group mg0">
+								<div class="input-group ">
+									<div class="imgFileBox">												
+										<!-- 파일미리보기
+										<div class="form-group mg0">
+											<div id="dz-previews">
+												<div id="dz-template" class="pad-top bord-top">
+													<div class="media-left upImg">
+														<button data-dz-remove class="dz-cancel btn_closeX"></button>
+														<img class="dz-img" data-dz-thumbnail>
+													</div>															
+												</div>
+											</div>
+										</div>
+										<!-- //파일미리보기
+										<div class="mfilebox">													
+											<label for="ex_filename" class="btn_plus fileinput-button dz-clickable"></label>													
+										</div>												
+									</div>											
+								</div>
+
+								<p class="colBlue mt_10 mb_10 fll">*첫번째 사진이 대표 사진으로 등록됩니다.</p>
+							</div>
+							-->
+						</div>								
+					</div>
+				</div><!-- //end feed -->
+
+			</div>
+			<!-- //end 피드 -->
+			<div class="btn_box fixedBox">
+				<button class="btn btn-block btn-lg btn-dark" id="btn_feed_update" type="button">수정</button>
+			</div>
+			</form>
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		$(document).ready(function(){ 
+			$(".checkbox").click(function(){
+				if($(".checkbox-checked").is(":checked")){
+					$(this).parent("dd").removeClass("off").addClass("on");
+				}else{
+					$(this).parent("dd").removeClass("on").addClass("off");
+				}
+			});
+			// 공개여부 선택
+			$('.selectbox_option').on('click', function(e){
+				var selectboxText = $(e.target).html();
+				var selectValue = $(e.target).attr('class');
+
+				$('#selectbox_seleted_text').html(selectboxText);
+				$('#publicRangeFormValue').val(selectValue);
+
+			});
+			
+			var fileList = [];
+			$('#btn_feed_update').click(function(){
+		    	var form = $('#feedUpdateForm')[0];
+		        var formData = new FormData(form);
+		        for(var i=0; i<fileList.length; i++){
+		            formData.append("feedImg", fileList[i]);
+		        }
+		        
+		        $.ajax({
+		            type : 'post',
+		            url : '/api/feed/feedUpdateMobile.json',
+		            data : formData,
+		            processData : false,
+		            contentType : false,
+		            success : function(data){
+		            	UPMusic.alert("피드 수정이 완료 되었습니다.");
+		            	UPMusic.goto("/feed/me#my_feed");
+		            }
+		        });
+		    });
+			
+			$('#update_feed_content').keyup(function(){
+		    	var feed_insert_content = $('#update_feed_content').val();
+		    	
+		    	if(feed_insert_content.length > 0){
+		    		$('#btn_feed_update').show();
+		    	}else{
+		    		$('#btn_feed_update').hide();
+		    	}
+		    });
+			
+			
+			var fileTarget = $('.filebox .upload-hidden'); 
+				
+			fileTarget.on('change', function(){ 
+				// 값이 변경되면 
+				if(window.FileReader){ 
+					// modern browser 
+					var filename = $(this)[0].files[0].name;
+					fileList.push($(this)[0].files[0]);
+					
+				} else { // old IE 
+					var filename = $(this).val().split('/').pop().split('\\').pop(); // 파일명만 추출 
+				} 
+
+				// 추출한 파일명 삽입
+				$(this).siblings('.upload-name').val(filename); 
+			}); 
+		}); 
+		</script>
+	</div>
+
+</body>
+</html>

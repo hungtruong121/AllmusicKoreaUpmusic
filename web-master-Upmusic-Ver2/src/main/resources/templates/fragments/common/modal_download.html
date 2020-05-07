@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" >
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_download">
+		
+		<div class="modal fade" id="modal-track-download" tabindex="-1" role="dialog" aria-labelledby="UPM Download" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered login_pop" role="document">
+				<div class="modal-content">
+					<div class="modal-header login_header">
+	                    <h2 class="modal_title" th:text="#{modal.download}">Download</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <div class="modal-body login_body">
+						<div class="login_body1">
+							<ul class="uploadpop_btn downloadpop_btn">
+								<li><a id="button-download-mp3" onclick="UPMDownloadModal.requestFile('MP3');"><i><img th:src="@{/img/artist_music_icon.png}" alt="" /></i><span th:text="#{button.mp3}" th:remove="tag"></span></a></li>
+								<li><a id="button-download-wav" onclick="UPMDownloadModal.requestFile('WAV');"><i><img th:src="@{/img/artist_music_icon.png}" alt="" /></i><span th:text="#{button.wav}" th:remove="tag"></span></a></li>
+								<li><a id="button-download-zip" onclick="UPMDownloadModal.requestFile('ZIP');"><i><img th:src="@{/img/inputicon_track.png}" alt="" /></i><span th:text="#{button.track_zip}" th:remove="tag"></span></a></li>
+							</ul>
+						</div>
+	                </div>
+				</div>
+			</div>
+		</div>
+		
+	    <div sec:authorize="isAnonymous()">
+		<script type="text/javascript">
+			var UPMDownloadModal = {
+				showModal : function(trackId, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    UPMMessageModal.showModal(msgSeeNextVersion);
+				}
+			};
+	    </script>
+		</div>
+	    
+	    <div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+			var currentTrackId = 0;
+			var currentPrice = 0;
+			var UPMDownloadModal = {
+				showModal : function(trackId, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					// $('#modal-track-download').modal('show');
+				    UPMMessageModal.showModal(msgSeeNextVersion);
+				},
+				isBuyer : function(trackId, price) {
+					currentTrackId = trackId;
+					currentPrice = price;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_store + '/is_buyer/' + trackId, headers, params, UPMLicenseModal.isBuyerCallback);
+				},
+				isBuyerCallback: function(msg, object) {
+					if (msg == 'true') {
+						if (object.includes("MP3")) $('#button-download-mp3').show();
+						else $('#button-download-mp3').hide();
+						if (object.includes("WAV")) $('#button-download-wav').show();
+						else $('#button-download-wav').hide();
+						if (object.includes("ZIP")) $('#button-download-zip').show();
+						else $('#button-download-zip').hide();
+						$('#modal-store-download').modal('show');
+					} else {
+						UPMLicenseModal.showModalFromList(currentTrackId, currentRentalFee, currentPrice);
+					}
+				},
+				requestFile: function(format) {
+					UPMusic.alert("다운로드 서비스는 준비중입니다.");
+					// window.location.href = UPMusic._config._api_store + '/download/' + currentTrackId + '/' + format;
+				}
+			};
+		</script>
+		</div>
+	</div>
+</body>
+
+</html>

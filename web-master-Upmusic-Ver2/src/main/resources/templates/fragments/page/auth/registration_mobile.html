@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 회원가입 -->					
+			<form id="member-registration" action="#" th:action="@{/auth/registration}" th:object="${memberform}" method="POST" class="form-inline" enctype="utf8" role="form">
+				<!--<input type="hidden" th:field="*{birthday}" />
+				<input type="hidden" th:field="*{genderNo}" />
+				<input type="hidden" th:field="*{phoneNumber}" />-->
+
+				<input type="hidden" th:field="*{birthday}" id="birthday" name="birthday"/>
+				<input type="hidden" th:field="*{genderNo}" id="genderNo" name="genderNo"/>
+				<input type="hidden" th:field="*{phoneNumber}" id="phoneNumber" name="phoneNumber"/>
+
+				<div class="nl_panel">
+					<div class="memberJoin_box">
+						<div id="form-group-email" class="form-group" th:classappend="${#fields.hasErrors('email')} ? 'has-error' : ''">
+							<label class="control-label"><span th:text="#{model.member.id}" th:remove="tag"></span></label>
+							<div class="input-group">
+								<input th:type="email" th:field="*{email}" th:placeholder="#{model.member.id.placeholder}" class="form-control" />
+								<span class="input-group-btn">
+									<button  id="check-memberform-email" class="btn btn-gray" type="button"><span th:text="#{model.member.check}" th:remove="tag"></span></button>
+								</span>
+							</div>
+							<p th:if="${#fields.hasErrors('email')}" th:id="error-upw" class="help-block" th:errors="*{email}"></p>
+						</div>
+						<div id="form-group-password" class="form-group" th:classappend="${#fields.hasErrors('password')} ? 'has-error' : ''">
+							<label class="control-label"><span th:text="#{model.member.password}" th:remove="tag"></span></label>
+							<input th:field="*{password}" th:type="password" th:placeholder="#{model.member.password.placeholder}" class="form-control" />
+							<p th:if="${#fields.hasErrors('password')}" th:id="error-password" class="help-block" th:errors="*{password}"></p>
+						</div>
+						<div id="form-group-passwordConfirm" class="form-group" th:classappend="${#fields.hasErrors('passwordConfirm')} ? 'has-error' : ''">
+							<label class="control-label"><span th:text="#{model.member.password_confirm}" th:remove="tag"></span></label>
+							<input th:field="*{passwordConfirm}" th:type="password" th:placeholder="#{model.member.password_confirm.placeholder}" class="form-control" />
+							<p th:if="${#fields.hasErrors('passwordConfirm')}" th:id="error-passwordConfirm" class="help-block" th:errors="*{passwordConfirm}"></p>
+						</div>
+						<div id="form-group-nick" class="form-group" th:classappend="${#fields.hasErrors('nick')} ? 'has-error' : ''">
+							<label class="control-label"><span th:text="#{model.member.artist_nick}" th:remove="tag"></span></label>
+							<input th:field="*{nick}" th:type="text" th:placeholder="#{model.member.nick.placeholder}" class="form-control" />
+							<p th:if="${#fields.hasErrors('nick')}" th:id="error-nick" class="help-block" th:errors="*{nick}"></p>
+						</div>
+						<div id="form-group-phoneNumber" class="form-group" th:classappend="${#fields.hasErrors('phoneNumber')} ? 'has-error' : ''">
+							<label class="control-label"><span th:text="#{button.cellphone.authentication}" th:remove="tag"></span></label>
+							<button class="btn btn-gray btn-block" type="button" onclick="fnPopup();"><span th:text="#{button.cellphone.authentication}" th:remove="tag"></span></button>
+							<p th:if="${#fields.hasErrors('phoneNumber')}" th:id="errorPhoneNumber" class="help-block" th:errors="*{phoneNumber}"></p>
+							<p th:unless="${#fields.hasErrors('phoneNumber')}" th:id="errorPhoneNumber" class="help-block" style="display: none;"></p>
+							<p th:if="${!#fields.hasErrors('phoneNumber') and memberform.phoneNumber != null}" id="completePhoneNumberAuthentication" class="help-block-blue" th:text="#{common.complete.phone_authentification}"></p>
+							<p th:unless="${!#fields.hasErrors('phoneNumber') and memberform.phoneNumber != null}" id="completePhoneNumberAuthentication" class="help-block-blue" style="display: none;" th:text="#{common.complete.phone_authentification}"></p>
+						</div>
+						
+						<div class="form-group pad-ver">
+							<label class="col-md-3 control-label"><span th:text="#{model.member.membership_of_copyright}" th:remove="tag"></span></label>
+							<div class="radio">	
+								<input id="demo-inline-form-radio" type="radio" name="form-radio-button" th:field="*{copyrightMembership}" value="1">
+								<label for="demo-inline-form-radio"><span class="radiobtn_custom"></span><span th:text="#{common.yes}" th:remove="tag"></span></label>
+	
+								<input id="demo-inline-form-radio-2" type="radio" name="form-radio-button" th:field="*{copyrightMembership}" value="0" checked>
+								<label for="demo-inline-form-radio-2"><span class="radiobtn_custom"></span><span th:text="#{common.no}" th:remove="tag"></span></label>
+							</div>
+						</div>
+						<div id="form-group-checkbox" class="form-group terms">
+							<div class="checkbox">
+								<input id="agree-all-terms" class="checkbox-checked" type="checkbox">
+								<label for="agree-all-terms"><span class="checkbox-custom"></span> &nbsp;<span th:text="#{model.member.terms.agree_all}" th:remove="tag"></span></label>
+							</div>
+							<dl>
+								<dd>
+									<div id="form-group-checkbox-term" class="checkbox form-group" th:classappend="${#fields.hasErrors('agreeTermsUse')} ? 'has-error' : ''">
+										<input id="agree-term" class="checkbox-checked" type="checkbox" name="agreeTermsUse">
+										<label for="agree-term"><span class="checkbox-custom"></span> &nbsp;<span th:text="#{model.member.terms.use}" th:remove="tag"></span> <span th:text="#{model.member.terms.necessary}"></span></label>
+										<p th:if="${#fields.hasErrors('agreeTermsUse')}" th:id="error-agreeTermsUse" class="help-block"	th:errors="*{agreeTermsUse}"></p>
+									</div>
+									<u class="a_detail"><a onclick="UPMTermsModal.showModalUse();"><span th:text="#{model.member.terms.look_close}" th:remove="tag"></span></a></u>
+								</dd>
+								<dd>
+									<div id="form-group-checkbox-privacy" class="checkbox form-group" th:classappend="${#fields.hasErrors('agreeTermsPrivacy')} ? 'has-error' : ''">
+										<input id="agree-privacy" class="checkbox-checked" type="checkbox" name="agreeTermsPrivacy">
+										<label for="agree-privacy"><span class="checkbox-custom"></span> &nbsp;<span th:text="#{model.member.terms.privacy}" th:remove="tag"></span> <span th:text="#{model.member.terms.necessary}"></span></label>
+										<p th:if="${#fields.hasErrors('agreeTermsPrivacy')}" th:id="error-agreeTermsPrivacy" class="help-block" th:errors="*{agreeTermsPrivacy}"></p>
+									</div>
+									<u class="a_detail"><a onclick="UPMTermsModal.showModalPrivacy();"><span th:text="#{model.member.terms.look_close}" th:remove="tag"></span></a></u>
+								</dd>
+								<dd>
+									<div id="form-group-checkbox-event" class="checkbox choise_span">
+										<input id="agree-event" class="checkbox-checked" type="checkbox" name="receiveEmail">
+										<label for="agree-event"><span class="checkbox-custom"></span> &nbsp;<span th:text="#{model.member.terms.receive_email}" th:remove="tag"></span> <b th:text="#{model.member.terms.select}"></b></label>
+									</div>
+								</dd>
+							</dl>
+						</div>
+
+					</div><!-- //memberJoin_box -->
+				</div>
+				<div class="btn_box">
+					<button class="btn btn-block btn-lg btn-dark" onclick="UPMRegistration.submit();return false;">
+						<span th:text="#{model.member.registration.complete}" th:remove="tag"></span>
+					</button>
+				</div>
+			</form>
+			<!-- //end 회원가입 -->
+			<!-- 본인인증 서비스 팝업을 호출하기 위해서는 다음과 같은 form이 필요합니다. -->
+			<form name="form_chk" method="post">
+				<input type="hidden" name="m" value="checkplusSerivce">				<!-- 필수 데이타로, 누락하시면 안됩니다. -->
+				<input type="hidden" name="EncodeData" th:value="${sEncData}">		<!-- 위에서 업체정보를 암호화 한 데이타입니다. -->
+			</form>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+			/*<![CDATA[*/
+				var email = /*[[ ${memberform.email} ]]*/;
+				var password = /*[[ ${memberform.password} ]]*/;
+				var passwordConfirm = /*[[ ${memberform.passwordConfirm} ]]*/;
+				var headers = { /*[[ ${_csrf.headerName} ]] : [[ ${_csrf.token} ]]*/ };
+				var UPMRegistration = {
+					_config : {
+						loading : false
+					},
+					submit : function() {
+						if (UPMRegistration._config.loading) return;
+						// UPMusic.startLoading();
+						UPMRegistration._config.loading = true;
+						document.getElementById("member-registration").submit();
+					}
+				};
+				$(function() {
+					$('#check-memberform-email').click(function() {
+						var params = {
+							email: $('#form-group-email #email').val()
+						};
+			  			UPMusic.ajaxPost(UPMusic._config._api_check_email, headers, params, UPMusic.checkCallback);
+			  		});
+					/* $('#check-memberform-request-code').click(function() {
+						var params = {
+							phoneNumber: $('#form-group-phoneNumber #phoneNumber').val()
+						};
+			  			UPMusic.ajaxPost(UPMusic._config._api_request_phone_authentication_code, headers, params, UPMusic.checkCallback);
+			  		}); */
+			  		$( '#agree-all-terms' ).click( function() {
+						$(this).prop( 'checked', this.checked );
+				    });
+					$( '#agree-term' ).click( function() {
+						$(this).prop( 'checked', this.checked );
+				    });
+					$( '#agree-privacy' ).click( function() {
+						$(this).prop( 'checked', this.checked );
+				    });
+					$( '#agree-event' ).click( function() {
+						$(this).prop( 'checked', this.checked );
+				    });
+					$('#agree-all-terms').on('change', function () {
+						UPMusic.checkboxAllToggle('#form-group-checkbox', $(this).prop('checked'));
+					});
+					$('#form-group-checkbox input[type=checkbox]').on('change', function () {
+						if (!$(this).prop('checked')) {
+							$('#agree-all-terms').prop('checked', false);
+						}
+					});
+					
+					
+					/* $('#birthday_datetimepicker').datepicker({
+		                format: 'yyyymmdd'
+		            }).on('changeDate', function(e){
+		                $(this).datepicker('hide');
+		            }); */
+					if (password != '') $('input#password').val(password);
+					if (passwordConfirm != '') $('input#passwordConfirm').val(passwordConfirm);
+				});
+			/*]]>*/
+		</script>
+		
+		<script type="text/javascript" th:inline="javascript">
+			window.name ="Parent_window";
+			function fnPopup(){
+				window.open('', 'popupChk', 'width=500, height=550, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, location=no, scrollbar=no');
+				document.form_chk.action = "https://nice.checkplus.co.kr/CheckPlusSafeModel/checkplus.cb";
+				document.form_chk.target = "popupChk";
+				document.form_chk.submit();
+			}
+		</script>
+		
+		<div th:if="${registeredCompleted != null}">
+			<script type="text/javascript" th:inline="javascript">
+				$(function() {
+					UPMusicCommon.registeredNewMember(email, password);
+				});
+			</script>
+		</div>
+	</div>
+
+</body>
+</html>

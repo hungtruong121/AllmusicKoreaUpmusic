@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 비디오 -->
+			<div class="nl_panel pdb0 pdt0">
+				<ul class="nav nav-tabs tabType01">
+					<li class="active"><a>진행중인 이벤트</a></li>
+					<li class="making"><a>지난 이벤트</a></li>
+				</ul>
+			</div>
+			<div class="tab-content">
+				<div class="tab-pane active" id="event-1">
+					<!-- 홈 진행중인이벤트 -->
+					<div class="nl_panel">
+						<div class="eventList">
+							<dl>
+								<dd th:each="event : ${eventListMobile}">
+									<a th:href="@{${event.getDetailURL()}}">
+									<!--<div class="img"><img th:src="${event.getImgUrl()}" alt="" /></div>-->
+									<div class="img envet_thumbnail" th:style="'background: url(' + ${event.getImgUrl()} + ');'"></div>
+									<div class="info">
+										<p class="sign_red" th:text="${event.getDayCount()}"></p>
+										<p class="subject clamp1" th:text="${event.subject}"></p>
+										<p class="date" th:text="${event.getEventExpiryDate()}"></p>
+										<p class="cmt clamp2"></p>
+
+									</div>
+									</a>
+								</dd>
+							</dl>
+						</div>
+					</div>
+					<div class="h80"></div>
+					<!-- //end 진행중인이벤트 -->
+				</div>
+				<div class="tab-pane" id="event-2">
+					<!-- 지난이벤트 -->
+					<div class="nl_panel">
+						<div class="eventList past">
+							<dl>
+								<dd th:each="eventEnd : ${endEventListMobile}">
+									<a th:href="@{${eventEnd.getDetailURL()}}">
+									<!--<div class="img"><img th:src="${eventEnd.getImgUrl()}" alt="" /></div>-->
+									<div class="img envet_thumbnail" th:style="'background: url(' + ${eventEnd.getImgUrl()} + ');'"></div>
+									<div class="info">
+										<p class="sign_red">종료</p>
+										<p class="subject clamp1" th:text="${eventEnd.subject}"></p>
+										<p class="date" th:text="${eventEnd.getEventExpiryDate()}"></p>
+										<p class="cmt clamp2"></p>
+
+									</div>
+									</a>
+								</dd>
+							</dl>
+						</div>
+					</div>
+					<div class="h80"></div>
+					<!-- //end 지난이벤트 -->
+				</div>
+			</div>
+			<!-- //end tab-content -->
+			<!-- //end 이벤트 -->
+		</div>
+		<!-- //end content -->
+
+
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+
+		/*]]>*/
+
+
+		</script>
+	</div>
+
+</body>
+</html>

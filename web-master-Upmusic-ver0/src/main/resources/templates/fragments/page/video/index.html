@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="albuminfo_wrap section">
+				<div class="albuminfo_head">
+					<h2 class="page-title" th:text="#{nav.video.home}"></h2>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="album_infomation video_infomation">
+							<div th:if="${topVideo != null}" class="video_wrap2">
+								<p class="content_title2 mb20 mt0" th:text="#{common.video.best}"></p>
+								<div class="video_wrap video_wrap_ver2 videoplay_on pointer" th:onclick="@{${'UPMusic.goto(&quot;' + topVideo.getUrl() + '&quot;, event)'}}" th:style="@{${'background: url(' + topVideo.getThumbnailUrl() + ') center center no-repeat;'}}">
+									<!--
+									<img th:src="${topVideo.getThumbnailUrl()}" alt="" />
+									-->
+
+									<div class="play_iconwrap">
+										<ul>
+											<li><a th:href="${topVideo.getUrl()}"><img th:src="@{/img/play_icon.png}" alt="" /></a></li>
+											<li th:text="${topVideo.formattedDuration()}"></li>
+										</ul>
+									</div>
+									<div class="item_info">
+										<ul>
+											<li><a th:href="${topVideo.getUrl()}"><span th:text="${topVideo.subject}" th:remove="tag"></span></a></li>
+											<li><a th:href="${topVideo.getArtistUrl()}"><span th:text="${topVideo.getArtistNick()}" th:remove="tag"></span></a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="album_infotext video_infotext">
+								<p class="content_title2 mb20 mt0" th:text="#{common.video.best.tracks}"></p>
+								<div th:if="${tracks != null and tracks.size() gt 0}" class="musiclist_table musiclist_table_sub musiclist_table_hover2 video_musiclist">
+									<table id="top-video-tracks">
+
+										<tr>
+											<th><span th:text="#{model.track.information}" th:remove="tag"></span></th>
+											<th><span th:text="#{common.duration}" th:remove="tag"></span></th>
+											<th><span th:text="#{common.play}" th:remove="tag"></span></th>
+											<th><span th:text="#{common.put_in}" th:remove="tag"></span></th>
+										</tr>
+										<tr th:each="track : ${tracks}" class="just-list">
+											<th>
+												<a th:href="@{${track.getUrl()}}"><i><img class="track-list-cover" th:src="@{${track.getCoverImageUrl()}}" alt="" /></i></a>
+												<p>
+													<a th:href="@{${track.getUrl()}}"><span th:text="${track.subject}" th:remove="tag"></span></a><br />
+													<b><a th:href="@{${track.getArtistUrl()}}"><span th:text="${track.getArtistNick()}" th:remove="tag"></span></a></b>
+												</p>
+											</th>
+											<td><span th:text="${track.formattedDuration()}" th:remove="tag"></span></td>
+											<td>
+												<a th:onclick="@{${'UPMusicCommon.addTrackToPlaylist(' + track.id + ', event);'}}"><img th:src="@{/img/listcontrols_icon1.png}" alt="" /></a>
+											</td>
+											<td>
+												<a th:onclick="@{${'UPMusicCommon.showCollectionModalFromList(&quot;#top-video-tracks&quot;, ' + track.id + ', event);'}}"><img th:src="@{/img/listcontrols_icon2.png}" alt="" /></a>
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div th:unless="${tracks != null and tracks.size() gt 0}" class="list_none">
+									<ul>
+										<li><img th:src="@{/img/music_none.png}" alt="" /></li>
+										<li th:text="#{common.nothing.to_show.track}"></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<div class="public_video_wrap mt30">
+							<p class="content_title2 mb20"><a href="/video/hot"><span th:text="#{model.video.hot_gv}" th:remove="tag"></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a></p>
+							<ul>
+								<li th:each="video,iter : ${top5GVideos}">
+									<div class="artist_profile videoplay_on2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}">
+										<img th:src="@{${video.getThumbnailUrl()}}" alt=""/>
+										<div class="play_iconwrap play_iconwrap2">
+											<ul>
+												<li><a th:href="@{${video.getUrl()}}"><img th:src="@{/img/play_icon.png}" alt=""></a></li>
+												<li th:text="${video.formattedDuration()}"></li>
+											</ul>
+										</div>
+									</div>
+									<div class="artist_info public_info">
+										<h3 class="count" th:text="${iter.index + 1}"></h3>
+										<ul class="public_video_title">
+											<li><a th:href="@{${video.getUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a></li>
+											<li><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a> <span th:text="${video.formattedTime()}"></span></li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</div>
+
+						<div class="public_video_wrap mt30">
+							<p class="content_title2 mb20"><a href="/video/mv"><span th:text="#{model.video.hot_mv}" th:remove="tag"></span> <i><img th:src="@{/img/icon_more.png}" alt="" /></i></a></p>
+							<ul>
+								<li th:each="video,iter : ${top5MVideos}">
+									<div class="artist_profile videoplay_on2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}">
+										<img th:src="@{${video.getThumbnailUrl()}}" alt=""/>
+										<div class="play_iconwrap play_iconwrap2">
+											<ul>
+												<li><a th:href="@{${video.getUrl()}}"><img th:src="@{/img/play_icon.png}" alt=""></a></li>
+												<li th:text="${video.formattedDuration()}"></li>
+											</ul>
+										</div>
+									</div>
+									<div class="artist_info public_info">
+										<h3 class="count" th:text="${iter.index + 1}"></h3>
+										<ul class="public_video_title">
+											<li><a th:href="@{${video.getUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a></li>
+											<li><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a> <span th:text="${video.formattedTime()}"></span></li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div><!-- albuminfo_wrap -->
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+</body>
+</html>

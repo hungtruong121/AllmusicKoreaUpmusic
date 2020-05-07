@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl">심사 대기중인 가이드 보컬</h2>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="accordion_btn"></div>
+						<div class="genre_listcontent">
+							<div id="uploaded-guide-list" class="musiclist_table musiclist_table_hover2">
+								<table>
+									<tr>
+										<th><span th:text="#{model.track.number}" th:remove="tag"></span></th>
+										<th>닉네임</th>
+										<th>나이</th>
+										<th>가능지역</th>
+										<th>가능 장르</th>
+										<th>가이드 범위</th>
+										<th>비용</th>
+									</tr>
+									<tr th:each="guide, iter : ${guides}" th:id="${guide.id}" class="pointer" th:onclick="@{${'UPMusicAdmin.goto(&quot;/admin/music/guide_vocal/' + guide.id + '&quot;);'}}">
+										<td><span th:text="${iter.index + 1}" th:remove="tag"></span></td>
+										<th>
+											<p>
+												<b><span th:text="${guide.getMember().getNick()}" th:remove="tag"></span></b>
+											</p>
+										</th>
+										<td><span th:text="${guide.age}" th:remove="tag"></span></td>
+										<td><span th:text="${guide.area}" th:remove="tag"></span></td>
+										<td><span th:text="${guide.genre}" th:remove="tag"></span></td>
+										<td th:text="${guide.getGuideVocalScopesString()}"></td>
+										<td><span th:text="${guide.getCostString()}" th:remove="tag"></span>원</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div th:if="${guides != null and guides.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${guides.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not guides.first}" th:href="@{${'/admin/music/guide_vocal_judging'}(page=${guides.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${guides.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, guides.totalPages - 1)}" th:class="${guides.number eq pageNo}? 'active' : ''">
+						            <a th:if="${guides.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (guides.number eq pageNo)}" th:href="@{${'/admin/music/guide_vocal_judging'}(page=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${guides.number + 1 ge guides.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not guides.last}" th:href="@{${'/admin/music/guide_vocal_judging'}(page=${guides.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${guides.last}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+</body>
+</html>

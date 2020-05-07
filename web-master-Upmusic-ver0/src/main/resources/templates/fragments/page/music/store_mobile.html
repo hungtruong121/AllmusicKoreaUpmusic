@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- reward music content -->
+			<div class="reward_wrap store_wrap">
+				<div class="nl_panel pdb0 pdt0">
+					<ul class="nav nav-tabs tabType01">
+						<li class="active"><a><span th:text="#{nav.music.store}" th:remove="tag"></span></a></li>
+						<li class="making"><a><span th:text="#{nav.music.store.request}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane active" id="musicStore-1">
+						<!-- track list -->
+						<div class="album_list_wrap">
+							<div class="nl_panel">
+								<p class="pd5 col_gray">*장르를 선택해주세요.</p>
+								<div class="swiper-container mainSwiper">
+									<ul class="swiper-wrapper genre_menu of-h">
+										<li th:each="genreOption, iter : ${genreMap}" th:text="${genreOption['value']}" th:id="${genreOption['key']}" class="swiper-slide rewordlist_tab" th:classappend="${iter.index} eq 0 ? 'active genre_0' + ${iter.index%5 + 1} : 'genre_0' + ${iter.index%5 + 1}" th:onclick="@{${'UPMListTrackAnonymous.selectedGenre(&quot;' + tracksFragmentId + '&quot;, &quot;' + paginationUrl + '&quot;, &quot;' + genreOption['key'] + '&quot;);'}}"></li>
+									</ul>
+								</div>
+							</div>
+							<div class="slidebtn_clickwrap">
+								<!-- Add Pagination -->
+							</div>
+							<div th:replace="fragments/common/list_track_default_mobile :: list_track(${tracksFragmentId}, ${tracks}, ${paginationUrl})"></div>
+						</div>
+						<!--// track list -->
+					</div>
+					
+					<!-- 제작 의뢰 -->
+					<div class="tab-pane" id="musicStore-2">
+						<!-- list -->
+						<div class="making_list_wrap">
+							<div class="p0_panel btm_gray1">
+								<div class="nl_panel">
+									<div class="ct_title ofh">
+										<h2 class="content_title pdt5"><span th:text="#{common.request.music.description_1}" th:remove="tag"></span></h2>
+										<p class="benchmark"><button class="btn_plus" th:onclick="@{${'UPMusic.goto(&quot;/music/store/request&quot;);'}}">제작의뢰 등록</button></p>
+									</div>
+								</div>
+							</div>
+							<div th:replace="fragments/common/list_request_store_mobile :: list_request(${requestsFragmentId}, ${requests}, ${requestPaginationUrl})"></div>
+						</div>
+						<!-- //end list -->
+					</div>
+					<!-- //end 제작 의뢰 -->
+				</div><!-- //end tab-content -->
+				
+			</div>
+			<!-- //end reward music content -->
+		</div>
+		
+		<!-- 제작의뢰 ? Modal -->
+		<div class="modal fade" id="question-modal" role="dialog" tabindex="-1" aria-labelledby="question-modal" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content pd0">
+	                <!--Modal header-->
+	                <div class="modal-header login_header">
+						<h2 class="modal_title">스토어 뮤직이란?</h2>
+						<img th:src="@{/img/close.png}" class="close" alt="" data-dismiss="modal" />
+	                </div>
+	                <!--Modal body-->
+	                <div class="modal-body question-modal">
+	                    <ul>
+	                    	<li>
+								<p class="num">01</p>
+								<p class="text">당신도 프로듀서가 되어 자신만의 곡으로 <b>음반</b>을 <b>발매</b>할 수 있습니다.</p>
+							</li>
+	                    	<li>
+								<p class="num">02</p>
+								<p class="text">당신이 원하는 멋진 곡을 <b>선택</b>하세요.</p>
+							</li>
+	                    	<li>
+								<p class="num">03</p>
+								<p class="text">해당 아티스트와 바로 연결되어 <b>직접거래</b>가 <b>가능</b>합니다.</p>
+							</li>
+	                    	<li>
+								<p class="num">04</p>
+								<p class="text">거래를 위해 <b>아티스트</b>의 <b>정보</b>를 확인하세요.</p>
+							</li>
+	                    </ul>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<!-- end 제작의뢰 ? Modal -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentGenre = /*[[ ${defaultGenre} ]]*/;
+			var currentTheme = /*[[ ${defaultTheme} ]]*/;
+			var UPMListTrackAnonymous = {
+				loadPage: function(elementId, paginationUrl, page) {
+					var url = paginationUrl + '?page=' + page;
+					if (elementId == 'store-fragment') url += '&genre=' + currentGenre;
+					$.get(url, function(data) {
+						$('#' + elementId).replaceWith(data);
+					});
+				},
+				appendPage: function(elementId, paginationUrl, page, totalPages) {
+					var url = paginationUrl + '?page=' + page;
+					if (elementId == 'store-fragment') url += '&genre=' + currentGenre;
+					$.get(url, function(data) {
+						$('#' + elementId + ' dl.track-list').append(data);
+					});
+					if (page + 1 >= totalPages) {
+						$('#' + elementId + ' #list-more-button').remove();
+					} else {
+						var moreButton = '<p><a onclick="UPMListTrackAnonymous.appendPage(\'' + elementId + '\', \'' + paginationUrl + '\', ' + (page + 1) + ', ' + totalPages + ');">SHOW MORE <i><img src="/img/show_ar.png" alt="" /></i></a></p>';
+						$('#' + elementId + ' #list-more-button').html(moreButton);
+					}
+				},
+				selectedGenre: function(elementId, url, genre) {
+					currentGenre = genre;
+					$('#store .btn-group button').each(function() {
+						if (this.id == genre) {
+							if (!$(this).hasClass("active")) $(this).addClass('active');
+						} else {
+							if ($(this).hasClass("active")) $(this).removeClass('active');
+						}
+					});
+					UPMListTrackAnonymous.loadPage(elementId, url, 0);
+				}
+			};
+		/*]]>*/
+		</script>
+		
+	</div>
+
+</body>
+</html>

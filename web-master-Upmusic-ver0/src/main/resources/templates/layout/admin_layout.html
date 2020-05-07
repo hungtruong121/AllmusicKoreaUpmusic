@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+
+<head>
+<meta charset="utf-8"/>
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE" th:text="#{common.app.title}"></title>
+<meta name="keywords" content="Music" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!--
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-select/bootstrap-select.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/nifty.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo-icons.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/styles_admin.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/plugins/summernote/dist/summernote.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/plugins/tablesorter-master/css/theme.default.css}"/>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/plugins/bootstrap-select/bootstrap-select.min.js}"></script>
+<script th:src="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+<script th:src="@{/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.ko.min.js}"></script>
+<script th:src="@{/js/upmusic_admin.js}"></script>
+<script th:src="@{/js/vinyli.viSimpleSlider.js}"></script>
+<script th:src="@{/plugins/summernote/dist/summernote.min.js}"></script>
+<script th:src="@{/plugins/tablesorter-master/js/jquery.tablesorter.js}"></script>
+<script th:src="@{/js/swiper.min.js}"></script>
+<script th:src="@{/js/upmusic.js}"></script>
+<script th:src="@{/js/xlsx.full.min.js}"></script>
+-->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/nifty.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/nifty-demo-icons.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/swiper.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/plugins/pace/pace.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-select/bootstrap-select.min.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/plugins/summernote/dist/summernote.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/styles_admin.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/plugins/tablesorter-master/css/theme.default.css}"/>
+
+	<script th:src="@{/js/jquery.min.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+	<script th:src="@{/plugins/bootstrap-select/bootstrap-select.min.js}"></script>
+	<script th:src="@{/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+	<script th:src="@{/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.ko.min.js}"></script>
+	<script th:src="@{/js/upmusic_admin.js}"></script>
+	<script th:src="@{/js/vinyli.viSimpleSlider.js}"></script>
+	<script th:src="@{/plugins/summernote/dist/summernote.min.js}"></script>
+	<script th:src="@{/plugins/tablesorter-master/js/jquery.tablesorter.js}"></script>
+	<script th:src="@{/plugins/pace/pace.min.js}"></script>
+	<script th:src="@{/js/swiper.min.js}"></script>
+	<script th:src="@{/js/upmusic.js}"></script>
+	<script th:src="@{/js/xlsx.full.min.js}"></script>
+</head>
+
+<body>
+	<header th:replace="fragments/admin/common/header :: header"></header>
+	<!-- <div th:replace="fragments/common/navigation :: navigation"></div> -->
+
+	<div class="content">
+		<aside th:replace="fragments/admin/common/sidebar :: sidebar"></aside>
+		<div class="section_wrap" layout:fragment="content"></div>
+	</div>
+
+	<footer th:replace="fragments/admin/common/footer :: footer"></footer>
+
+	<div th:replace="fragments/admin/common/modal_message :: modal_message"></div>
+
+	<div th:replace="fragments/common/modal_confirm :: modal_confirm"></div>
+
+	<div class="loading_pop">
+		<div class="loading_wrap">
+			<div class="loading">
+				<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="45px" height="45px" viewBox="0 0 128 128" xml:space="preserve"><g><circle cx="16" cy="64" r="16" fill="#8f929a" fill-opacity="1"/><circle cx="16" cy="64" r="16" fill="#b4b6bc" fill-opacity="0.67" transform="rotate(45,64,64)"/><circle cx="16" cy="64" r="16" fill="#d0d1d5" fill-opacity="0.42" transform="rotate(90,64,64)"/><circle cx="16" cy="64" r="16" fill="#e9e9eb" fill-opacity="0.2" transform="rotate(135,64,64)"/><circle cx="16" cy="64" r="16" fill="#f2f2f3" fill-opacity="0.12" transform="rotate(180,64,64)"/><circle cx="16" cy="64" r="16" fill="#f2f2f3" fill-opacity="0.12" transform="rotate(225,64,64)"/><circle cx="16" cy="64" r="16" fill="#f2f2f3" fill-opacity="0.12" transform="rotate(270,64,64)"/><circle cx="16" cy="64" r="16" fill="#f2f2f3" fill-opacity="0.12" transform="rotate(315,64,64)"/><animateTransform attributeName="transform" type="rotate" values="0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64" calcMode="discrete" dur="720ms" repeatCount="indefinite"></animateTransform></g></svg>
+			</div>
+			<p class="loding_title">Loading..</p>
+		</div>
+	</div>
+
+	<script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var msgUserAfterLogin = /*[[ #{common.request.auth} ]]*/;
+        var msgAddedToCollection = /*[[ #{common.track.added_to_collection} ]]*/;
+        var msgSeeNextVersion = /*[[ #{common.see_next_version} ]]*/;
+        var msgSelectItem = /*[[ #{common.select_item} ]]*/;
+        /*]]>*/
+	</script>
+
+	<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var headers = { /*[[ ${_csrf.headerName} ]] : [[ ${_csrf.token} ]]*/ };
+		/*]]>*/
+		</script>
+	</div>
+
+	<div sec:authorize="isAuthenticated()">
+
+		<div th:replace="fragments/common/modal_upload"></div>
+
+		<div th:replace="fragments/common/modal_collection_list :: modal_collection_list"></div>
+
+		<script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+            var headers = { /*[[ ${_csrf.headerName} ]] : [[ ${_csrf.token} ]]*/ };
+            /*]]>*/
+		</script>
+		<script th:src="@{/js/upmusic_common_member.js}" th:inline="javascript"></script>
+	</div>
+</body>
+
+</html>

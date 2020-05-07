@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- reward music content -->
+			<div class="reward_wrap">
+				<div class="nl_panel pdb0 btm_gray1n2">
+					<ul class="nav nav-tabs tabType05">
+						<li class="active"><a class="sm">전체</a></li>
+						<li class="making"><a class="sm">업로드</a></li>
+						<li class="making"><a class="sm">저작권</a></li>
+						<li class="making"><a class="sm">업 리그 차트</a></li>
+						<li class="making"><a class="sm">뮤직스토어</a></li>
+						<li class="making"><a class="sm">아티스트</a></li>
+						<li class="making"><a class="sm">결제</a></li>
+						<li class="making"><a class="sm">정산</a></li>
+						<li class="making"><a class="sm">리워드</a></li>
+						<li class="making"><a class="sm">포인트</a></li>
+						<li class="making"><a class="sm">기타</a></li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane active" id="notice-1">
+						<!-- 전체 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="faq, index : ${faqListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${faq.getCategoryStr()} + ]"></label>
+											<span th:text="${faq.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq- + ${index.count}">
+									<div class="panel-body" th:utext="${faq.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //전체 -->
+					</div>
+					<div class="tab-pane" id="notice-2">
+						<!-- 안내 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="upload, index : ${uploadListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq2-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${upload.getCategoryStr()} + ]"></label>
+											<span th:text="${upload.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq2- + ${index.count}">
+									<div class="panel-body" th:utext="${upload.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //안내 -->
+					</div>
+					<div class="tab-pane" id="notice-3">
+						<!-- 업데이트 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="copyright, index : ${copyrightListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq3-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${copyright.getCategoryStr()} + ]"></label>
+											<span th:text="${copyright.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq3- + ${index.count}">
+									<div class="panel-body" th:utext="${copyright.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //업데이트 -->
+					</div>
+					<div class="tab-pane" id="notice-4">
+						<!-- 서비스점검 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="upleague, index : ${upleagueListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq4-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${upleague.getCategoryStr()} + ]"></label>
+											<span th:text="${upleague.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq4- + ${index.count}">
+									<div class="panel-body" th:utext="${upleague.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //서비스점검 -->
+					</div>
+					<div class="tab-pane" id="notice-5">
+						<!-- 뮤직스토어 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="musicstore, index : ${musicstoreListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq5-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${musicstore.getCategoryStr()} + ]"></label>
+											<span th:text="${musicstore.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq5- + ${index.count}">
+									<div class="panel-body" th:utext="${musicstore.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //서비스점검 -->
+					</div>
+					<div class="tab-pane" id="notice-6">
+						<!-- 아티스트 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="artist, index : ${artistListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq6-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${artist.getCategoryStr()} + ]"></label>
+											<span th:text="${artist.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq6- + ${index.count}">
+									<div class="panel-body" th:utext="${artist.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //서비스점검 -->
+					</div>
+					<div class="tab-pane" id="notice-7">
+						<!-- 아티스트 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="payment, index : ${paymentListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq7-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${payment.getCategoryStr()} + ]"></label>
+											<span th:text="${payment.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq7- + ${index.count}">
+									<div class="panel-body" th:utext="${payment.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //서비스점검 -->
+					</div>
+					<div class="tab-pane" id="notice-8">
+						<!-- 아티스트 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="calculate, index : ${calculateListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq8-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${calculate.getCategoryStr()} + ]"></label>
+											<span th:text="${calculate.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq8- + ${index.count}">
+									<div class="panel-body" th:utext="${calculate.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //서비스점검 -->
+					</div>
+					<div class="tab-pane" id="notice-9">
+						<!-- 아티스트 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="reward, index : ${rewardListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq9-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${reward.getCategoryStr()} + ]"></label>
+											<span th:text="${reward.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq9- + ${index.count}">
+									<div class="panel-body" th:utext="${reward.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //서비스점검 -->
+					</div>
+					<div class="tab-pane" id="notice-10">
+						<!-- 아티스트 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="point, index : ${pointListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq10-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${point.getCategoryStr()} + ]"></label>
+											<span th:text="${point.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq10- + ${index.count}">
+									<div class="panel-body" th:utext="${point.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //서비스점검 -->
+					</div>
+					<div class="tab-pane " id="notice-11">
+						<!-- 아티스트 -->
+						<div id="noticeList" class="panel-group panel-group-trans panel-group-condensed accordion faq_wrap">
+							<div class="panel" th:each="other, index : ${otherListMobile}">
+								<div class="panel-heading">
+									<p class="panel-title">
+										<a th:href="@{'#demo-acc-faq11-' + ${index.count}}" data-parent="#demo-acc-faq" data-toggle="collapse" class="collapsed flag">
+											<label class="index" th:text="[ + ${other.getCategoryStr()} + ]"></label>
+											<span th:text="${other.limitSubject()}"></span>
+											<!-- <u class="ico_new"></u> -->
+											<i class="pci-chevron chevron-up"></i>
+										 </a>
+										
+									</p>
+								</div>
+								<div class="panel-collapse collapse" th:id="demo-acc-faq11- + ${index.count}">
+									<div class="panel-body" th:utext="${other.answer.content}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- //서비스점검 -->
+					</div>
+				</div><!-- //end tab-content -->
+			</div>
+			<!-- //end reward music content -->
+		</div>
+		<!-- //end content -->
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			
+		/*]]>*/
+		$('.flag').click(function(e){
+			$('.collapse').each(function(){
+				if($(this).hasClass('in')){
+					$(this).collapse("hide");
+				}
+			});
+		});
+		
+		</script>
+	</div>
+
+</body>
+</html>

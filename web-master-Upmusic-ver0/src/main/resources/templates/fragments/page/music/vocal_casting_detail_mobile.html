@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- 캐스팅 상세 -->
+			<div class="p0_panel">
+				<div class="castingView">
+					<div class="btm_gray1">
+						<p class="subject clamp2" th:text="${casting.getSubject()}"></p>								
+						<p class="date"><span th:onclick="@{${'UPMusic.goto(&quot;' + casting.getMember().getUrl() + '&quot;, event);'}}" th:text="${casting.getMember().getNick()}"></span><span th:text="${casting.formattedDay()}"></span><span>조회 <span th:text="${casting.getHitCnt()}" th:remove="tag"></span>회</span></p>								
+					</div>
+
+					<div class="writing p10" th:utext="${#strings.replace( #strings.escapeXml( casting.description ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></div>
+					<div id="audioWrap"></div>
+					<div id="player-track-title-html" class="dpn" th:text="${casting.getFilename()}"></div>
+				</div>
+			</div>
+			<!-- //end 캐스팅 상세 -->
+			<!-- 댓글 -->
+			<div th:replace="fragments/common/list_comment_mobile :: list_comment(${'/api/vocal_casting/' + casting.id}, ${castingComments}, ${currentUserId}, ${paginationUrl})"></div>
+			<div class="h80"></div>
+			<!-- //end 댓글 -->
+
+			<div class="quickMenu3">
+				<dl>
+					<dd class="list" th:onclick="@{${'UPMusic.goto(&quot;/music/vocal_casting&quot;, event);'}}">목록</dd>
+					<dd class="share" onclick="UPMShareModal.showShareModal(null);"><span th:text="#{button.share}" th:remove="tag"></span></dd>
+					<dd id="casting-detail-heart" onclick="UPMVocalCastingDetail.likeVocal();" class="like" th:classappend="${likedVocalCasting ? 'on' : ''}"><span id="casting-detail-heart-cnt" th:text="${casting.heartCnt}"></span></dd>
+				</dl>
+			</div>
+			
+		</div>
+		
+		<script th:src="@{/js/jQuery.AudioPlayer_mobile.js}"></script>
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var audioSource = /*[[ ${casting.getFileUrl()} ]]*/;
+			$(function() {
+		        var player = $.AudioPlayer;
+		        player.init({
+		            container: '#audioWrap'
+		            ,source: audioSource
+		            ,debuggers: false
+		            ,allowSeek: true
+		        });
+		
+		        $('[data-url]').on('click', function(event) {
+		            event.preventDefault();
+		
+		            player.updateSource({
+		                source: $(this).data('url')
+		            });
+		        });
+		    });
+		/*]]>*/
+		</script>
+		
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+			var UPMVocalCastingDetail = {
+				likeVocal : function() {
+					UPMusic.alert(msgUserAfterLogin);
+				}
+			};
+		</script>
+		</div>
+		
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var castingId = /*[[ ${casting.id} ]]*/;
+			var heartCnt = /*[[ ${casting.heartCnt} ]]*/;
+			
+			var UPMVocalCastingDetail = {
+				_config : {
+					loading : false
+				},
+				likeVocal : function() {
+					if (UPMVocalCastingDetail._config.loading) return;
+					UPMVocalCastingDetail._config.loading = true;
+					var params = {};
+		  			UPMusic.ajaxPost(UPMusic._config._api_vocal_casting + '/' + castingId + '/like', headers, params, UPMVocalCastingDetail.likeVocalCallback);
+				},
+				likeVocalCallback: function(msg, object) {
+					if (msg == 'true') {
+						if (!$('#casting-detail-heart').hasClass("on")) $('#casting-detail-heart').addClass("on");
+					} else {
+						if ($('#casting-detail-heart').hasClass("on")) $('#casting-detail-heart').removeClass("on");
+					}
+					$('#casting-detail-heart-cnt').html(object);
+					UPMVocalCastingDetail._config.loading = false;
+				},
+				deleteRequest: function() {
+					UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+						UPMusic.ajaxDelete(UPMusic._config._api_vocal_casting + '/' + castingId, headers, UPMVocalCastingDetail.deleteRequestCallback);
+				    });
+				},
+				deleteRequestCallback: function(msg, object) {
+					if (msg == 'true') {
+						window.location.href = '/music/vocal_casting';
+					} else {
+						UPMusic.alert("삭제하지 못했습니다");
+					}
+				}
+			};
+			
+		/*]]>*/
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

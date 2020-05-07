@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="modal_album_menu">
+		<div class="modal fade" id="album-menu-modal" data-keyboard="false" data-backdrop="false">
+			<div class="lab-modal-body">
+				<div class="lab-header-wrap">
+					<h1>
+						<span id="album-menu-modal-title"></span>
+					</h1>
+					<p class="close" data-dismiss="modal"></p>
+				</div>
+				<ul>
+					<li><a class="btm_m06" onclick="UPMAlbumMenuModal.playMusicAlbum(event);">앨범듣기</a></li>
+					<li><a class="btm_m01" onclick="UPMAlbumMenuModal.gotoArtistPage(event);"><span th:text="#{common.artist.profile}" th:remove="tag"></span></a></li>
+					<li><a class="btm_m03" onclick="UPMAlbumMenuModal.share(event);"><span th:text="#{common.share}" th:remove="tag"></span></a></li>
+				</ul>
+			</div>
+			<!-- /.modal-body -->
+			<div class="modalbg"></div>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var UPMAlbumMenuModal = {
+				_config : {
+					album_id : 0,
+					artist_url : '',
+					album_url: ''
+				},
+				showModal : function(albumId, albumTitle, artistTitle, artistUrl, albumUrl, e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    UPMAlbumMenuModal._config.album_id = albumId;
+				    UPMAlbumMenuModal._config.artist_url = artistUrl;
+				    UPMAlbumMenuModal._config.album_url = albumUrl;
+				    $('#album-menu-modal-title').html(albumTitle + " - " + artistTitle);
+				    $('#album-menu-modal-store').hide();
+
+					$('#album-menu-modal').modal('show');
+				},
+				gotoArtistPage : function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+				    $('#album-menu-modal').modal('hide');
+					window.location.href = UPMAlbumMenuModal._config.artist_url;
+				},
+				playMusicAlbum : function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					$('#album-menu-modal').modal('hide');
+					// UPMusicCommon.addAlbumToPlaylist(UPMAlbumMenuModal._config.album_id);
+                    var params = {id : UPMAlbumMenuModal._config.album_id};
+                    UPMusic.ajaxPost(UPMusic._config._api_player + '/add_album', headers, params, UPMusicCommon.addTracksToPlaylistCallback);
+				},
+				share : function(e) {
+					$('#album-menu-modal').modal('hide');
+					UPMShareModal.showShareModalFromList(UPMAlbumMenuModal._config.album_id, null, e);
+				},
+				buy : function(e) {
+					if (!e) var e = window.event;
+				    e.cancelBubble = true;
+				    if (e.stopPropagation) e.stopPropagation();
+					$('#album-menu-modal').modal('hide');
+					UPMusic.alert(msgSeeNextVersion);
+				}
+			};
+		/*]]>*/
+	    </script>
+	</div>
+</body>
+
+</html>

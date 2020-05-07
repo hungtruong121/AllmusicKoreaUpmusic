@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/home_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<!-- top notice -->
+		<div class="top_noticeBox">
+			<div class="section top_notice">
+				<div class="swiper-container upmusic_notice_slide">
+					<div class="swiper-wrapper notice_memo">
+						<div th:if = "${!@environment.acceptsProfiles('prod')}" class="swiper-slide"><span>재생시간</span>: <span th:text="${streamingRewardPlaytime}"></span> <span class="ml10">스트리밍 리워드</span>: <span th:text="${streamingRewardPoint}"></span></div>
+						<!--
+						<div th:if = "${!@environment.acceptsProfiles('prod')}" class="swiper-slide">복면가왕으로 부터 <span class="notice_hyc">20,000 HYC</span> (11,200원) <span class="notice_pay">입금</span>되었습니다.</div>
+						<div class="swiper-slide">공지사항 1</div>
+						<div class="swiper-slide">공지사항 2</div>
+						-->
+					</div>
+					<!-- Add Pagination -->
+					<div class="swiper-pagination"></div>
+				</div>
+			</div>
+		</div>
+		<!-- //end top notice -->
+
+
+		<!-- content -->
+		<div id="content">
+			<!-- main content -->
+			<!-- 추천 -->
+			<div class="mainContent01 nl_panel">
+				<div class="ct_title">
+					<h2 class="content_title" th:text="#{common.recommended}"></h2>
+					<div class="nav-tabs">
+						<ul>
+							<li class="active"><a><span th:text="#{common.source.music}" th:remove="tag"></span></a></li>
+							<li><a><span th:text="#{common.source.video}" th:remove="tag"></span></a></li>
+						</ul>
+					</div>
+				</div>
+
+				<!-- 추천 tab content -->
+				<div class="tab-content">
+					<div class="tab-pane active">
+						<!-- Swiper -->
+						<div class="swiper-container mainSwiper">
+							<div class="swiper-wrapper">
+								<div th:each="recommendedTrack, iter : ${recommendedTracks}" class="swiper-slide musicListType_01" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedTrack.getUrl() + '&quot;)'}}">
+									<p>
+										<span th:text="${recommendedTrack.subject}"></span>
+										<span class="alp" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedTrack.getArtistUrl() + '&quot;, event)'}}" th:text="${recommendedTrack.getArtistNick()}"></span>
+									</p>
+									<img th:src="${recommendedTrack.getCoverImageUrl()}"/>
+								</div><!--  playlist_content  -->
+							</div>
+						</div>
+					</div><!--  content  -->
+					<div class="tab-pane">
+						<!-- Swiper -->
+						<div class="swiper-container mainSwiper">
+							<div class="swiper-wrapper">
+								<div th:each="recommendedVideo, iter : ${recommendedVideos}" class="swiper-slide videoListType_01" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedVideo.getUrl() + '&quot;)'}}">
+									<div class="video">
+										<p class="ico_play"></p>
+										<p class="time" th:text="${recommendedVideo.formattedDuration()}"></p>
+										<img th:src="${recommendedVideo.getThumbnailUrl()}"/>
+									</div>
+									<p class="subject colDark" th:text="${recommendedVideo.subject}"></p>
+									<p class="atist colGray" th:onclick="@{${'UPMusic.goto(&quot;' + recommendedVideo.getArtistUrl() + '&quot;, event)'}}"><span th:text="${recommendedVideos[0].getArtistNick()}" th:remove="tag"></span></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- //end 추천 tab content -->
+			</div>
+			<!-- //end 추천 -->
+
+
+			<!-- top50 list -->
+			<div class="p0_panel btm_gray1">
+				<div class="nl_panel">
+					<div class="ct_title more ofh">
+						<h2 class="content_title more" onclick="UPMusic.goto('/music/league#league-top50');">
+							<span th:text="#{common.upleague.top50}" th:remove="tag"></span>
+						</h2>
+						<p class="benchmark"></p>
+					</div>
+				</div>
+			</div>
+			<div th:replace="fragments/common/list_home_track_mobile :: list_track('home-top50-fragment', ${top5Tracks})" class="mainContent02 p0_panel"></div>
+			<!--// top50 list -->
+
+			<!-- main banner -->
+			<div class="main_banner">
+				<img th:src="@{/img/mobile/main_banner.png}" />
+			</div>
+			<!--// main banner -->
+
+
+			<!-- hot artist -->
+			
+			<div class="nl_panel">
+				<div class="ct_title more ofh" onclick="UPMusic.goto('/music/artist');">
+					<h2 class="content_title more">HOT 아티스트</h2>								
+				</div>
+			</div>
+			
+			<div class="mainContent03 nl_panel ofh">
+				<div class="gallery_listType01">
+					<dl>
+						<dd th:each="artist,iter : ${top2Artists}" th:onclick="@{${'UPMusic.goto(&quot;' + artist.getUrl() + '&quot;, event)'}}">
+							<div class="img">
+								<img th:src="@{${artist.getProfileImageUrl()}}"/>
+							</div>
+							<p class="name colDark" th:text="${artist.nick}"></p>
+							<p class="music"><span class="l colGray"><i></i> <span th:text="#{common.source.music}" th:remove="tag"></span></span><span class="r colDark"><span th:text="${artist.trackCnt}" th:remove="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></span></p>
+							<p class="video"><span class="l colGray"><i></i> <span th:text="#{common.source.video}" th:remove="tag"></span></span><span class="r colDark"><span th:text="${artist.videoCnt}" th:remove="tag"></span><span th:text="#{common.count}" th:remove="tag"></span></span></p>
+							<p class="Rating"><span class="l colGray"><i></i> <span th:text="#{common.grade}" th:remove="tag"></span></span><span class="r colDark">아티스트</span></p>
+						</dd>
+					</dl>
+				</div>
+			</div>
+			<!--// hot artist -->
+
+
+			<!-- 인기동영상 -->
+			<div class="mainContent04 nl_panel ofh">
+				
+				<div class="ct_title more ofh">
+					<h2 class="content_title more" onclick="UPMusic.goto('/video/hot');">인기동영상</h2>								
+				</div>
+				<div th:replace="fragments/common/list_home_video_mobile :: list_video('home-top4-video-fragment', ${top4Videos})" class="swiper-container mainSwiper"></div>
+				
+			</div>
+			<!--// 인기동영상 -->
+
+			<!-- 최근플레이 리스트 -->
+			<div th:replace="fragments/common/list_home_horizontal_mobile :: list_media('home-recent-play-fragment', ${recentPlayedTracks}, ${recentPlayedVideos}, ${hasRecentPlayedList})" class="mainContent05 nl_panel"></div>
+	
+			<!-- 좋아요 리스트 -->
+			<div th:replace="fragments/common/list_home_horizontal_mobile :: list_media('home-likes-fragment', ${likedTracks}, ${likedVideos}, ${hasLikedList})" ></div>
+
+		</div><!-- //end main content -->
+
+		<script type="text/javascript" th:inline="javascript">
+			// 좋아요 리스트는 영상탭을 활성화
+			$('#home-likes-fragment #home-video-tab').click();
+
+			//메인 영상/음원탭
+			$(".radio_custom>ul>li").click(function(){
+				$(this).addClass("accordion_btnOn").siblings("li").removeClass("accordion_btnOn");
+			});
+		</script>
+		
+	</div>
+	<!-- section wrap	 -->
+
+</body>
+</html>

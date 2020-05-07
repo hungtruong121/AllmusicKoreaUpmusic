@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+	<ul th:fragment="list_collection_modal(collectionList)" th:id="${collectionFragmentId}">
+		  <li th:each="collection, iter : ${collectionList}" th:id="${collection.id}" class="list-group-item border-bottom" th:onclick="@{${'UPMusicCommon.addTracksToCollection(' + collection.id + ');'}}"><span th:text="${collection.subject}"></span><!-- <span th:text="${collection.createdAt}" class="badge"></span> --></li>
+	</ul>
+</body>
+
+</html>

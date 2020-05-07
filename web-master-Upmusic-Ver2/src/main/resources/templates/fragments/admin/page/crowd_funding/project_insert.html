@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+    <div class="content">
+		<form action="#" id="" th:action="@{/admin/crowd_funding/project_insert}" role="form" enctype="multipart/form-data" th:object="${paramData}" method="post" onsubmit="false;">
+    	<div class="subpage_wrap section">
+			<h2 class="page-title">프로젝트 등록하기</h2>
+			<div class="membership_wrap">
+				<ul>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">프로젝트 명</label>
+							<input type="text" class="form-control" name="subject" required="required">
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">이메일 아이디</label>
+							<div>
+				                <input type="text" class="form-control" name="email" id="email_id" autocomplete="off" style="width: 50%; float: left;" required="required">
+				                <button type="button" class="form-control" data-target="#search_email_id" data-toggle="modal" style="width: 50%; float: left;">검색</button>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">아티스트 닉네임</label>
+							<div>
+								<input type="text" class="form-control" name="nick" id="member_nick" required="required">
+								<input type="hidden" name="id" id="member_id">
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">프로젝트 기간</label>
+							<div>
+								<input type="text" class="form-control datepicker" name="fundStartDate" placeholder="프로젝트 시작일" autocomplete="off" style="width: 50%; float: left;" required="required">
+								<input type="text" class="form-control datepicker" name="fundEndDate" placeholder="프로젝트 종료일" autocomplete="off" style="width: 50%; float: left;" required="required">
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">프로젝트 목표 금액</label>
+							<input type="text" class="form-control" name="targetPrice" required="required">
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">은행명 / 택배사 명</label>
+							<input type="text" class="form-control" name="bankname" required="required">
+						</div>
+					</li>
+					<li>
+						<div class="inputbox">
+							<label class="input_title">계좌 번호</label>
+							<input type="text" class="form-control" name="accountNumber" required="required">
+						</div>
+					</li>
+					<li>
+						<div id="form-group-imageFilename" class="form-group inputbox">
+							<div class="input-file" id="imageFilename">
+								<label class="input_title">프로젝트 이미지</label>
+								<input th:type="text" id="img_fileName" placeholder="이미지를 등록하세요" class="form-control imgupload_input" onclick="$('#band_img').trigger('click');return false;" onkeypress="return event.keyCode != 13;"/>
+								<input type="file" name="thumbnailImg" id="band_img" style="display: none;"/>
+								<img th:src="@{/img/inputicon_img.png}" alt="" />
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="inputbox">
+				<label class="input_title">프로젝트 요약</label>
+			    <textarea rows="" cols="" class="form-control" name="summary" required="required"></textarea>
+			</div>
+			<div class="form-group">
+				<label class="input_title">프로젝트 소개</label>
+			    <textarea rows="" cols="" class="summernote" name="content1" id="content1" required="required"></textarea>
+			</div>
+			<div class="form-group">
+				<label class="input_title">프로젝트 리워드</label>
+			    <textarea rows="" cols="" class="summernote" name="content2" id="content2" required="required"></textarea>
+			</div>
+			<div class="form-group">
+				<label class="input_title">프로젝트 주의사항</label>
+			    <textarea rows="" cols="" class="summernote" name="content3" id="content3" required="required"></textarea>
+			</div>
+			<div class="membership_btn mt50">
+				<div class="btn_centerwrap btn_centerwrap2">
+					<button class="btn btn-custom btn-dark h50" id="btn_project_insert" type="submit">등록</button>
+					<button type="button" class="btn btn-custom2 h50" id="btn_back">취소</button>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</form>
+    </div>
+
+
+    <div class="modal fade" id="search_email_id" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+        <div class="modal-dialog" style="width: 1200px;">
+            <div class="modal-content">
+                <div class="modal-header login_header">
+                    <h2 class="modal_title">이메일 아이디 조회</h2>
+					<img src="/img/close.png" class="close" alt="" data-dismiss="modal" />
+                </div>
+
+                <div class="modal-body login_body">
+					<div class="login_body1">
+						<div class="inputbox mt10">
+							<label class="input_title pop_title">이메일</label>
+							<input type="text" placeholder="이메일을 입력하세요." id="search_email" class="form-control login_input">
+						</div>
+						<div class="login_btn upload_btn mt10">
+							<button class="btn btn-custom3 h50 w100p" type="button" id="btn_search_email_id">검색</button>
+						</div>
+					</div>
+					<hr class="login_line" />
+					<div id="" class="musiclist_table musiclist_table_hover2">
+						<table>
+							<thead>
+								<tr>
+									<th>순번</th>
+									<th>이메일 아이디</th>
+									<th>아티스트 닉네임</th>
+									<th>등급</th>
+									<th>가입 형태</th>
+									<th>저작권 단체 가입</th>
+									<th>가입일자</th>
+								</tr>
+							</thead>
+							<tbody id="search_result">
+
+							</tbody>
+						</table>
+					</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript" th:inline="javascript">
+	    $('#btn_back').click(function(){
+	    	history.back();
+	    });
+
+/*	    $('.summernote').summernote({
+	    	height: 200
+	    });*/
+        $('.summernote').summernote({
+            height: 200,
+			callbacks:  {
+                onImageUpload : function (files) {
+					for (var i = files.length -1; i >= 0; i--) {
+					    sendFile(files[i], this);
+					}
+                }
+			}
+        });
+
+        function sendFile(file, el) {
+            var form_data = new FormData();
+            form_data.append('file', file);
+
+            $.ajax({
+                data: form_data,
+                type: "POST",
+                headers: headers,
+                url: '/admin/crowd_funding/project_image_insert',
+                cache: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
+                dataType: 'json',
+                success: function (data) {
+                    var url = data.object;
+
+                    //에디터에 이미지삽입
+                    $(el).summernote('editor.insertImage', url);
+                }
+            });
+        }
+
+	    $('.datepicker').datepicker({
+            format : 'yyyy-mm-dd',
+            autoclose : true,
+            //orientation: "bottom auto"
+        });
+
+	    $('#btn_project_insert').click(function(){
+	    	var content1 = $('#content1').summernote('code').replace(/<p>/gi, '');
+	    	var content2 = $('#content2').summernote('code').replace(/<p>/gi, '');
+	    	var content3 = $('#content3').summernote('code').replace(/<p>/gi, '');
+
+	    	content1 = content1.replace(/<br>/gi, '');
+	    	content2 = content2.replace(/<br>/gi, '');
+	    	content3 = content3.replace(/<br>/gi, '');
+
+	    	content1 = content1.replace(/<\/p>/gi, '');
+	    	content2 = content2.replace(/<\/p>/gi, '');
+	    	content3 = content3.replace(/<\/p>/gi, '');
+
+	    	if(content1 == ""){
+	    		alert('프로젝트 소개를 입력해 주세요');
+	    		return false;
+	    	}
+
+	    	if(content2 == ""){
+	    		alert('프로젝트 리워드를 입력해 주세요');
+	    		return false;
+	    	}
+	    	if(content3 == ""){
+	    		alert('프로젝트 주의사항를 입력해 주세요');
+	    		return false;
+	    	}
+	    });
+
+	    $('#btn_search_email_id').click(function(){
+	    	$.ajax({
+	            type : 'post',
+	            url : '/api/admin/crowd_funding/search_email_id.json',
+	            data : {
+	            	"email" : $('#search_email').val(),
+	            },
+	            success : function(data){
+
+	            	var html = "";
+	            	for(var i=0; i<data.result.length; i++){
+	            		var resultObj = data.result[i];
+	            		html += "<tr><td>" + (i+1) + "</td>";
+	            		html += "<td>" + resultObj.email + "</td>";
+	            		html += "<td>" + resultObj.nick + "</td>";
+	            		html += "<td>" + "</td>";
+	            		html += "<td>" + "</td>";
+	            		html += "<td>" + resultObj.copyrightMembershipStr + "</td>";
+	            		html += "<td>" + resultObj.createAtStr + "<input type='hidden' class='find_memberId' value='" + resultObj.id + "'></td>";
+	            		html += "</tr>";
+	            	}
+
+
+	            	$('#search_result').empty();
+	            	$('#search_result').append(html);
+	            	setMemberInfo();
+
+	            }
+	        });
+	    });
+
+	    $('#band_img').change(function(e){
+	    	var temp = $(this).val().split('.');
+            var fileExt = temp[temp.length-1].toLowerCase();
+
+            if(fileExt == "jpg" || fileExt == "jpeg" || fileExt == "png" || fileExt == "gif" || fileExt == "bmp"){
+				$('#img_fileName').val(e.target.files[0].name);
+            }else{
+            	alert('이미지 파일만 등록 가능 합니다.');
+            	$(this).val('');
+            }
+
+	    });
+
+	    function setMemberInfo(){
+	    	$('#search_result').on('click', 'tr', function(e){
+	    		$('#email_id').val($(this).children('td').eq(1).html());
+	    		$('#member_nick').val($(this).children('td').eq(2).html());
+	    		$('#member_id').val($(this).find('.find_memberId').val());
+
+	    		$('#search_email_id').modal('hide');
+	    	});
+	    }
+
+
+	</script>
+  </div>
+
+</body>
+</html>

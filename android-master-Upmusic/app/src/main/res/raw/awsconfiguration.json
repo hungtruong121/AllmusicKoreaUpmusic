@@ -1,0 +1,22 @@
+{
+  "Version": "1.0",
+  "CredentialsProvider": {
+    "CognitoIdentity": {
+      "Default": {
+        "PoolId": "ap-northeast-2:59ff7d2b-82c2-43ff-b4e8-0c6580fbe3e8",
+        "Region": "ap-northeast-2 "
+      }
+    }
+  },
+  "IdentityManager": {
+    "Default": {
+
+    }
+  },
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "upm-albums",
+      "Region": "ap-northeast-2 "
+    }
+  }
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="content">
+			<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title fl">이벤트 배너</h2>
+				<!-- <a th:href="@{/admin/upm_news/event/eventInsertForm}"><button class="btn btn-custom2 fr"><i><img src="img/add-event.png" alt="" /></i> 이벤트 등록</button></a> -->
+				<a th:href="@{/admin/upm_news/event_banner/insertForm}"><button class="btn btn-custom2 fr"><i><img src="img/add-event.png" alt="" /></i> 이벤트 배너 등록</button></a>
+				<!-- <div class="tab_design">
+					<ul>
+						<li>진행중인 이벤트
+							<div class="tab_line tab_line"></div>
+						</li>
+						<li id="endEventLi">지난 이벤트</li>
+					</ul>
+				</div> -->
+				<div class="tab_contentwrap clear">
+					<div class="tab_content active">
+						<div class="artist_list clear">
+							<div class="producing_listhead">
+								<p class="content_title2 fl">이벤트 배너</p>
+							</div>
+							<!-- <div class="artist_banner artist_banner_slide">
+								 2018-06-29 인조이웍스 추가
+								<ul class="advertisement_slide">
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+								</ul>
+							</div> -->
+							<div class="producing_list  musicvideo_list event_list clear">
+								<ul class="producing_contnet">
+									<li style="width: 100%" th:each="eventBanner : ${eventBannerList.content}">
+										<a th:href="@{${eventBanner.getAdminEditURL()}}">
+										<!-- <a th:href="@{${eventBanner.getUpdatedAt()}}"> -->
+										<div class="producing_profile event_profile"
+										     th:style="'background:url(' +@{${eventBanner.getImgUrl()}}+') center center no-repeat;width: 50%'">
+											<!-- <img alt="" th:src="${event.getImgUrl()}"> -->
+										</div>
+										<div class="producing_info event_info" style="width: 50%;">
+											<div class="producing_infowrap">
+												<p class="event_subtitle">링크 : <span th:text="${eventBanner.link}"></span></p>
+												<p class="event_subtitle mt10">노출여부 : <span th:text="${eventBanner.showYn} == '1' ? '노출' : '비노출'"></span></p>
+												<p class="event_subtitle mt10">노출순서 : <span th:text="${eventBanner.orderNo}"></span></p>
+												<!-- <h3 class="event_title" th:text="${event.subject}"></h3>
+												<p class="event_subtitle" th:text="${event.getEventExpiryDate()}"></p>
+												<p class="event_introduce mt10" th:text="${event.content}"></p> -->
+											</div>
+											<!-- <div class="Dday_icon" th:text="${event.getDayCount()}"></div> -->
+										</div>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div th:if="${eventBannerList != null and eventBannerList.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${eventBannerList.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not eventBannerList.first}" th:href="@{${'/upm_news/event'}(page=${eventBannerList.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${eventBannerList.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, eventBannerList.totalPages - 1)}" th:class="${eventBannerList.number eq pageNo}? 'active' : ''">
+						            <a th:if="${eventBannerList.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (eventBannerList.number eq pageNo)}" th:href="@{${'/upm_news/event'}(page=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${eventBannerList.number + 1 ge eventBannerList.totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not eventBannerList.last or eventBannerList.number > 9}" th:href="@{${'/upm_news/event_banner'}(page=${eventBannerList.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${eventBannerList.last or eventBannerList.number > 9}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+		</div>
+
+		<script>
+
+		</script>
+
+	</div>
+
+</body>
+</html>

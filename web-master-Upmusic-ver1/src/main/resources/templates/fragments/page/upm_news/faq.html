@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+    	<div class="subpage_wrap">
+			<div class="production_section1 section">
+				<h2 class="page-title">FAQ</h2>
+				<div class="FAQ_search_wrap">
+					<form th:action="@{/upm_news/faq}" role="form" th:object="${paramData}" method="get" id="form">
+					<div class="inputbox w19p fl mr1p">
+						<label class="input_title">검색</label>
+						<select class="selectpicker clear w100p" name="category" id="category">
+							<option value="">전체</option>
+							<option value="1">업로드</option>
+							<option value="2">저작권</option>
+							<option value="3">업 리그 차트</option>
+							<option value="4">뮤직스토어</option>
+							<option value="5">아티스트</option>
+							<option value="6">결제</option>
+							<option value="7">정산</option>
+							<option value="8">리워드</option>
+							<option value="9">포인트</option>
+							<option value="0">기타</option>
+						</select>
+					</div>
+					<div class="inputbox w80p fl">
+						<label class="input_title db"></label>
+						<input type="text" name="searchText" placeholder="검색어를 입력하세요." class="form-control w80p fl clear mr1p mt18">
+						<button class="btn btn-custom2 fl h50 w19p p60 mt18" type="submit">검색</button>
+					</div>
+					</form>
+				</div>
+				<div class="FAQ_head clear">
+					<h3 class="content_title fl" id="content_title">전체</h3>
+					<!-- <div class="selectbox_design">
+						<span>전체</span><i><img src="/img/select_ar.png" alt=""></i>
+						<ul class="selectbox_option selectbox_off">
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq&quot;);'}}">전체</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=1&quot;);'}}">업로드</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=2&quot;);'}}">저작권</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=3&quot;);'}}">업 리그 차트</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=4&quot;);'}}">뮤직스토어</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=5&quot;);'}}">아티스트</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=6&quot;);'}}">결제</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=7&quot;);'}}">정산</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=8&quot;);'}}">리워드</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=9&quot;);'}}">포인트</li>
+							<li th:onclick="@{${'UPMusic.goto(&quot;/upm_news/faq?category=0&quot;);'}}">기타</li>
+						</ul>
+					</div> -->
+				</div>
+				<div class="FAQ_tab_content_wrap">
+					<div class="FAQ_content ico_content">
+						<div class="FAQ_Question" th:each="faq : ${faqList.content}">
+							<ul>
+								<li class="Question_icon">Q.</li>
+								<li>
+									<span class="Question_Kategorie" th:text="'[' + ${faq.getCategoryStr()} + ']'"></span>
+									<span th:text="${faq.content}"></span>
+								</li>
+								<li><img src="/img/down_btn.png" class="Question_ar" alt=""></li>
+							</ul>
+							<div class="FAQ_Answer mt10" th:if="${faq.answer != null}">
+								<div class="answer_icon">
+									<h3>A.</h3>
+								</div>
+								<div class="answer_content_wrap">
+									<div class="answer_content" th:utext="${faq.answer.content}">
+										<!-- <p class="answer">
+										</p> -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div th:if="${faqList != null and faqList.totalPages gt 0}" class="panel-body text-center">
+				    <ul class="pagination">
+				        <li th:class="${faqList.number eq 0} ? 'disabled' : ''">
+				            <a class="demo-pli-arrow-left" th:if="${not faqList.first}" th:href="@{${'/upm_news/faq'}(page=${faqList.number-1}, category=${category})}"></a>
+				            <a class="demo-pli-arrow-left" th:if="${faqList.first}" href="javascript:void(0);"></a>
+				        </li>
+				        <li th:each="pageNo : ${#numbers.sequence(0, faqList.totalPages - 1)}" th:class="${faqList.number eq pageNo}? 'active' : ''">
+				            <a th:if="${faqList.number eq pageNo}" href="javascript:void(0);">
+				                <span th:text="${pageNo + 1}"></span>
+				            </a>
+				            <a th:if="${not (faqList.number eq pageNo)}" th:href="@{${'/upm_news/faq'}(page=${pageNo}, category=${category})}">
+				                <span th:text="${pageNo + 1}"></span>
+				            </a>
+				        </li>
+				        <li th:class="${faqList.number + 1 ge faqList.totalPages} ? 'disabled' : ''">
+				            <a class="demo-pli-arrow-right" th:if="${not faqList.last or faqList.number > 9}" th:href="@{${'/upm_news/faq'}(page=${faqList.number+1}, category=${category})}"></a>
+				            <a class="demo-pli-arrow-right" th:if="${faqList.last or faqList.number > 9}" href="javascript:void(0);"></a>
+				        </li>
+				    </ul>
+				</div>
+			</div>
+		</div><!-- subpage_wrap	 -->
+
+    <script type="text/javascript" th:inline="javascript">
+
+    $(document).ready(function() {
+		// 셀렉트 박스 변경시 재 검색
+    	$("#category").change(function(){
+			$("#form").submit();
+		});
+
+		// 검색 후 카테고리 selected
+		$("#category").val(/*[[${category}]]*/);
+
+		// 셀렉트 박스 변경시, selectpicker update
+        $('.selectpicker').selectpicker('refresh');
+
+		// 선택한 카테고리명 타이틀로 지정
+		$("#content_title").html($("#category option:selected").text());
+    });
+
+	</script>
+
+  </div>
+
+</body>
+</html>

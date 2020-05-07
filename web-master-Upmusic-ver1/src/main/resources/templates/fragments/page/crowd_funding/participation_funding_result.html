@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+  <div layout:fragment="content">
+
+    <div class="subpage_wrap section">
+		<div class="page-title-wrap">
+			<h2 class="page-title">내 펀딩 내역</h2>
+		</div>
+
+		<!-- -->
+		<div class="fundingTable">
+			<table>
+				<tr>
+					<th>펀딩 날짜</th>
+					<th>펀딩 번호</th>
+					<th>펀딩 프로젝트명</th>
+					<th>참여한 리워드 정보</th>
+					<th>결제 포인트</th>
+					<th>목표 달성</th>
+					<th>배송 상태</th>
+				</tr>
+				<tr th:each="fundingJoin : ${fundingJoinList.content}">
+					<td th:text="${fundingJoin.getCreateAtFormat()}"></td>
+					<td th:text="${fundingJoin.crowdFundingJoinId}">cF20180520123546</td>
+					<td th:text="${fundingJoin.crowdFunding.subject}">TWICE 앨범 제작 프로젝트</td>
+					<td th:text="${fundingJoin.getRewardSubject()}">리워드C</td>
+					<td><span class="po" th:text="${fundingJoin.usePoint} + P">50,000 P</span></td>
+					<td>
+						<span class="sts " th:classappend="${fundingJoin.crowdFunding.getTargetAttainmentYnFlagForClass()}" th:text="${fundingJoin.crowdFunding.getTargetAttainmentYnFlag()}">진행중</span>
+					</td>
+					<td>
+						<p class="s01" th:unless="${fundingJoin.deliveryState eq '1'}" th:text="${fundingJoin.deliveryStateStr()}">배송 완료</p>
+						<p class="s02" th:text="${fundingJoin.invoiceNumber} != null ? |(, ${fundingJoin.invoiceNumber} ,)| : '-'">(4921213520122)</p>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div th:if="${fundingJoinList != null and fundingJoinList.totalPages gt 0}" class="panel-body text-center">
+			<ul class="pagination">
+				<li th:class="${fundingJoinList.number eq 0} ? 'disabled' : ''">
+					<a class="demo-pli-arrow-left" th:if="${not fundingJoinList.first}" th:href="@{${'/crowd_funding/participation/funding_result'}(page=${fundingJoinList.number-1})}"></a>
+					<a class="demo-pli-arrow-left" th:if="${fundingJoinList.first}" href="javascript:void(0);"></a>
+				</li>
+				<li th:each="pageNo : ${#numbers.sequence(0, fundingJoinList.totalPages - 1)}" th:class="${fundingJoinList.number eq pageNo}? 'active' : ''">
+					<a th:if="${fundingJoinList.number eq pageNo}" href="javascript:void(0);">
+						<span th:text="${pageNo + 1}"></span>
+					</a>
+					<a th:if="${not (fundingJoinList.number eq pageNo)}" th:href="@{${'/crowd_funding/participation/funding_result'}(page=${pageNo})}">
+						<span th:text="${pageNo + 1}"></span>
+					</a>
+				</li>
+				<li th:class="${fundingJoinList.number + 1 ge fundingJoinList.totalPages} ? 'disabled' : ''">
+					<a class="demo-pli-arrow-right" th:if="${not fundingJoinList.last or fundingJoinList.number > 9}" th:href="@{${'/crowd_funding/participation/funding_result'}(page=${fundingJoinList.number+1})}"></a>
+					<a class="demo-pli-arrow-right" th:if="${fundingJoinList.last or fundingJoinList.number > 9}" href="javascript:void(0);"></a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="nodataBox" th:if="${fundingJoinList == null or fundingJoinList.totalPages eq 0}">
+			<span>내역이 없습니다.</span>
+		</div>
+		<!-- -->
+
+
+	</div><!-- subpage_wrap	 -->
+
+     <script type="text/javascript" th:inline="javascript">
+
+
+	</script>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body class="bg_gray">
+	<div layout:fragment="content">
+		<div id="content">
+			<!-- login -->
+			<!-- Inline Form  -->
+			<!--===================================================-->
+			
+			<div class="nl_panel">
+				<div class="login_box">
+					<form id="mobile-login-form" action="#" th:action="@{/auth/login}" method="POST" class="form-inline" enctype="utf8" role="form">
+						<div class="form-group">
+							<label for="inputmail" class="sr-only">Email address</label>
+							<input id="demo-inline-inputmail" name="email" type="email" class="form-control" th:placeholder="#{model.member.email}" />
+						</div>
+						<div class="form-group">
+							<label for="inputpass" class="sr-only">Password</label>
+							<input id="demo-inline-inputpass" name="password" type="password" class="form-control" th:placeholder="#{model.member.password}" />
+						</div>
+						<div class="login_error" style="font-weight: 700; color: red" th:text="${loginError}"></div>
+						<div class="checkbox">
+							<input id="remember-me" class="checkbox-checked" name="remember-me" type="checkbox" checked/>
+							<label for="remember-me"><span class="checkbox-custom"></span> <span class="vtm">&nbsp;자동 로그인</span></label>
+						</div>
+						<button class="btn btn-block btn-lg btn-purple" type="button" th:text="#{button.login}" onclick="UPMusic.startLoading(); UPMusicCommon.login(event); return false;"></button>
+					</form>
+				</div>
+				<!--===================================================-->
+				<!-- End Inline Form  -->
+				
+				<hr/>
+				<div class="login_alert">
+					<small>* 소셜 로그인 시 지연현상이 발생합니다. 잠시만 기다려주세요.</small>
+				</div>
+
+				<div class="joinBtn_box">
+					<button class="btn btn-block btn-lg btn-default btn_facebook" onclick="UPMusicCommon.socialLogin('facebook')">계정 로그인</button>
+					<button class="btn btn-block btn-lg btn-default btn_google" onclick="UPMusicCommon.socialLogin('google')">계정 로그인</button>
+					<button class="btn btn-block btn-lg btn-default btn_kakao" onclick="UPMusicCommon.socialLogin('kakao')">계정 로그인</button>
+					<button class="btn btn-block btn-lg btn-default btn_naver" onclick="UPMusicCommon.socialLogin('naver')">계정 로그인</button>
+				</div>
+
+				<div class="user_search_btnBox">
+					<ul>
+						<li><a th:href="@{/auth/forgot_password}"><span th:text="#{model.member.forgot_password}" th:remove="tag"></span></a></li>
+						<li><a th:href="@{/auth/registration}"><span th:text="#{model.member.registration}" th:remove="tag"></span></a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- //end login -->
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var headers = { /*[[ ${_csrf.headerName} ]] : [[ ${_csrf.token} ]]*/ };
+		/*]]>*/
+		</script>
+	</div>
+
+</body>
+</html>

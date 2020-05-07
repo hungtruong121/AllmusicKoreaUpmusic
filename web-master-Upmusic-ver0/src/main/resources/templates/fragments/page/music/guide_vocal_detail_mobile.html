@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default_layout_mobile}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div id="content">
+			<table class="tableType01 guide_vocal_detail guide_vocal_tbl_mobile">
+				<col width="30%" />
+				<col width="70%" />
+				<tr>
+					<th>나이</th>
+					<td th:text="${guide.age}"></td>
+				</tr>
+				<tr>
+					<th>가능지역</th>
+					<td th:text="${guide.area}"></td>
+				</tr>
+				<tr>
+					<th>음원 업로드</th>
+					<td><a th:href="${'/api/guide_vocal/download/' + guide.id}" target="_blank" th:text="${guide.filename}"></a></td>
+				</tr>
+				<tr>
+					<th>음원 링크</th>
+					<td><a th:if="${guide.filelink != null}" th:href="${guide.filelink}" target="_blank" th:text="${guide.filelink}"></a></td>
+				</tr>
+				<tr>
+					<th>가능 장르</th>
+					<td th:text="${guide.genre}"></td>
+				</tr>
+				<tr>
+					<th>가이드 범위</th>
+					<td th:text="${guide.getGuideVocalScopesString()}"></td>
+				</tr>
+				<tr>
+					<th>비용</th>
+					<td><span th:text="${guide.getCostString()}" th:remove="tag"></span>원</td>
+				</tr>
+				<tr>
+					<th>가능시간</th>
+					<td><span th:text="${10 > guide.openHour ? '0' + guide.openHour : guide.openHour}" th:remove="tag"></span>:00 ~ <span th:text="${10 > guide.closeHour ? '0' + guide.closeHour : guide.closeHour}" th:remove="tag"></span>:00</td>
+				</tr>
+				<tr>
+					<th>심사 상태</th>
+					<td>
+						<span th:if="${guide.guideStatus.name()} eq 'BEFORE_EXAM'" class="icoBtn_gray">심사 중</span>
+						<span th:if="${guide.guideStatus.name()} eq 'UNDER_EXAM'" class="icoBtn_gray">심사 중</span>
+						<span th:if="${guide.guideStatus.name()} eq 'ACCEPTED'" class="icoBtn_blue">심사 통과</span>
+						<span th:if="${guide.guideStatus.name()} eq 'REJECTED'" class="icoBtn_red">심사 반려</span>
+					</td>
+				</tr>
+				<tr>
+					<th>상세내용</th>
+					<td class="writing" th:text="${guide.description}"></td>
+				</tr>
+			</table>
+		</div>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var guideId = /*[[ ${guide.id} ]]*/;
+			var UPMVocalGuide = {
+				_config : {
+					loading : false
+				},
+				deleteRequest: function() {
+					UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+						UPMusic.ajaxDelete(UPMusic._config._api_guide_vocal + '/' + guideId, headers, UPMVocalGuide.deleteRequestCallback);
+				    });
+				},
+				deleteRequestCallback: function(msg, object) {
+					if (msg == 'true') {
+						window.location.href = '/music/artist#artist-guide';
+					} else {
+						UPMusic.alert("삭제하지 못했습니다");
+					}
+				}
+			};
+			
+		/*]]>*/
+		</script>
+		
+	</div>
+
+</body>
+</html>

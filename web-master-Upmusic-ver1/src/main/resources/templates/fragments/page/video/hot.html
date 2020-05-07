@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="albuminfo_wrap section">
+				<div class="albuminfo_head">
+					<h2 class="page-title" th:text="#{nav.video.hot}"></h2>
+				</div>
+				<div class="tab_contentwrap">
+					<div class="tab_content active">
+						<div class="hot_video_wrap">
+							<p class="content_title2 mb20" th:text="#{common.video.hot_video}"></p>
+							<ul>
+								<li th:each="video, iter : ${videos}" th:unless="${iter.index > 3}">
+									<div class="artist_profile videoplay_on2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}">
+										<img th:src="@{${video.getThumbnailUrl()}}" alt=""/>
+										<div class="play_iconwrap play_iconwrap2">
+											<ul>
+												<li><a th:href="@{${video.getUrl()}}"><img th:src="@{/img/play_icon.png}" alt=""></a></li>
+												<li th:text="${video.formattedDuration()}"></li>
+											</ul>
+										</div>
+									</div>
+									<div class="artist_info public_info">
+										<h3 class="count" th:text="${iter.index + 1}"></h3>
+										<ul class="public_video_title">
+											<li><a th:href="@{${video.getUrl()}}"><span th:text="${video.subject}" th:remove="tag"></span></a></li>
+											<li><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a> <span th:text="${video.formattedTime()}"></span></li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="producing_list  musicvideo_list clear">
+							<p class="content_title2 mb20" th:text="#{common.video.top100_video}"></p>
+							<ul id="hot-video-top100-list" class="producing_contnet">
+								<li th:each="video, iter : ${videos}" th:if="${iter.index > 3}">
+									<div class="producing_profile musicvideo_profile videoplay_on2 pointer" th:onclick="@{${'UPMusic.goto(&quot;' + video.getUrl() + '&quot;, event)'}}" th:style="@{${'background-image: url(' + video.getThumbnailUrl() + ');'}}">
+										<div class="play_iconwrap play_iconwrap2">
+											<ul>
+												<li><a th:href="${video.getUrl()}"><img th:src="@{/img/play_icon.png}" alt="" /></a></li>
+												<li th:text="${video.formattedDuration()}"></li>
+											</ul>
+										</div>
+									</div>
+									<div class="producing_info musicvideo_info">
+										<div class="producing_infowrap">
+											<ul class="hits_wrap fln mb10">
+												<li th:text="${video.formattedTime()}"></li>
+												<li><span th:text="#{common.hits_cnt}" th:remove="tag"></span> <span th:text="${video.hitCnt}" th:remove="tag"></span></li>
+											</ul>
+											<h3 class="producing_title musicvideo_title"><a th:href="@{${video.getUrl()}}"><span th:text="${video.getSubject()}" th:remove="tag"></span></a></h3>
+											<h4 class="artist-title2"><a th:href="@{${video.getArtistUrl()}}"><span th:text="${video.getArtistNick()}" th:remove="tag"></span></a></h4>
+											<p class="producing_price"><span th:text="${iter.index+1}" th:remove="tag"></span>위</p>
+											<p class="producing_introduce mt10" th:text="${video.description}"></p>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div th:if="${videos != null and videos.totalPages gt 0}" class="panel-body text-center">
+						    <ul class="pagination">
+						        <li th:class="${videos.number eq 0} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-left" th:if="${not videos.first}" th:href="@{${'/video/hot'}(page=${videos.number-1})}"></a>
+						            <a class="demo-pli-arrow-left" th:if="${videos.first}" href="javascript:void(0);"></a>
+						        </li>
+						        <li th:each="pageNo : ${#numbers.sequence(0, totalPages - 1)}" th:class="${videos.number eq pageNo}? 'active' : ''">
+						            <a th:if="${videos.number eq pageNo}" href="javascript:void(0);">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						            <a th:if="${not (videos.number eq pageNo)}" th:href="@{${'/video/hot'}(page=${pageNo})}">
+						                <span th:text="${pageNo + 1}"></span>
+						            </a>
+						        </li>
+						        <li th:class="${videos.number + 1 ge totalPages} ? 'disabled' : ''">
+						            <a class="demo-pli-arrow-right" th:if="${not videos.last and videos.number + 1 lt totalPages}" th:href="@{${'/video/hot'}(page=${videos.number+1})}"></a>
+						            <a class="demo-pli-arrow-right" th:if="${videos.last or videos.number + 1 > 9}" href="javascript:void(0);"></a>
+						        </li>
+						    </ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+</body>
+</html>

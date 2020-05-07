@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="list_comment(objectApiUrl, comments, currentUserId, paginationUrl)">
+		<div class="comment_list_wrap">
+			<div class="nl_panel btm_gray2">
+				<div class="ct_title ofh">
+					<h2 class="content_title"><span th:text="#{model.comment}" th:remove="tag"></span><span class="sub"><span id="list-comment-count-form" th:text="${comments.getTotalElements()}"></span><span th:text="#{common.count.collectedTrack}" th:remove="tag"></span></span></h2>
+					<p class="benchmark"><button class="btn-write" onclick="UPMCommentList.toggleInputContainer();" th:text="#{button.write_comment}"></button></p>
+				</div>
+				<div id="input-container" class="inputbox mt10" style="display:none;">
+					<textarea id="list-comment-content" class="form-control comment_input" name="content" th:placeholder="#{model.comment.placeholder}" rows="3" maxlength="200"></textarea>
+					<button id="button-send-comment" class="btn btn-dark btn-custom comment_btn" onclick="UPMCommentList.sendComment();">
+						<span th:text="#{button.registration}" th:remove="tag"></span>
+					</button>
+				</div>
+				<button class="btn_reload" th:onclick="@{${'UPMCommentList.reloadComments(&quot;' + paginationUrl + '&quot;);'}}" th:text="#{button.reload}"></button>
+			</div>
+			<dl id="list-comment-each" class="comment_list">
+				<dd th:each="comment : ${comments}" th:id="'list-comment-' + ${comment.id}">
+					<div class="user">
+						<a th:href="@{${comment.member.getUrl()}}">
+							<img th:src="@{${comment.member.getProfileImageUrl()}}" title="profileimage"/>
+						</a>
+					</div>
+					<div class="cmt_box">
+						<p class="id" th:text="${comment.member.nick}"></p>
+						<p class="cmt" th:id="'list-comment-' + ${comment.id} + '-content'" th:utext="${#strings.replace( #strings.escapeXml( comment.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></p>
+					</div>
+					<div class="date">
+						<p class="comment_day" th:text="${comment.formattedTime()}"></p>
+						<ul th:if="${currentUserId} == ${comment.member.id}" th:id="'list-comment-' + ${comment.id} + '-buttons'">
+							<li>
+								<a id="edit-list-comment" th:onclick="'UPMCommentList.editComment(' + ${comment.id} + ');'">
+									<span th:text="#{button.modify}" th:remove="tag"></span>
+								</a>
+							</li>
+							<li>
+								<a id="delete-list-comment" th:onclick="'UPMCommentList.deleteComment(' + ${comment.id} + ');'">
+									<span th:text="#{button.delete}" th:remove="tag"></span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</dd>
+			</dl>
+			<div id="comment-more-button" class="showmore_wrap" th:classappend="${comments != null and comments.totalPages gt 1} ? '' : 'hidden'">
+				<p>
+					<a th:onclick="@{${'UPMCommentList.loadPage(&quot;' + paginationUrl + '&quot;);'}}">SHOW MORE <i><img th:src="@{/img/show_ar.png}" alt="" /></i></a>
+				</p>
+			</div>
+		</div>
+
+		<div sec:authorize="isAnonymous()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentPage = 0;
+			var totalPages = /*[[ ${comments.totalPages} ]]*/;
+			var UPMCommentList = {
+				loadPage: function(paginationUrl) {
+					currentPage++;
+					var url = paginationUrl + '?page=' + currentPage;
+					$.get(url, function(data) {
+						$(data).appendTo('#list-comment-each').fadeIn("slow");
+					});
+					if (totalPages - 1 <= currentPage) {
+						$('#comment-more-button').addClass('hidden');
+					}
+				},
+				reloadComments: function(paginationUrl) {
+					currentPage = 0;
+					var url = paginationUrl + '?page=' + currentPage;
+					$.get(url, function(data) {
+						$('#list-comment-each').html(data);
+					});
+					if (totalPages <= 1) {
+						$('#comment-more-button').addClass('hidden');
+					}
+				},
+				toggleInputContainer : function() {
+					UPMusic.alert(msgUserAfterLogin);
+				},
+				sendComment: function() {
+					UPMusic.alert(msgUserAfterLogin);
+				}
+			};
+		/*]]>*/
+	    </script>
+		</div>
+
+		<div sec:authorize="isAuthenticated()">
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var currentPage = 0;
+			var totalPages = /*[[ ${comments.totalPages} ]]*/;
+			var objectApiUrl = /*[[ ${objectApiUrl} ]]*/;
+			var buttonRegistrationName = /*[[ #{button.registration} ]]*/;
+			var buttonModifyName = /*[[ #{button.modify} ]]*/;
+			var buttonDeleteName = /*[[ #{button.delete} ]]*/;
+			var buttonCancelName = /*[[ #{button.cancel} ]]*/;
+        	var videoId = /*[[ ${video.id} ]]*/;
+			var UPMCommentList = {
+				_config : {
+					loading : false
+				},
+				loadPage: function(paginationUrl) {
+					currentPage++;
+					var url = paginationUrl + '?page=' + currentPage;
+					$.get(url, function(data) {
+						$(data).appendTo('#list-comment-each').fadeIn("slow");
+					});
+					if (totalPages - 1 <= currentPage) {
+						$('#comment-more-button').addClass('hidden');
+					}
+				},
+				reloadComments: function(paginationUrl) {
+					currentPage = 0;
+					var url = paginationUrl + '?page=' + currentPage;
+					$.get(url, function(data) {
+						$('#list-comment-each').html(data);
+					});
+					if (totalPages <= 1) {
+						$('#comment-more-button').addClass('hidden');
+					}
+				},
+				toggleInputContainer : function() {
+					// $('#input-container').toggle();
+					window.location.href = '/comment?api_url=' + objectApiUrl + '/comment&orig_url=' + window.location.pathname;
+				},
+				sendComment: function() {
+					var content = $('#list-comment-content').val();
+					if (content) {
+						if (UPMCommentList._config.loading) return;
+						UPMCommentList._config.loading = true;
+						var params = {
+							content : content
+						};
+                        UPMusic.ajaxPostResObj(objectApiUrl + '/comment', headers, params, UPMCommentList.sendCommentCallback);
+					}
+				},
+				sendCommentCallback: function(commentObj) {
+					$('#list-comment-content').val('');
+					var commentBlock = '<dd id="list-comment-' + commentObj.id + '">';
+					commentBlock += UPMCommentList.renderComment(commentObj);
+					commentBlock += '</dd>';
+					$(commentBlock).prependTo('#list-comment-each').fadeIn("slow");
+					UPMCommentList.countComments(1);
+					UPMCommentList._config.loading = false;
+				},
+				updateCommentCallback: function(commentObj) {
+					var commentBlock = UPMCommentList.renderComment(commentObj);
+					$('#list-comment-' + commentObj.id).html(commentBlock);
+					UPMCommentList._config.loading = false;
+				},
+				renderComment: function(commentObj) {
+					var commentBlock = '<div class="user"><a href="/music/artist/' + commentObj.member.id + '">';
+					commentBlock += '<img src="' + commentObj.member.profileImageUrl + '" width="60"/></a></div>';
+					commentBlock += '<div class="cmt_box"><p class="id">' + commentObj.member.nick + '</p>';
+					commentBlock += '<p class="cmt" id="list-comment-' + commentObj.id + '-content">' + commentObj.content.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p></div>';
+					commentBlock += '<div class="date"><p class="comment_day">' + UPMCommentList.timeFormat(commentObj.createdAt) + '</p>';
+					commentBlock += '<ul id="list-comment-' + commentObj.id + '-buttons"><li><a id="edit-list-comment" onclick="UPMCommentList.editComment(' + commentObj.id + ');"><span>' + buttonModifyName + '</span></a></li>';
+					commentBlock += '<li><a id="delete-list-comment" onclick="UPMCommentList.deleteComment(' + commentObj.id + ');"><span>' + buttonDeleteName + '</span></a></li></ul></div>';
+					return commentBlock;
+				},
+				editComment: function(commentId) {
+					window.location.href = '/comment/' + commentId + '?api_url=' + objectApiUrl + '/comment/' + commentId + '&orig_url=' + window.location.pathname;
+				},
+				updateComment: function(commentId) {
+					var newContent = $('#list-comment-' + commentId + '-content').val();
+					if (newContent) {
+						if (UPMCommentList._config.loading) return;
+						UPMCommentList._config.loading = true;
+						var params = {
+							content : newContent
+						};
+                        UPMusic.ajaxPostResObj(objectApiUrl + '/comment/' + commentId, headers, params, UPMCommentList.updateCommentCallback);
+					}
+				},
+				cancelEditComment :function(commentId) {
+                    $.get(objectApiUrl + '/comment/' + commentId, function(data) {
+						UPMCommentList.updateCommentCallback(data);
+					});
+				},
+				deleteComment: function(commentId) {
+				    UPMusic.confirm("정말로 삭제하시겠습니까?", function() {
+                        UPMusic.ajaxDelete(objectApiUrl + '/comment/' + commentId, headers, UPMCommentList.deleteCommentCallback);
+				    });
+				},
+				deleteCommentCallback: function(msg, object) {
+					if (object) {
+						$('#list-comment-' + object).remove();
+						UPMCommentList.countComments(-1);
+					} else {
+						UPMusic.alert("삭제하지 못했습니다");
+					}
+				},
+				countComments: function(elm) {
+					var commentCnt = parseInt($("#list-comment-count-form").html());
+					commentCnt += elm;
+					$('#list-comment-count-form').html(commentCnt);
+					if ($('#album-comment-count-button').length) $('#album-comment-count-button').html(commentCnt);
+					
+					// 10개 이상의 댓글 제외
+					if (11 == $('#list-comment-each .comment_list').length) {
+						$('#list-comment-each .comment_list').eq(10).remove();
+						if ($('#comment-more-button').hasClass('hidden')) $('#comment-more-button').removeClass('hidden');
+					}
+				},
+				timeFormat: function(time) {
+					var d = new Date(time);
+					var formattedTime = d.getFullYear()+'-'+(d.getMonth() + 1 < 10 ? '0' + (d.getMonth() + 1) : d.getMonth() + 1)+'-'+(d.getDate() < 10 ? '0' + d.getDate() : d.getDate())+' '+(d.getHours() < 10 ? '0' + d.getHours() : d.getHours())+':'+(d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes());
+					console.log(formattedTime);
+					return formattedTime;
+				}
+			};
+			
+			$(document).ready(function(){
+			    $('#list-comment-content').keyup(function(){
+			        if ($(this).val().length > 200) {
+			            UPMusic.alert('댓글은 200자를 넘을 수 없습니다');
+			            $(this).val($(this).val().substr(0, 200));
+			        }
+			    });
+			});
+		/*]]>*/
+		</script>
+		</div>
+
+	</div>
+</body>
+
+</html>

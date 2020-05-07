@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorate="~{layout/admin_layout}">
+
+<head>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<div class="subpage_wrap">
+			<div class="albuminfo_wrap section">
+				<div class="albuminfo_head">
+					<h2 class="page-title" th:text="#{common.video.information}"></h2>
+					<ul class="hits_wrap">
+						<li><span th:text="#{model.video.hits}" th:remove="tag"></span> : <span th:text="${video.hitCnt}" th:remove="tag"></span><span th:text="#{common.times}" th:remove="tag"></span></li>
+						<li><span th:text="#{button.registration}" th:remove="tag"></span> : <span th:text="${video.formattedTime()}" th:remove="tag"></span></li>
+					</ul>
+				</div>
+				<div class="album_infomation video_infomation">
+					<div class="video_wrap">
+						<!-- UPM VIDEO PLAYER -->
+						<div th:if="${video.videoService == 'youtube'}" class="video-container">
+						    <span class="embed-youtube" style="text-align:center; display: block;"><span id="youtube-player"></span></span>
+						</div>
+						<div th:unless="${video.videoService == 'youtube'}" class="video-container">
+						    <span class="embed-vimeo" style="text-align:center; display: block;"><iframe id="vimeo-player" class="vimeo-player" type="text/html" th:src="@{${'https://player.vimeo.com/video/' + video.videoServiceObjectId}}" style="border: 0px; display: block; margin: 0px; width: 100%; height: 100%;" data-ratio="0.5625" data-width="100%" data-height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></span>
+						</div>
+						<div class="videoinfo_top">
+							<div class="album_img album_img_ver2">
+								<a th:href="@{${video.getMember().getUrl()}}"><img th:src="@{${video.getMember().getProfileImageUrl()}}" alt="" /></a>
+							</div>
+							<div class="videoinfo_titlewrap">
+								<h2 class="album-title" th:text="${video.subject}"></h2>
+								<p class="album_singer"><a th:href="@{${video.getMember().getUrl()}}"><span th:text="${video.getMember().nick}" th:remove="tag"></span></a></p>
+							</div>
+						</div>
+					</div>
+					<div class="album_infotext video_infotext">
+						<div class="album_img album_img_ver2">
+							<a th:href="@{${video.getMember().getUrl()}}">
+								<img th:src="@{${video.getMember().getProfileImageUrl()}}" src="${video.getMember().getProfileImageUrl()}" title="profileimage"/>
+							</a>
+						</div>
+						<div class="videoinfo_titlewrap">
+							<h2 class="album-title" th:text="${video.subject}"></h2>
+							<p class="album_singer"><a th:href="@{${video.getMember().getUrl()}}"><span th:text="${video.getMember().nick}" th:remove="tag"></span></a></p>
+							<!-- <dl th:if="${video.genre != null}" class="hashtag_wrap">
+								<dt class="hashtag"><a href="">#<span th:text="#{${video.getGenreName()}}" th:remove="tag"></span></a></dt>
+							</dl> -->
+						</div>
+						<div class="introduce_info introduce_info_ver2" th:utext="${#strings.replace( #strings.escapeXml( video.description ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"></div>
+					</div>
+					<div class="commerce_btn commerce_btn_ver2 mt30 w300">
+						<div th:id="${video.id}" class="like_btn_round" th:classappend="${recommended} ? 'like_btn_round_on' : 'like_btn_round_off'" th:onclick="@{${'UPMusicAdmin.recommendVideo(' + video.id + ');'}}"><i><span class="heart">&nbsp;</span></i>추천영상 등록</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var videoId = /*[[ ${video.id} ]]*/;
+			var videoObjectId = /*[[ ${video.videoServiceObjectId} ]]*/;
+			var heartCnt = /*[[ ${video.heartCnt} ]]*/;
+			
+			//비디오 정보창
+			// $(".videoinfo_bottom").css("bottom","0");
+			$(".video_wrap").mouseenter(function(){
+				$(this).children(".videoinfo_top").stop().animate({"top":"0"},500);
+				$(this).children(".videoinfo_bottom").stop().animate({"bottom":"0"},500);
+			});
+			$(".video_wrap").mouseleave(function(){
+				$(this).children(".videoinfo_top").stop().animate({"top":"-60px"},500);
+				$(this).children(".videoinfo_bottom").stop().animate({"bottom":"-100px"},500);
+			});
+		/*]]>*/
+		</script>
+		
+		<div th:if="${video.videoService == 'youtube'}" th:remove="tag">
+			<script src="https://www.youtube.com/iframe_api"></script>
+			<script type="text/javascript" th:inline="javascript">
+				// create youtube player
+			    var player, playing = false;
+			    function onYouTubePlayerAPIReady() {
+			        player = new YT.Player('youtube-player', {
+			          videoId: videoObjectId,
+			          events: {
+			            'onReady': onPlayerReady,
+			            'onStateChange': onPlayerStateChange
+			          }
+			        });
+			    }
+	
+			    // autoplay video
+			    function onPlayerReady(event) {
+			    	UPMusicAdmin.log("onPlayerReady");
+			    }
+	
+			    // when video ends
+			    function onPlayerStateChange(event) {
+			    	if (!playing && event.data == YT.PlayerState.PLAYING) {
+			    		playing = true;
+			    	}
+			    }				
+			</script>
+		</div>
+		<div th:unless="${video.videoService == 'youtube'}" th:remove="tag">
+			<script src="https://player.vimeo.com/api/player.js"></script>
+			<script type="text/javascript" th:inline="javascript">
+				// create youtube player
+			    var playing = false;
+			    var iframe = document.getElementById("vimeo-player");
+			    var player = new Vimeo.Player(iframe);
+			    player.on('play', function() {
+		    		playing = true;
+			    });
+			</script>
+		</div>
+	</div>
+
+</body>
+</html>
